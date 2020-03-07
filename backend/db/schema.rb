@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_07_150731) do
+ActiveRecord::Schema.define(version: 2020_03_07_165601) do
 
   create_table "api_keys", force: :cascade do |t|
     t.string "access_token"
@@ -18,6 +18,19 @@ ActiveRecord::Schema.define(version: 2020_03_07_150731) do
     t.datetime "expires_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "stock_transactions", force: :cascade do |t|
+    t.string "style"
+    t.string "color"
+    t.string "size"
+    t.integer "kind"
+    t.string "reason"
+    t.text "comments"
+    t.integer "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "units"
   end
 
   create_table "users", force: :cascade do |t|
