@@ -2,8 +2,10 @@ class Stock
   KIND_IN  = 1
   KIND_OUT = -1
 
+  # Parses a packing list and craetes the stock transactions required to
+  # add the items to the system.
   def self.import xls
-    raise "Not Impl."
+    # Keep in mind we have to handle several excel and columns formats.
   end
 
   def self.buy(sku, units, user, comments="")

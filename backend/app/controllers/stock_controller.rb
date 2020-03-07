@@ -22,7 +22,6 @@ class StockController < ApplicationController
       @result = { errors: result.errors }
       render :json => @result, :status => 500
     end
-
   end
 
   def buy
