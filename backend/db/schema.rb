@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_07_144425) do
+ActiveRecord::Schema.define(version: 2020_03_07_150731) do
+
+  create_table "api_keys", force: :cascade do |t|
+    t.string "access_token"
+    t.integer "user_id"
+    t.datetime "expires_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
