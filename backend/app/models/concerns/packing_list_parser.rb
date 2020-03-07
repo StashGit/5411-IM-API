@@ -8,6 +8,25 @@ class PackingListParser
     setup_size_columns
   end
 
+  # returns a collection of [sku, units]
+  def parse
+    result = []
+    data_rage.each do |row|
+      style = packing_list.cell('C', row)
+      color = packing_list.cell('D', row)
+
+      size_columns.each do |col|
+        size  = size_name(col)
+        units = packing_list.cell(col, row)
+        prod  = Product.new(style: style, color: color, size: size)
+        result << StockEntry.new(prod, units)
+      end
+    end
+    result
+  end
+
+  private
+
   def open_packing_list(path)
     wb = Roo::Spreadsheet.open(path)
     wb.sheet('PL')
@@ -35,23 +54,6 @@ class PackingListParser
   # Nombre de la columna. (Capturado cuando armamos los headers.)
   def size_name(col)
     @size_names[col]
-  end
-
-  # returns a collection of [sku, units]
-  def parse
-    result = []
-    data_rage.each do |row|
-      style = packing_list.cell('C', row)
-      color = packing_list.cell('D', row)
-
-      size_columns.each do |col|
-        size  = size_name(col)
-        units = packing_list.cell(col, row)
-        prod  = Product.new(style: style, color: color, size: size)
-        result << StockEntry.new(prod, units)
-      end
-    end
-    result
   end
 
   def data_rage
