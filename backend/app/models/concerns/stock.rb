@@ -2,6 +2,10 @@ class Stock
   KIND_IN  = 1
   KIND_OUT = -1
 
+  def self.import xls
+    raise "Not Impl."
+  end
+
   def self.buy(sku, units, user, comments="")
     t = StockTransaction.new(style: sku.style,
                              color: sku.color,

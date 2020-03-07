@@ -6,7 +6,8 @@ class SessionController < ApplicationController
   # POST email/pwd
   def new
     unless @user
-      return render :json => user_not_found, :status => :bad_request
+      @result = user_not_found
+      return render :json => @result, :status => :bad_request
     end
 
     if @user.authenticate(params[:password])
