@@ -5,4 +5,8 @@ class User < ApplicationRecord
   def is_admin?
     self.is_admin
   end
+
+  def create_api_key
+    ApiKey.create! user_id: self.id
+  end
 end

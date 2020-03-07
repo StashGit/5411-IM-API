@@ -1,4 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+joe:
+  email: joe@example.com
+  password_digest: SuperSecretString
+  first_name: Joe
+  last_name: Doe
+  pic_url: ""
+  is_admin: false
 
 one:
   email: MyString

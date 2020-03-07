@@ -2,9 +2,12 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   test "an user can be admin" do
-    user = User.new email: "admin@example.com"
+    user = User.new email: "admin@example.com", 
+      password: "123", 
+      password_confirmation: "123"
+
     user.is_admin = true
-    user.save
+    user.save!
 
     assert user.is_admin?
   end
@@ -23,9 +26,20 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "by default an user is not an admin" do
-    assert_raise ActiveRecord::RecordInvalid do
-      user = User.create! email: "joe@example.com"
-      assert !user.is_admin?
-    end
+    user = User.create! email: "jane@example.com",
+      password: "123", 
+      password_confirmation: "123"
+
+    assert !user.is_admin?
+  end
+
+  test "an user can create an access token" do
+    user = User.create! email: "john@example.com", 
+      password: "123", 
+      password_confirmation: "123"
+
+      key  = user.create_api_key
+      assert key.present?
+      assert key.access_token.present?
   end
 end
