@@ -1,5 +1,5 @@
 class PackingListParser
-  attr_reader :packing_list, :size_columns
+  attr_reader :packing_list, :size_columns, :size_names
 
   def initialize(path)
     raise missing_file(path) unless File.exists?(path)
@@ -24,8 +24,6 @@ class PackingListParser
     end
     result
   end
-
-  private
 
   def open_packing_list(path)
     wb = Roo::Spreadsheet.open(path)
