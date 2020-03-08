@@ -1,4 +1,12 @@
 require 'test_helper'
+#
+# The strategy for detecting data ranges goes something like this:
+# * Find the sheet (usually PL, packing list, etc...) if the book has only one
+#   sheet, that's the packing list.
+# * Find headers (style, color, size, etc....)
+# * Collect size names.
+# * Plot the data range.
+# * Collect data into stock entries.
 
 class PackingListParserTest < ActiveSupport::TestCase
   test "can open a packing list" do
