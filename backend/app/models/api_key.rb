@@ -13,4 +13,8 @@ class ApiKey < ApplicationRecord
     # nice to have an expiration date. Just in case.
     self.expires_at = 30.days.from_now
   end
+
+  def user
+    User.find(self.user_id)
+  end
 end

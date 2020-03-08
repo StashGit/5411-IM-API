@@ -1,16 +1,19 @@
 class StockController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
+  before_action :authorize, except: [:index]
+  before_action :set_sku,   only: [:buy, :sale, :adjust, :labels]
+  before_action :set_units, only: [:buy, :sale, :adjust, :labels]
+  before_action :set_user,  only: [:buy, :sale, :adjust, :labels]
 
   def index
   end
 
+  # Vista de prueba para seleccionar el archivo excel a manopla.
   def import
   end
 
   def upload
-    return render_error("Invalid access token")  unless @token
-
     xls = upload_file(params[:file])
     return render_error("Failed to upload file") unless xls
 
@@ -25,18 +28,44 @@ class StockController < ApplicationController
   end
 
   def buy
+    result = Stock.buy(@sku, @units, @user)
+    if result.ok
+      @result = { success: true }
+      render :json => @result, :status => 200
+    else
+      @result = { errors: result.errors }
+      render :json => @result, :status => 500
+    end
   end
 
   def sale
+    result = Stock.sale(@sku, @units, @user)
+    if result.ok
+      @result = { success: true }
+      render :json => @result, :status => 200
+    else
+      @result = { errors: result.errors }
+      render :json => @result, :status => 500
+    end
   end
 
   def adjust
+    result = Stock.adjust(@sku, @units, @user, params[:commnets])
+    if result.ok
+      @result = { success: true }
+      render :json => @result, :status => 200
+    else
+      @result = { errors: result.errors }
+      render :json => @result, :status => 500
+    end
   end
 
   def labels
+    raise "Not implemented."
   end
 
   def log
+    raise "Not implemented."
   end
 
   private
@@ -70,5 +99,29 @@ class StockController < ApplicationController
     token = request.headers["Access-Token"]
     @token = ApiKey.find_by_access_token(token)
     puts "access-token: #{@token}"
+  end
+
+  def authorize
+    raise "Unathorized Request" unless @token
+  end
+
+  def set_sku
+    @sku  = Sku.new(**sku_params)
+  end
+
+  def set_units
+    @units = params[:units].to_i
+  end
+
+  def set_user
+    @user = @token.user
+  end
+
+  def sku_params
+    sku = {}
+    sku[:style] = params[:style]
+    sku[:color] = params[:color]
+    sku[:size] = params[:size]
+    sku
   end
 end
