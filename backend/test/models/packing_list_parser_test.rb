@@ -29,11 +29,17 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert_equal size_names, parser.parse_size_names
   end
 
-  # test "can detect the data range" do
-  #   parser = PackingListParser.new(pl_path)
-  #   puts parser.data_rage
-  #   assert false
-  # end
+  test "can detect data range first row" do
+    #"C16..I57"
+    parser = PackingListParser.new(pl_path)
+    assert_equal 16, parser.first_row
+  end
+
+  test "can detect data range the last row" do
+    #"C16..I57"
+    parser = PackingListParser.new(pl_path)
+    assert_equal 57, parser.last_row
+  end
   #
   # test "can parse a valid packing list" do
   #   parser = PackingListParser.new(pl_path)

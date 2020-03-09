@@ -73,14 +73,17 @@ class PackingListParser
     @head_row ||= find_head_row
   end
 
+  def first_row
+    head_row + 1
+  end
   def last_row
     @last_row ||= find_last_row
   end
 
   def find_last_row
-    (head_row + 1).upto packing_list.last_row do |row|
-      cell_value = packing_list.cell('C', row) || 0
-      return row - 1 unless is_num?(cell_value)
+    first_row.upto packing_list.last_row do |row|
+      cell_value = packing_list.cell('C', row)
+      return row - 1 unless cell_value
     end
     packing_list.last_row
   end
