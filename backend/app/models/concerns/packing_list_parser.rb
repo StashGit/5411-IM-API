@@ -59,7 +59,7 @@ class PackingListParser
   end
 
   def data_rage
-    ((head_row + 1)..last_row)
+    (first_row..last_row)
   end
 
   def is_num?(value)
