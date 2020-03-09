@@ -5,10 +5,10 @@ class PackingListParser
     raise missing_file(path) unless File.exists?(path)
 
     @packing_list = open_packing_list(path)
-    setup_size_columns
+    parse_size_names
   end
 
-  # returns a collection of [sku, units]
+  # Returns a collection of [sku, units]
   def parse
     result = []
     data_rage.each do |row|
@@ -34,24 +34,28 @@ class PackingListParser
     ['E', 'F', 'G', 'H', 'I', 'J', 'K']
   end
 
-  def setup_size_columns
+  def parse_size_names
     @size_columns = []
     @size_names   = []
+    @size_names_by_column = {}
     possible_size_column_names.each do |col|
-      val = packing_list.cell(col, head_row)
+      val = packing_list.cell(col, head_row)&.to_s
       if valid_size_name?(val)
         @size_columns << col
-        @size_names[col] = val
+        @size_names << val
+        @size_names_by_column[col] = val
       end
     end
+    @size_names
   end
 
   def valid_size_name?(name)
+    /AU[0-9]([0-9])?/ =~ name || /US[0-9]([0-9])?/ =~ name
   end
 
   # Nombre de la columna. (Capturado cuando armamos los headers.)
   def size_name(col)
-    @size_names[col]
+    @size_names_by_column[col]
   end
 
   def data_rage

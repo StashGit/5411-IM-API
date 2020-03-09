@@ -13,7 +13,7 @@ class Stock
                              color: sku.color,
                              size: sku.size,
                              kind: KIND_IN,
-                             units: units,
+                             units: units.abs,
                              reason: Reason::BUY,
                              comments: comments)
     save_transaction(t, user)
@@ -24,7 +24,7 @@ class Stock
                              color: sku.color,
                              size: sku.size,
                              kind: KIND_OUT,
-                             units: units,
+                             units: units.abs,
                              reason: Reason::SALE,
                              comments: comments)
     save_transaction(t, user)
@@ -34,11 +34,11 @@ class Stock
     t = StockTransaction.new(style: sku.style, 
                              color: sku.color,
                              size: sku.size,
+                             units: units.abs,
                              reason: Reason::ADJUSTMENT,
                              comments: comments)
 
     t.kind  = units > 0 ? KIND_IN : KIND_OUT
-    t.units = units.abs
     save_transaction(t, user)
   end
 

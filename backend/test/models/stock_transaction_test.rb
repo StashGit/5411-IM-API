@@ -67,6 +67,4 @@ class StockTransactionTest < ActiveSupport::TestCase
     assert comments == t.comments
 
   end
-
-
 end
