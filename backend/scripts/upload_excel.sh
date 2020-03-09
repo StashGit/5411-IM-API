@@ -11,7 +11,7 @@ then
         -H "Accepts: application/json" \
         -H "Access-Token: $TOKEN" \
         -X POST \
-        -F "file=@../data/pl1.xlsx" \
+        -F "file=@../../data/pl1.xlsx" \
         localhost:3000/stock/upload.json
 else
     echo "Must provide a valid access token."
