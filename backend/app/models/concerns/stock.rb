@@ -4,48 +4,49 @@ class Stock
 
   # Parses a packing list and craetes the stock transactions required to
   # add the items to the system.
-  def self.import xls
+  def self.import(xls)
     # Keep in mind we have to handle several excel and columns formats.
   end
 
+  def self.create(entries, user)
+    entries.each do |entry|
+      next unless entry.units
+
+      adjust(entry.sku, entry.units.abs, user, "Mass Import")
+    end
+  end
+
   def self.buy(sku, units, user, comments="")
-    t = StockTransaction.new(style: sku.style,
-                             color: sku.color,
-                             size: sku.size,
-                             kind: KIND_IN,
-                             units: units.abs,
-                             reason: Reason::BUY,
-                             comments: comments)
+    t = StockTransaction.new(
+      style: sku.style, color: sku.color, size: sku.size,
+      kind: KIND_IN, units: units.abs, reason: Reason::BUY, 
+      comments: comments)
+
     save_transaction(t, user)
   end
 
   def self.sale(sku, units, user, comments="")
-    t = StockTransaction.new(style: sku.style, 
-                             color: sku.color,
-                             size: sku.size,
-                             kind: KIND_OUT,
-                             units: units.abs,
-                             reason: Reason::SALE,
-                             comments: comments)
+    t = StockTransaction.new(
+      style: sku.style, color: sku.color, size: sku.size, 
+      kind: KIND_OUT, units: units.abs, reason: Reason::SALE, 
+      comments: comments)
+
     save_transaction(t, user)
   end
 
   def self.adjust(sku, units, user, comments="")
-    t = StockTransaction.new(style: sku.style, 
-                             color: sku.color,
-                             size: sku.size,
-                             units: units.abs,
-                             reason: Reason::ADJUSTMENT,
-                             comments: comments)
+    t = StockTransaction.new(
+      style: sku.style, color: sku.color, size: sku.size, 
+      units: units.abs, reason: Reason::ADJUSTMENT, 
+      comments: comments)
 
     t.kind  = units > 0 ? KIND_IN : KIND_OUT
     save_transaction(t, user)
   end
 
-  # This method computes all stock transactions for a given SKU.
+  # Computa todas las transacciones de stock para el SKU especificado.
   def self.units(sku)
-    # TODO: Bound the query to a date range. (This is not a problem right
-    #       now, but it might be depending on the number of transactions.)
+    # TODO: Bound by date o algo por el estilo.
     transactions = collect_transactions_by(sku)
     total = 0
     transactions.each do |t|
