@@ -7,7 +7,16 @@ class Stock
   def self.import(file_path, user)
     parser = PackingListParser.new(file_path)
     entries = parser.parse
+    # TODO: Validar que todos los movimientos de stock sean validos
+    #       antes de grabar en al base de datos. Creo que en el caso de los
+    #       imports, lo mas sano va a ser se "graba todo_" o 
+    #       "no se graba nada."
+    #       De esta forma, si algun registro tiene un error lo pueden corregir
+    #       a manopla en el Excel y re-intentar la operacion.
     Stock.create(entries, user)
+    { ok: true }
+  rescue Exception => ex
+    { ok: false, errors: [ex.message] }
   end
 
   def self.create(entries, user)

@@ -9,7 +9,8 @@ class StockController < ApplicationController
   def index
   end
 
-  # Vista de prueba para seleccionar el archivo excel a manopla.
+  # Vista de prueba para seleccionar el archivo excel a manopla. Desde
+  # el punto de vista de la API no tiene ningun efecto.
   def import
   end
 
@@ -18,45 +19,37 @@ class StockController < ApplicationController
     return render_error("Failed to upload file") unless xls
 
     result = generate_stock_transactions(xls)
-    if (result.ok)
-      @result = { success: true }
-      render :json => @result, :status => 200
+    if (result[:ok])
+      render :json => result, :status => 200
     else
-      @result = { errors: result.errors }
-      render :json => @result, :status => 500
+      render :json => result, :status => 500
     end
   end
 
   def buy
     result = Stock.buy(@sku, @units, @user)
     if result.ok
-      @result = { success: true }
-      render :json => @result, :status => 200
+      render :json => result, :status => 200
     else
-      @result = { errors: result.errors }
-      render :json => @result, :status => 500
+      render :json => result, :status => 500
     end
   end
 
   def sale
     result = Stock.sale(@sku, @units, @user)
     if result.ok
-      @result = { success: true }
-      render :json => @result, :status => 200
+      render :json => result, :status => 200
     else
-      @result = { errors: result.errors }
-      render :json => @result, :status => 500
+      render :json => result, :status => 500
     end
   end
 
   def adjust
     result = Stock.adjust(@sku, @units, @user, params[:commnets])
     if result.ok
-      @result = { success: true }
-      render :json => @result, :status => 200
+      render :json => result, :status => 200
     else
-      @result = { errors: result.errors }
-      render :json => @result, :status => 500
+      render :json => result, :status => 500
     end
   end
 
@@ -65,13 +58,13 @@ class StockController < ApplicationController
   end
 
   def log
-    raise "Not implemented."
+    render :json => StockTransaction.all
   end
 
   private
 
   def generate_stock_transactions(xls)
-    Stock.import(xls)
+    Stock.import(xls, @token.user)
   end
 
   def render_error message
@@ -86,7 +79,7 @@ class StockController < ApplicationController
     File.open(path, 'wb') do |f|
       f.write(file.read)
     end
-    path
+    path.to_s
   end
 
   def uploads_dir

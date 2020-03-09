@@ -2,6 +2,10 @@ class ApiKey < ApplicationRecord
   validates :user_id, presence: true
   before_create :generate_access_token
 
+  def user
+    @user ||= User.find(self.user_id)
+  end
+
   private
 
   def generate_access_token
@@ -12,9 +16,5 @@ class ApiKey < ApplicationRecord
     # At the moment we are not going to check this, but it's
     # nice to have an expiration date. Just in case.
     self.expires_at = 30.days.from_now
-  end
-
-  def user
-    User.find(self.user_id)
   end
 end
