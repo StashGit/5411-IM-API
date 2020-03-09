@@ -44,12 +44,13 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert_equal (16..57), parser.data_rage
   end
 
-  #
-  # test "can parse a valid packing list" do
-  #   parser = PackingListParser.new(pl_path)
-  #   puts parser.size_names
-  #   assert false
-  # end
+  test "can parse stock entries from a packing list" do
+    parser = PackingListParser.new(pl_path)
+    entries = parser.parse
+    sizes = 5
+    skus = 42
+    assert_equal skus * sizes, entries.count
+  end
 
   private
   

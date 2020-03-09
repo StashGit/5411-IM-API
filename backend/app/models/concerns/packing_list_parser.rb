@@ -18,8 +18,8 @@ class PackingListParser
       size_columns.each do |col|
         size  = size_name(col)
         units = packing_list.cell(col, row)
-        prod  = Product.new(style: style, color: color, size: size)
-        result << StockEntry.new(prod, units)
+        sku   = Sku.new(style: style, color: color, size: size)
+        result << StockEntry.new(sku, units)
       end
     end
     result
