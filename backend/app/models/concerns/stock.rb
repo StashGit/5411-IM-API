@@ -2,10 +2,12 @@ class Stock
   KIND_IN  = 1
   KIND_OUT = -1
 
-  # Parses a packing list and craetes the stock transactions required to
-  # add the items to the system.
-  def self.import(xls)
-    # Keep in mind we have to handle several excel and columns formats.
+  # Parsea un packing list y genera todas las transacciones necesarias para
+  # ingresar los productos de esa lista al stock.
+  def self.import(file_path, user)
+    parser = PackingListParser.new(file_path)
+    entries = parser.parse
+    Stock.create(entries, user)
   end
 
   def self.create(entries, user)
