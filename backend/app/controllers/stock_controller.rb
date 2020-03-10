@@ -8,7 +8,6 @@ class StockController < ApplicationController
   before_action :set_brand, only: [:buy, :sale, :adjust, :labels, :units, :import]
 
   # TODO:
-  # * Agregar readme con todos los metodos de la API.
   # * Publicar la API en heroku.
 
   def units
