@@ -53,6 +53,21 @@ curl -H "Content-Type: application/json" \
     localhost:3000/stock/units
 ```
 
+### Cómo se consultan los movimientos de stock por marca
+El método stock/by_brand permite recuperar todos los movimientos de stock para
+una marca determinada.
+
+**Párametros**
+* brand_id
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X GET \
+     -d "{ \"brand_id\": \"1\" }" \
+     localhost:3000/stock/by_brand
+```
+
 ### Cómo se realizan los ajustes de stock
 Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
 La *dirección* del movimiento (entrada/salida) se infiere en base a la 
