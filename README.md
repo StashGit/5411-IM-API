@@ -15,7 +15,7 @@ Para obtener un access-token, es necesario iniciar sesión utilizando el método
 ```
 curl -H "Content-Type: application/json"   \
      -H "Accepts: application/json" -X POST \
-     -d "{ \"email\":\"user@example.com\", \"password\":\"123\"}" \
+     -d "{ \"email\":\"john@example.com\", \"password\":\"123\"}" \
      localhost:3000/session/new
 ```
 
@@ -79,7 +79,6 @@ negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso
 * style
 * color
 * size
-* user_id
 * units
 * comments
 
@@ -87,7 +86,7 @@ negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X POST \
-     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"user_id\": \"1\", \"units\":"10", \"comments\":\"This is a comment.\" }" \
+     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"10", \"comments\":\"This is a comment.\" }" \
      localhost:3000/stock/adjust
 ```
 
@@ -99,14 +98,13 @@ Las tranascciones de compras se generan utilizando el método **stock/buy**.
 * style
 * color
 * size
-* user_id
 * units
 
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X POST \
-     -d "{ \"brand_id\": \"1", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"user_id\": \"1\", \"units\":"10" }" \
+     -d "{ \"brand_id\": \"1", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"10" }" \
      localhost:3000/stock/buy
 ```
 
@@ -118,14 +116,13 @@ Las tranascciones de ventas se generan utilizando el método **stock/sale**.
 * style
 * color
 * size
-* user_id
 * units
 
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X POST \
-     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"user_id\": \"1\", \"units\":"123" }" \
+     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"123" }" \
      localhost:3000/stock/sale
 ```
 
@@ -154,5 +151,28 @@ curl -H "Content-Type: application/json" \
      -X POST \
      -d "{ \"name\": \"Nike\" }" \
      localhost:3000/brands/create
+```
+
+### Cómo se genera el codigo QR para un producto
+Los códigos QR se generan ejecutando el metodo **qr/create**.
+Al decodificar el código generado, se obtiene un string que contiene 
+los campos **brand_id**, **style**, **color**, y **size** separados
+por un tilde (**~**).
+
+**Parámetros**
+* brand_id
+* style
+* color
+* size
+
+_**Nota:** Tener en cuenta que a diferencia del resto de las acciones de esta API,
+el resultado de ésta llamada es un fragmento de código HTML._
+
+```
+    curl -H "Content-Type: text/html" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
+         localhost:3000/qr/create
 ```
 
