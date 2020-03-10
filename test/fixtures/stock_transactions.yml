@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  style: MyString
+  color: MyString
+  size: MyString
+  kind: 1
+  reason: MyString
+  comments: MyText
+  user_id: 1
+  brand_id: 1
+
+two:
+  style: MyString
+  color: MyString
+  size: MyString
+  kind: 1
+  reason: MyString
+  comments: MyText
+  user_id: 1
+  brand_id: 1
