@@ -6,7 +6,7 @@ A excepción del método de inicio de sesión, siempre es necesario
 agregar un header especificando el **access-token del usuario actual**.
 
 ### Cómo se obtiene un access-token
-Para obtener un access-token es necesario iniciar sesión utilizando el método **session/new**.
+Para obtener un access-token, es necesario iniciar sesión utilizando el método **session/new**.
 
 **Párametros**
 * email
@@ -20,7 +20,7 @@ curl -H "Content-Type: application/json"   \
 ```
 
 ### Cómo se importa una Packing List
-Para importar una packing list y generar todas las transacciones de stock de forma automatica, es necesario ejecutar el metodo **stock/import**.
+Para importar una packing list y generar todas las transacciones de stock de forma automatica es necesario ejecutar el metodo **stock/import**.
 
 **Párametros**
 * file (Archivo Excel que contiene el detalle de la packing list.)
