@@ -10,5 +10,5 @@ curl -H "Content-Type: application/json"   \
 	 -d "{ \"email\":\"$USR\", \"password\":\"$PWD\"}" \
    	 localhost:3000/session/new
 else
-    echo "Must provide a user name and password."
+    echo "Must provide a user email and password."
 fi
