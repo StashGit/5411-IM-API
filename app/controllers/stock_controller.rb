@@ -5,7 +5,9 @@ class StockController < ApplicationController
   before_action :set_sku,   only: [:buy, :sale, :adjust, :labels, :units]
   before_action :set_units, only: [:buy, :sale, :adjust, :labels]
   before_action :set_user,  only: [:buy, :sale, :adjust, :labels]
-  before_action :set_brand, only: [:buy, :sale, :adjust, :labels, :units, :import]
+  before_action :set_brand, only: [:buy, :sale, :adjust, 
+                                   :labels, :units, :import,
+                                   :by_brand]
 
   # TODO:
   # * Volar el parametro user_id (Eso lo podemos sacar del token.)
