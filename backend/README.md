@@ -1,6 +1,6 @@
 # API Control de Stock
 A continuación de describen todas las operaciones que expone la API de control
-de stock y la lista de argumentos que espera cada una de estas operaciones.
+de stock y la lista de argumentos que espera cada una de ellas.
 
 A excepción del método de inicio de sesión, siempre es necesario
 agregar un header especificando el **access-token del usuario actual**.
