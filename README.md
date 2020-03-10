@@ -166,8 +166,8 @@ por un tilde (**~**).
 * color
 * size
 
-_**Nota:** Tener en cuenta que a diferencia del resto de las operaciones,
-el resultado de esta llamada es un fragmento de código HTML._
+_**Nota:** Tener en cuenta que a diferencia del resto de las operaciones de
+esta API, el resultado de esta llamada es un fragmento de código HTML._
 
 ```
     curl -H "Content-Type: text/html" \
