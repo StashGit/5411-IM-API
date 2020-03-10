@@ -9,9 +9,6 @@ class StockController < ApplicationController
                                    :labels, :units, :import,
                                    :by_brand]
 
-  # TODO:
-  # * Volar el parametro user_id (Eso lo podemos sacar del token.)
-
   def units
     result = {}
     result[:units]    = Stock.units(@brand, @sku)
