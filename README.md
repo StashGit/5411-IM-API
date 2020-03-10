@@ -153,9 +153,9 @@ curl -H "Content-Type: application/json" \
      localhost:3000/brands/create
 ```
 
-### Cómo se genera el codigo QR para un producto
-Los códigos QR se generan ejecutando el metodo **qr/create**.
-Al decodificar el código generado, se obtiene un string que contiene 
+### Cómo se generan los códigos QR
+Los códigos QR se generan ejecutando el método **qr/create**.
+Al decodificar este código, se obtiene un string que contiene 
 los campos **brand_id**, **style**, **color**, y **size** separados
 por un tilde (**~**).
 
