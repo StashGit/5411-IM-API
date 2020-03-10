@@ -8,7 +8,7 @@ class StockController < ApplicationController
   before_action :set_brand, only: [:buy, :sale, :adjust, :labels, :units, :import]
 
   # TODO:
-  # * Publicar la API en heroku.
+  # * Volar el parametro user_id (Eso lo podemos sacar del token.)
 
   def units
     result = {}

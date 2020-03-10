@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get  'stock/units'
   get  'stock/index'
   get  'stock/log'
+  get  'stock/by_brand'
   post 'stock/buy'
   post 'stock/sale'
   post 'stock/adjust'
