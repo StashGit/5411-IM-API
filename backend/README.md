@@ -1,15 +1,14 @@
 # API Control de Stock
-A continuacion de describen todas las operaciones que expone la API de control
+A continuación de describen todas las operaciones que expone la API de control
 de stock y la lista de argumentos que espera cada una de estas operaciones.
 
-A excepcion del metodo de inicio de sesion, en todos los casos es necesario
-agregar un header especificando el access-token del usuario actual.
+A excepción del método de inicio de sesión, siempre es necesario
+agregar un header especificando el **access-token del usuario actual**.
 
-### Como obtener un access-token
-Retorna el access token necesario para consultar cualquiera de los metodos que
-expone la API.
+### Cómo se obtiene un access-token
+Para obtener un access-token es necesario iniciar sesión utilizando el método **session/new**.
 
-**Parametros**
+**Párametros**
 * email
 * password
 
@@ -20,11 +19,10 @@ curl -H "Content-Type: application/json"   \
      localhost:3000/session/new
 ```
 
-### Importar Packing List
-Genera todas las transacciones de stock necesarias para ingresar los productos
-especificados en la packing list (Archivo Excel.)
+### Cómo se importa una Packing List
+Para importar una packing list y generar todas las transacciones de stock de forma automatica, es necesario ejecutar el metodo **stock/import**.
 
-**Parametros**
+**Párametros**
 * file (Archivo Excel que contiene el detalle de la packing list.)
 * brand_id
 
@@ -38,11 +36,10 @@ curl -H "Content-Type: multipart/mixed"   \
      localhost:3000/stock/import
 ```
 
-### Consultar stock
-Retorna la cantidad de unidades en stock para la combinacion **marca-sku**
-especificada.
+### Cómo se consulta el stock de un producto
+El stock de un producto se calcula en base a la diferencia entre las transacciones de entrada y salida para la combinación **marca-sku** especificada.
 
-**Parametros**
+**Párametros**
 * brand_id
 * style
 * color
@@ -56,13 +53,13 @@ curl -H "Content-Type: application/json" \
     localhost:3000/stock/units
 ```
 
-### Ajustes de stock
-Genera una transaccion de ajuste de stock.
-La *direccion* del movimiento (entrada/salida) se infiere en base a la 
+### Cómo se realizan los ajustes de stock
+Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
+La *dirección* del movimiento (entrada/salida) se infiere en base a la 
 cantidad de unidades especificadas en el movimiento. Si la cantidad es
-negativa, se asume egreso de mercaderia; si es positiva, ingreso.
+negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso.
 
-**Parametros**
+**Párametros**
 * brand_id
 * style
 * color
@@ -77,12 +74,12 @@ curl -H "Content-Type: application/json" \
      -X POST \
      -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"user_id\": \"1\", \"units\":"10", \"comments\":\"This is a comment.\" }" \
      localhost:3000/stock/adjust
-    ```
+```
 
-### Compras
-Genera una transaccion de stock para registrar una compra de mercaderia.
+### Cómo se registran las compra
+Las tranascciones de compras se generan utilizando el método **stock/buy**.
 
-**Parametros**
+**Parámetros**
 * brand_id
 * style
 * color
@@ -98,10 +95,10 @@ curl -H "Content-Type: application/json" \
      localhost:3000/stock/buy
 ```
 
-### Ventas
-Genera una transaccion de stock para registrar una venta de mercaderia.
+### Cómo se registran las venta
+Las tranascciones de ventas se generan utilizando el método **stock/sale**.
 
-**Parametros**
+**Parámetros**
 * brand_id
 * style
 * color
@@ -117,8 +114,10 @@ curl -H "Content-Type: application/json" \
      localhost:3000/stock/sale
 ```
 
-### Log de transacciones
-Esta operacion permite visualizar todas las transacciones de stock.
+### Cómo se consulta el log de transacciones
+Para obtener un listado con todas las transacciones de stock tenemos que utilizar el método **stock/log**.
+(Tener en cuenta que este metodo retorna **todas** las transacciones, no filtra por fecha, ni marca, ni usuario,
+ni nada por el estilo.
 
 ```
 curl -H "Content-Type: multipart/mixed"   \
@@ -128,8 +127,8 @@ curl -H "Content-Type: multipart/mixed"   \
      localhost:3000/stock/log
 ```
 
-### Crear una marca
-Registra una nueva marca.
+### Cómo se agrega una marca
+Las marcas se puede registrar utilziando el metodo **brands/create**.
 
 **Parametros**
 * name
@@ -141,6 +140,4 @@ curl -H "Content-Type: application/json" \
      -d "{ \"name\": \"Nike\" }" \
      localhost:3000/brands/create
 ```
-
-
 
