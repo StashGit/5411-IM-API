@@ -54,7 +54,7 @@ curl -H "Content-Type: application/json" \
 ```
 
 ### Cómo se consultan los movimientos de stock por marca
-El método stock/by_brand permite recuperar todos los movimientos de stock para
+El método **stock/by_brand** permite recuperar todos los movimientos de stock para
 una marca determinada.
 
 **Párametros**
