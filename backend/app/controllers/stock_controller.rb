@@ -11,6 +11,9 @@ class StockController < ApplicationController
   #   (el create de brands retorna el objeto brand.)
   # * Agregar el parametro brand_id al metodo que importa las transacciones
   #   desde Excel.
+  # * Agregar "brand_id" a las transacciones de stock.
+  # * Agregar readme con todos los metodos de la API.
+  # * Publicar la API en heroku.
 
   def units
     result = {}
