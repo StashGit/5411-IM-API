@@ -1,9 +1,10 @@
 class PackingListParser
-  attr_reader :packing_list, :size_columns, :size_names
+  attr_reader :brand, :packing_list, :size_columns, :size_names
 
-  def initialize(path)
+  def initialize(brand, path)
     raise missing_file(path) unless File.exists?(path)
 
+    @brand = brand
     @packing_list = open_packing_list(path)
     parse_size_names
   end
@@ -19,7 +20,7 @@ class PackingListParser
         size  = size_name(col)
         units = packing_list.cell(col, row)
         sku   = Sku.new(style: style, color: color, size: size)
-        result << StockEntry.new(sku, units)
+        result << StockEntry.new(brand, sku, units)
       end
     end
     result

@@ -13,12 +13,12 @@ require 'test_helper'
 
 class PackingListParserTest < ActiveSupport::TestCase
   test "can open a packing list" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     assert parser.packing_list
   end
 
   test "can parse size names" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     size_names = [
       "AU6 US2",
       "AU8 US4",
@@ -30,22 +30,22 @@ class PackingListParserTest < ActiveSupport::TestCase
   end
 
   test "can detect data range first row" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     assert_equal 16, parser.first_row
   end
 
   test "can detect data range the last row" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     assert_equal 57, parser.last_row
   end
   
   test "can detect the data range" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     assert_equal (16..57), parser.data_rage
   end
 
   test "can parse stock entries from a packing list" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     entries = parser.parse
     skus  = 42
     sizes = 5
@@ -56,5 +56,9 @@ class PackingListParserTest < ActiveSupport::TestCase
   
   def pl_path
     file_fixture('pl1.xlsx').to_s
+  end
+
+  def brand
+    @brand ||= brands(:nike)
   end
 end

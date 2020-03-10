@@ -5,28 +5,20 @@ class StockController < ApplicationController
   before_action :set_sku,   only: [:buy, :sale, :adjust, :labels, :units]
   before_action :set_units, only: [:buy, :sale, :adjust, :labels]
   before_action :set_user,  only: [:buy, :sale, :adjust, :labels]
+  before_action :set_brand, only: [:buy, :sale, :adjust, :labels, :units, :import]
 
   # TODO:
-  # * CRUD para brands (solo nombre.)
-  #   (el create de brands retorna el objeto brand.)
-  # * Agregar el parametro brand_id al metodo que importa las transacciones
-  #   desde Excel.
-  # * Agregar "brand_id" a las transacciones de stock.
   # * Agregar readme con todos los metodos de la API.
   # * Publicar la API en heroku.
 
   def units
     result = {}
-    result[:units] = Stock.units(@sku)
-    result[:style] = @sku.style
-    result[:color] = @sku.color
-    result[:size]  = @sku.size
-    result[:brand] = "TODO:"
+    result[:units]    = Stock.units(@brand, @sku)
+    result[:style]    = @sku.style
+    result[:color]    = @sku.color
+    result[:size]     = @sku.size
+    result[:brand_id] = @brand.id
     render :json => result, :status => 200
-  end
-
-  # Esto seria stock por marca.
-  def by_brand
   end
 
   def index
@@ -34,10 +26,10 @@ class StockController < ApplicationController
 
   # Vista de prueba para seleccionar el archivo excel a manopla. Desde
   # el punto de vista de la API no tiene ningun efecto.
-  def import
+  def prepare_import
   end
 
-  def upload
+  def import
     xls = upload_file(params[:file])
     return render_error("Failed to upload file") unless xls
 
@@ -50,7 +42,7 @@ class StockController < ApplicationController
   end
 
   def buy
-    result = Stock.buy(@sku, @units, @user)
+    result = Stock.buy(@brand, @sku, @units, @user)
     if result.ok
       render :json => result, :status => 200
     else
@@ -59,7 +51,7 @@ class StockController < ApplicationController
   end
 
   def sale
-    result = Stock.sale(@sku, @units, @user)
+    result = Stock.sale(@brand, @sku, @units, @user)
     if result.ok
       render :json => result, :status => 200
     else
@@ -68,7 +60,7 @@ class StockController < ApplicationController
   end
 
   def adjust
-    result = Stock.adjust(@sku, @units, @user, params[:commnets])
+    result = Stock.adjust(@brand, @sku, @units, @user, params[:commnets])
     if result.ok
       render :json => result, :status => 200
     else
@@ -84,10 +76,15 @@ class StockController < ApplicationController
     render :json => StockTransaction.all
   end
 
+  # Esto seria stock por marca.
+  def by_brand
+    render :json => StockTransaction.where(brand_id: @brand.id)
+  end
+
   private
 
   def generate_stock_transactions(xls)
-    Stock.import(xls, @token.user)
+    Stock.import(@brand, xls, @token.user)
   end
 
   def render_error message
@@ -133,11 +130,15 @@ class StockController < ApplicationController
     @user = @token.user
   end
 
+  def set_brand
+    @brand = Brand.find(params[:brand_id])
+  end
+
   def sku_params
     sku = {}
     sku[:style] = params[:style]
     sku[:color] = params[:color]
-    sku[:size] = params[:size]
+    sku[:size]  = params[:size]
     sku
   end
 end

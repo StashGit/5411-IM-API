@@ -4,8 +4,8 @@ class Stock
 
   # Parsea un packing list y genera todas las transacciones necesarias para
   # ingresar los productos de esa lista al stock.
-  def self.import(file_path, user)
-    parser = PackingListParser.new(file_path)
+  def self.import(brand, file_path, user)
+    parser = PackingListParser.new(brand, file_path)
     entries = parser.parse
     # TODO: Validar que todos los movimientos de stock sean validos
     #       antes de grabar en al base de datos. Creo que en el caso de los
@@ -23,12 +23,13 @@ class Stock
     entries.each do |entry|
       next unless entry.units
 
-      adjust(entry.sku, entry.units.abs, user, "Mass Import")
+      adjust(entry.brand, entry.sku, entry.units.abs, user, "Mass Import")
     end
   end
 
-  def self.buy(sku, units, user, comments="")
+  def self.buy(brand, sku, units, user, comments="")
     t = StockTransaction.new(
+      brand: brand,
       style: sku.style, color: sku.color, size: sku.size,
       kind: KIND_IN, units: units.abs, reason: Reason::BUY, 
       comments: comments)
@@ -36,8 +37,9 @@ class Stock
     save_transaction(t, user)
   end
 
-  def self.sale(sku, units, user, comments="")
+  def self.sale(brand, sku, units, user, comments="")
     t = StockTransaction.new(
+      brand: brand,
       style: sku.style, color: sku.color, size: sku.size, 
       kind: KIND_OUT, units: units.abs, reason: Reason::SALE, 
       comments: comments)
@@ -45,8 +47,9 @@ class Stock
     save_transaction(t, user)
   end
 
-  def self.adjust(sku, units, user, comments="")
+  def self.adjust(brand, sku, units, user, comments="")
     t = StockTransaction.new(
+      brand: brand,
       style: sku.style, color: sku.color, size: sku.size, 
       units: units.abs, reason: Reason::ADJUSTMENT, 
       comments: comments)
@@ -56,9 +59,9 @@ class Stock
   end
 
   # Computa todas las transacciones de stock para el SKU especificado.
-  def self.units(sku)
+  def self.units(brand, sku)
     # TODO: Bound by date o algo por el estilo.
-    transactions = collect_transactions_by(sku)
+    transactions = collect_transactions_by(brand, sku)
     total = 0
     transactions.each do |t|
       if t.kind == KIND_IN
@@ -77,7 +80,8 @@ class Stock
     t.save ? Result.new(true, t.id, nil) : Result.new(false, -1, t.errors)
   end
 
-  def self.collect_transactions_by(sku)
-    StockTransaction.where(style: sku.style, color: sku.color, size: sku.size)
+  def self.collect_transactions_by(brand, sku)
+    StockTransaction.where(
+      brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size)
   end
 end

@@ -8,6 +8,7 @@ one:
   reason: MyString
   comments: MyText
   user_id: 1
+  brand_id: 1
 
 two:
   style: MyString
@@ -17,3 +18,4 @@ two:
   reason: MyString
   comments: MyText
   user_id: 1
+  brand_id: 1

@@ -2,28 +2,28 @@ require 'test_helper'
 
 class StockTransactionTest < ActiveSupport::TestCase
   test "generate stock transactions from packing list" do
-    parser = PackingListParser.new(pl_path)
+    parser = PackingListParser.new(brand, pl_path)
     entries = parser.parse
     Stock.create(entries, User.new(email: "john@example.com"))
 
     # Verifico un par de transacciones.
     sku = Sku.new(style: "SS200105S", color: "MIDNIGHT", size: "AU6 US2")
-    assert_equal(4, Stock.units(sku))
+    assert_equal(4, Stock.units(brand, sku))
 
     sku = Sku.new(style: "SS200106D", color: "MIDNIGHT", size: "AU10 US6")
-    assert_equal(15, Stock.units(sku))
+    assert_equal(15, Stock.units(brand, sku))
   end
 
   test "import packing list and create stock transactions" do
     # Este es el metodo que usa la API para importar los archivos.
-    Stock.import(pl_path, user) 
+    Stock.import(brand, pl_path, user) 
 
     # Verifico un par de transacciones.
     sku = Sku.new(style: "SS200105S", color: "MIDNIGHT", size: "AU6 US2")
-    assert_equal(4, Stock.units(sku))
+    assert_equal(4, Stock.units(brand, sku))
 
     sku = Sku.new(style: "SS200106D", color: "MIDNIGHT", size: "AU10 US6")
-    assert_equal(15, Stock.units(sku))
+    assert_equal(15, Stock.units(brand, sku))
   end
   
   private
@@ -34,5 +34,9 @@ class StockTransactionTest < ActiveSupport::TestCase
 
   def user
     @user ||= User.new(email: "john@example.com")
+  end
+
+  def brand
+    @brand ||= brands(:nike)
   end
 end

@@ -8,8 +8,8 @@ Rails.application.routes.draw do
   post 'session/destroy', :to => 'session#destroy'
 
   # Stock.
-  get  'stock/import'
-  post 'stock/upload'
+  get  'stock/prepare_import'
+  post 'stock/import'
   get  'stock/units'
   get  'stock/index'
   get  'stock/log'
