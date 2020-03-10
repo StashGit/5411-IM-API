@@ -44,27 +44,27 @@ class StockController < ApplicationController
   def buy
     result = Stock.buy(@brand, @sku, @units, @user)
     if result.ok
-      render :json => result, :status => 200
+      render :json => { id: result.id }, :status => 200
     else
-      render :json => result, :status => 500
+      render :json => { errors: result.errors }, :status => 500
     end
   end
 
   def sale
     result = Stock.sale(@brand, @sku, @units, @user)
     if result.ok
-      render :json => result, :status => 200
+      render :json => { id: result.id }, :status => 200
     else
-      render :json => result, :status => 500
+      render :json => { errors: result.errors }, :status => 500
     end
   end
 
   def adjust
-    result = Stock.adjust(@brand, @sku, @units, @user, params[:commnets])
+    result = Stock.adjust(@brand, @sku, @units, @user, params[:comments])
     if result.ok
-      render :json => result, :status => 200
+      render :json => { id: result.id }, :status => 200
     else
-      render :json => result, :status => 500
+      render :json => { errors: result.errors }, :status => 500
     end
   end
 
