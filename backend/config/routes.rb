@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'stock/import'
   post 'stock/upload'
 
+  get  'stock/units'
   get  'stock/index'
   get  'stock/log'
   post 'stock/buy'

@@ -2,9 +2,29 @@ class StockController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
   before_action :authorize, except: [:index]
-  before_action :set_sku,   only: [:buy, :sale, :adjust, :labels]
+  before_action :set_sku,   only: [:buy, :sale, :adjust, :labels, :units]
   before_action :set_units, only: [:buy, :sale, :adjust, :labels]
   before_action :set_user,  only: [:buy, :sale, :adjust, :labels]
+
+  # TODO:
+  # * CRUD para brands (solo nombre.)
+  #   (el create de brands retorna el objeto brand.)
+  # * Agregar el parametro brand_id al metodo que importa las transacciones
+  #   desde Excel.
+
+  def units
+    result = {}
+    result[:units] = Stock.units(@sku)
+    result[:style] = @sku.style
+    result[:color] = @sku.color
+    result[:size]  = @sku.size
+    result[:brand] = "TODO:"
+    render :json => result, :status => 200
+  end
+
+  # Esto seria stock por marca.
+  def by_brand
+  end
 
   def index
   end
