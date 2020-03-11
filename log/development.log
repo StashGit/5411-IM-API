@@ -13063,3 +13063,15 @@ Processing by BrandsController#all as */*
 Completed 200 OK in 3ms (Views: 1.8ms | ActiveRecord: 0.4ms | Allocations: 974)
 
 
+Started POST "/stock/units" for ::1 at 2020-03-11 15:54:42 -0300
+Processing by StockController#units as */*
+  Parameters: {"brand_id"=>"1", "style"=>"SS200105S", "color"=>"MIDNIGHT", "size"=>"AU6 US2", "stock"=>{"brand_id"=>"1", "style"=>"SS200105S", "color"=>"MIDNIGHT", "size"=>"AU6 US2"}}
+  [1m[36mApiKey Load (0.6ms)[0m  [1m[34mSELECT "api_keys".* FROM "api_keys" WHERE "api_keys"."access_token" = $1 LIMIT $2[0m  [["access_token", "2ceb03952821c5085df6ee2f3adc5290"], ["LIMIT", 1]]
+  ↳ app/controllers/stock_controller.rb:111:in `set_access_token'
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 0.8ms | Allocations: 1133)
+
+
+  
+RuntimeError (Unathorized Request):
+  
+app/controllers/stock_controller.rb:116:in `authorize'

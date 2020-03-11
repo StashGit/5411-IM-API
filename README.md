@@ -182,8 +182,10 @@ El método **brands/all** permite recuperar información de todas las marcas
 que maneja el sistema.
 
 ```
-# GET
-curl localhost:3000/brands/all
+curl -H "Content-Type: application/json" \
+	 -H "Access-Token: $TOKEN" \
+	 -X GET \
+	 stock-api-5411.herokuapp.com/brands/all
 ```
 
 
