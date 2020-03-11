@@ -2,7 +2,6 @@ module Qr
   SEP = "~"
 
   def create_qr_code(brand:, style:, color:, size:)
-    puts ">>>> cede"
     qrcode = RQRCode::QRCode.new(
       "#{brand}#{SEP}#{style}#{SEP}#{color}#{SEP}#{size}")
     svg = qrcode.as_svg(
