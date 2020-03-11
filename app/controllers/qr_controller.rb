@@ -1,3 +1,5 @@
+require 'qr.rb'
+
 include ::QR
 
 class QrController < ApplicationController
