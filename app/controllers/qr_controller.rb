@@ -1,6 +1,6 @@
 require 'qr.rb'
 
-include ::QR
+include ::Qr
 
 class QrController < ApplicationController
   skip_before_action :verify_authenticity_token

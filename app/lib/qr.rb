@@ -1,4 +1,4 @@
-module QR
+module Qr
   SEP = "~"
 
   def create_qr_code(brand:, style:, color:, size:)
