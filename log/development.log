@@ -12921,3 +12921,145 @@ Processing by QrController#create as */*
 Completed 200 OK in 69ms (Views: 19.6ms | ActiveRecord: 0.3ms | Allocations: 13930)
 
 
+  [1m[35m (1229.9ms)[0m  [1m[35mCREATE DATABASE "stock_dev" ENCODING = 'utf8'[0m
+  [1m[35m (1050.2ms)[0m  [1m[35mCREATE DATABASE "stock_test" ENCODING = 'utf8'[0m
+  [1m[35m (11.5ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (5.3ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (1.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(3552431883979102215)[0m
+  [1m[35m (1.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateUsers (20200307144425)
+  [1m[35m (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (31.6ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "email" character varying, "password_digest" character varying, "first_name" character varying, "last_name" character varying, "pic_url" character varying, "is_admin" boolean, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (1.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200307144425"]]
+  [1m[35m (0.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateApiKeys (20200307150731)
+  [1m[35m (24.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.7ms)[0m  [1m[35mCREATE TABLE "api_keys" ("id" bigserial primary key, "access_token" character varying, "user_id" integer, "expires_at" timestamp, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200307150731"]]
+  [1m[35m (0.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateStockTransactions (20200307161410)
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (4.5ms)[0m  [1m[35mCREATE TABLE "stock_transactions" ("id" bigserial primary key, "style" character varying, "color" character varying, "size" character varying, "kind" integer, "reason" character varying, "comments" text, "user_id" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (23.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200307161410"]]
+  [1m[35m (0.8ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddUnitsToStockTransactions (20200307165601)
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (1.7ms)[0m  [1m[35mALTER TABLE "stock_transactions" ADD "units" integer[0m
+  [1m[36mprimary::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200307165601"]]
+  [1m[35m (0.6ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateBrands (20200310001832)
+  [1m[35m (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (30.4ms)[0m  [1m[35mCREATE TABLE "brands" ("id" bigserial primary key, "name" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200310001832"]]
+  [1m[35m (0.7ms)[0m  [1m[35mCOMMIT[0m
+Migrating to AddBrandIdToStockTransactions (20200310145201)
+  [1m[35m (0.6ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.8ms)[0m  [1m[35mALTER TABLE "stock_transactions" ADD "brand_id" integer[0m
+  [1m[36mprimary::SchemaMigration Create (0.9ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20200310145201"]]
+  [1m[35m (0.8ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (24.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.5ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2020-03-11 18:31:24.187469"], ["updated_at", "2020-03-11 18:31:24.187469"]]
+  [1m[35m (0.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_advisory_unlock(3552431883979102215)[0m
+  [1m[35m (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (2.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (24.0ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mUser Exists? (1.4ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "john@example.com"], ["LIMIT", 1]]
+  [1m[36mUser Create (1.2ms)[0m  [1m[32mINSERT INTO "users" ("email", "password_digest", "first_name", "last_name", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["email", "john@example.com"], ["password_digest", "$2a$12$948mUOUMhfnL.DBYEi1tseox.55FktuezDqOQAmlMAEZPDRTkMBYS"], ["first_name", "John"], ["last_name", "Doe"], ["created_at", "2020-03-11 18:31:36.767416"], ["updated_at", "2020-03-11 18:31:36.767416"]]
+  [1m[35m (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mBrand Create (1.1ms)[0m  [1m[32mINSERT INTO "brands" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Nike"], ["created_at", "2020-03-11 18:31:36.819654"], ["updated_at", "2020-03-11 18:31:36.819654"]]
+  [1m[35m (9.6ms)[0m  [1m[35mCOMMIT[0m
+Started POST "/session/new" for ::1 at 2020-03-11 15:37:27 -0300
+  [1m[35m (1.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by SessionController#new as */*
+  Parameters: {"email"=>"john@example.com", "password"=>"[FILTERED]", "session"=>{"email"=>"john@example.com", "password"=>"[FILTERED]"}}
+  [1m[36mUser Load (1.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."email" = $1 LIMIT $2[0m  [["email", "john@example.com"], ["LIMIT", 1]]
+  ↳ app/controllers/session_controller.rb:51:in `set_user'
+  [1m[36mApiKey Load (1.7ms)[0m  [1m[34mSELECT "api_keys".* FROM "api_keys" WHERE "api_keys"."user_id" = $1 LIMIT $2[0m  [["user_id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/session_controller.rb:42:in `find_access_token'
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/models/api_key.rb:14:in `generate_access_token'
+  [1m[36mApiKey Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "api_keys" WHERE "api_keys"."access_token" = $1 LIMIT $2[0m  [["access_token", "1b0a27278417578aa9140497f35bb4b9"], ["LIMIT", 1]]
+  ↳ app/models/api_key.rb:14:in `generate_access_token'
+  [1m[36mApiKey Create (1.0ms)[0m  [1m[32mINSERT INTO "api_keys" ("access_token", "user_id", "expires_at", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["access_token", "1b0a27278417578aa9140497f35bb4b9"], ["user_id", 1], ["expires_at", "2020-04-10 18:37:28.308631"], ["created_at", "2020-03-11 18:37:28.303703"], ["updated_at", "2020-03-11 18:37:28.303703"]]
+  ↳ app/controllers/session_controller.rb:46:in `create_access_token'
+  [1m[35m (0.7ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/session_controller.rb:46:in `create_access_token'
+Completed 200 OK in 453ms (Views: 0.8ms | ActiveRecord: 27.6ms | Allocations: 15724)
+
+
+Started POST "/stock/units" for ::1 at 2020-03-11 15:38:04 -0300
+Processing by StockController#units as */*
+  Parameters: {"brand_id"=>"1", "style"=>"SS200105S", "color"=>"MIDNIGHT", "size"=>"AU6 US2", "stock"=>{"brand_id"=>"1", "style"=>"SS200105S", "color"=>"MIDNIGHT", "size"=>"AU6 US2"}}
+  [1m[36mApiKey Load (0.5ms)[0m  [1m[34mSELECT "api_keys".* FROM "api_keys" WHERE "api_keys"."access_token" = $1 LIMIT $2[0m  [["access_token", "1b0a27278417578aa9140497f35bb4b9"], ["LIMIT", 1]]
+  ↳ app/controllers/stock_controller.rb:111:in `set_access_token'
+  [1m[36mBrand Load (0.9ms)[0m  [1m[34mSELECT "brands".* FROM "brands" WHERE "brands"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/stock_controller.rb:132:in `set_brand'
+  [1m[36mStockTransaction Load (1.0ms)[0m  [1m[34mSELECT "stock_transactions".* FROM "stock_transactions" WHERE "stock_transactions"."brand_id" = $1 AND "stock_transactions"."style" = $2 AND "stock_transactions"."color" = $3 AND "stock_transactions"."size" = $4[0m  [["brand_id", 1], ["style", "SS200105S"], ["color", "MIDNIGHT"], ["size", "AU6 US2"]]
+  ↳ app/models/concerns/stock.rb:66:in `units'
+Completed 200 OK in 40ms (Views: 0.5ms | ActiveRecord: 10.6ms | Allocations: 7239)
+
+
+Started GET "/stock/by_brand" for ::1 at 2020-03-11 15:38:31 -0300
+  
+ActionController::RoutingError (No route matches [GET] "/stock/by_brand"):
+  
+actionpack (6.0.2.1) lib/action_dispatch/middleware/debug_exceptions.rb:36:in `call'
+web-console (4.0.1) lib/web_console/middleware.rb:132:in `call_app'
+web-console (4.0.1) lib/web_console/middleware.rb:28:in `block in call'
+web-console (4.0.1) lib/web_console/middleware.rb:17:in `catch'
+web-console (4.0.1) lib/web_console/middleware.rb:17:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/show_exceptions.rb:33:in `call'
+railties (6.0.2.1) lib/rails/rack/logger.rb:38:in `call_app'
+railties (6.0.2.1) lib/rails/rack/logger.rb:26:in `block in call'
+activesupport (6.0.2.1) lib/active_support/tagged_logging.rb:80:in `block in tagged'
+activesupport (6.0.2.1) lib/active_support/tagged_logging.rb:28:in `tagged'
+activesupport (6.0.2.1) lib/active_support/tagged_logging.rb:80:in `tagged'
+railties (6.0.2.1) lib/rails/rack/logger.rb:26:in `call'
+sprockets-rails (3.2.1) lib/sprockets/rails/quiet_assets.rb:13:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/remote_ip.rb:81:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/request_id.rb:27:in `call'
+rack (2.2.2) lib/rack/method_override.rb:24:in `call'
+rack (2.2.2) lib/rack/runtime.rb:22:in `call'
+activesupport (6.0.2.1) lib/active_support/cache/strategy/local_cache_middleware.rb:29:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/executor.rb:14:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/static.rb:126:in `call'
+rack (2.2.2) lib/rack/sendfile.rb:110:in `call'
+actionpack (6.0.2.1) lib/action_dispatch/middleware/host_authorization.rb:83:in `call'
+rack-cors (1.1.1) lib/rack/cors.rb:100:in `call'
+webpacker (4.2.2) lib/webpacker/dev_server_proxy.rb:23:in `perform_request'
+rack-proxy (0.6.5) lib/rack/proxy.rb:57:in `call'
+railties (6.0.2.1) lib/rails/engine.rb:526:in `call'
+puma (4.3.3) lib/puma/configuration.rb:228:in `call'
+puma (4.3.3) lib/puma/server.rb:682:in `handle_request'
+puma (4.3.3) lib/puma/server.rb:472:in `process_client'
+puma (4.3.3) lib/puma/server.rb:328:in `block in run'
+puma (4.3.3) lib/puma/thread_pool.rb:134:in `block in spawn_thread'
+Started POST "/stock/by_brand" for ::1 at 2020-03-11 15:39:08 -0300
+Processing by StockController#by_brand as */*
+  Parameters: {"brand_id"=>"1", "stock"=>{"brand_id"=>"1"}}
+  [1m[36mApiKey Load (0.4ms)[0m  [1m[34mSELECT "api_keys".* FROM "api_keys" WHERE "api_keys"."access_token" = $1 LIMIT $2[0m  [["access_token", "1b0a27278417578aa9140497f35bb4b9"], ["LIMIT", 1]]
+  ↳ app/controllers/stock_controller.rb:111:in `set_access_token'
+  [1m[36mBrand Load (0.5ms)[0m  [1m[34mSELECT "brands".* FROM "brands" WHERE "brands"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/stock_controller.rb:132:in `set_brand'
+  [1m[36mStockTransaction Load (0.4ms)[0m  [1m[34mSELECT "stock_transactions".* FROM "stock_transactions" WHERE "stock_transactions"."brand_id" = $1[0m  [["brand_id", 1]]
+  ↳ app/controllers/stock_controller.rb:79:in `by_brand'
+Completed 200 OK in 8ms (Views: 2.2ms | ActiveRecord: 1.2ms | Allocations: 2133)
+
+
+Started GET "/brands/all" for ::1 at 2020-03-11 15:40:42 -0300
+Processing by BrandsController#all as */*
+  [1m[36mBrand Load (0.5ms)[0m  [1m[34mSELECT "brands".* FROM "brands"[0m
+  ↳ app/controllers/brands_controller.rb:5:in `all'
+Completed 200 OK in 3ms (Views: 2.3ms | ActiveRecord: 0.5ms | Allocations: 1023)
+
+
+Started GET "/brands/all" for ::1 at 2020-03-11 15:44:12 -0300
+Processing by BrandsController#all as */*
+  [1m[36mBrand Load (0.4ms)[0m  [1m[34mSELECT "brands".* FROM "brands"[0m
+  ↳ app/controllers/brands_controller.rb:5:in `all'
+Completed 200 OK in 3ms (Views: 1.8ms | ActiveRecord: 0.4ms | Allocations: 974)
+
+

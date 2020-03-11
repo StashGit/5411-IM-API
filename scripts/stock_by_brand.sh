@@ -7,7 +7,7 @@ if [[ $TOKEN && $BRAND_ID ]];
 then
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
-         -X GET \
+         -X POST \
          -d "{ \"brand_id\": \"$BRAND_ID\" }" \
          localhost:3000/stock/by_brand
 else

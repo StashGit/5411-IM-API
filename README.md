@@ -48,7 +48,7 @@ El stock de un producto se calcula en base a la diferencia entre las transaccion
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
-     -X GET \
+     -X POST \
      -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
     localhost:3000/stock/units
 ```
@@ -63,7 +63,7 @@ una marca determinada.
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: $TOKEN" \
-     -X GET \
+     -X POST \
      -d "{ \"brand_id\": \"1\" }" \
      localhost:3000/stock/by_brand
 ```
@@ -176,4 +176,20 @@ esta API, el resultado de esta llamada es un fragmento de código HTML._
          -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
          localhost:3000/qr/create
 ```
+
+### Cómo obtener todas las marcas
+El método **brands/all** permite recuperar información de todas las marcas 
+que maneja el sistema.
+
+```
+# GET
+curl localhost:3000/brands/all
+```
+
+
+
+
+
+
+
 
