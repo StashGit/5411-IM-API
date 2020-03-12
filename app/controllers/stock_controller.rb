@@ -9,16 +9,6 @@ class StockController < ApplicationController
                                    :labels, :units, :import,
                                    :by_brand]
 
-  def units
-    result = {}
-    result[:units]    = Stock.units(@brand, @sku)
-    result[:style]    = @sku.style
-    result[:color]    = @sku.color
-    result[:size]     = @sku.size
-    result[:brand_id] = @brand.id
-    render :json => result, :status => 200
-  end
-
   def index
   end
 
@@ -39,10 +29,14 @@ class StockController < ApplicationController
     end
   end
 
+  def units
+    render :json => units_in_stock, :status => 200
+  end
+
   def buy
     result = Stock.buy(@brand, @sku, @units, @user)
     if result.ok
-      render :json => { id: result.id }, :status => 200
+      render :json => units_in_stock, :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
     end
@@ -51,7 +45,7 @@ class StockController < ApplicationController
   def sale
     result = Stock.sale(@brand, @sku, @units, @user)
     if result.ok
-      render :json => { id: result.id }, :status => 200
+      render :json => units_in_stock, :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
     end
@@ -60,7 +54,7 @@ class StockController < ApplicationController
   def adjust
     result = Stock.adjust(@brand, @sku, @units, @user, params[:comments])
     if result.ok
-      render :json => { id: result.id }, :status => 200
+      render :json => units_in_stock, :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
     end
@@ -80,6 +74,16 @@ class StockController < ApplicationController
   end
 
   private
+
+  def units_in_stock
+    result = {}
+    result[:units]    = Stock.units(@brand, @sku)
+    result[:style]    = @sku.style
+    result[:color]    = @sku.color
+    result[:size]     = @sku.size
+    result[:brand_id] = @brand.id
+    result
+  end
 
   def generate_stock_transactions(xls)
     Stock.import(@brand, xls, @token.user)
