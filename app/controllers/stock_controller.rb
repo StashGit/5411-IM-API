@@ -9,6 +9,10 @@ class StockController < ApplicationController
                                    :labels, :units, :import,
                                    :by_brand]
 
+  # Limite de entradas que retornamos cuando nos piden el registro
+  # de transacciones.
+  LOG_SIZE = 50
+
   def index
   end
 
@@ -65,12 +69,18 @@ class StockController < ApplicationController
   end
 
   def log
-    render :json => StockTransaction.all
+    # 3. Agregar paginador (este no es urgente, pero lo vamos a tener que hacer.)
+    render :json => StockTransaction.all.
+      order(created_at: :desc).
+      take(LOG_SIZE)
   end
 
   # Esto seria stock por marca.
   def by_brand
-    render :json => StockTransaction.where(brand_id: @brand.id)
+    # EN lugar de mostrar todos los movimientos tenemos que mostrar
+    # el stock actual del producto (que surge de computar todos los movimientos
+    # para cada sku.)
+    render :json => Stock.compute_transactions_by(@brand)
   end
 
   private

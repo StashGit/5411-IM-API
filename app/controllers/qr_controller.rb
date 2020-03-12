@@ -21,10 +21,10 @@ class QrController < ApplicationController
 
   def qr_params
     qr = {}
-    qr[:brand] = params[:brand]
-    qr[:style] = params[:style]
-    qr[:color] = params[:color]
-    qr[:size]  = params[:size]
+    qr[:brand_id] = params[:brand_id]
+    qr[:style]    = params[:style]
+    qr[:color]    = params[:color]
+    qr[:size]     = params[:size]
     qr
   end
 

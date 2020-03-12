@@ -84,4 +84,21 @@ class Stock
     StockTransaction.where(
       brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size)
   end
+
+  def self.compute_transactions_by(brand)
+    res = []
+    collect_skus_by(brand).each do |sku|
+      res << { sku: sku, units: units(brand, sku) }
+    end
+    res
+  end
+
+  def self.collect_skus_by(brand)
+    sts  = StockTransaction.where(brand_id: brand.id)
+    tmp = sts.collect { |t| 
+      { style: t.style, color: t.color, size: t.size } 
+    }.uniq
+
+    tmp.collect { |sku| Sku.new(**sku) }
+  end
 end
