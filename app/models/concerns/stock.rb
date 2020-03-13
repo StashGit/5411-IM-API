@@ -85,6 +85,10 @@ class Stock
       brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size)
   end
 
+  # TODO: En lugar de hacer esto tenemos que tener una vista materializada
+  #       que nos permita hacer un select * y a otra cosa mariposa.
+  #       Con muchas transacciones de stock esto se puede llegar a clavar.
+  #       Si podemos cocinar la vista a medida que vamos grabando mejor.
   def self.compute_transactions_by(brand)
     res = []
     collect_skus_by(brand).each do |sku|
