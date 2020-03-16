@@ -51,7 +51,21 @@ class PackingListParser
   end
 
   def valid_size_name?(name)
-    /AU[0-9]([0-9])?/ =~ name || /US[0-9]([0-9])?/ =~ name
+    valid_us_size_name?(name) ||
+    valid_au_size_name?(name) ||
+    valid_st_size_name?(name)
+  end
+
+  def valid_st_size_name?(name)
+    /XXS|XS|S|M|L|XL|XXL/i =~ name 
+  end
+
+  def valid_us_size_name?(name)
+    /US[0-9]([0-9])?/i =~ name
+  end
+
+  def valid_au_size_name?(name)
+    /AU[0-9]([0-9])?/i =~ name
   end
 
   # Nombre de la columna. (Capturado cuando armamos los headers.)
@@ -77,6 +91,7 @@ class PackingListParser
   def first_row
     head_row + 1
   end
+
   def last_row
     @last_row ||= find_last_row
   end

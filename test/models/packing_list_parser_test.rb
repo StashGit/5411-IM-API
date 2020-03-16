@@ -17,16 +17,31 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert parser.packing_list
   end
 
-  test "can parse size names" do
+  test "can parse AU/US size names" do
     parser = PackingListParser.new(brand, pl_path)
     size_names = [
       "AU6 US2",
       "AU8 US4",
       "AU10 US6",
       "AU12 US8",
-      "AU14 US10"
+      "AU14 US10",
     ]
     assert_equal size_names, parser.parse_size_names
+  end
+
+  test "can parse standard size names" do
+    parser     = PackingListParser.new(brand, pl_path)
+    size_names = [
+      "XXS", "XS", "S", "M", "L", "XL", "XXL",
+      "xxs", "xs", "s", "m", "l", "xl", "xxl",
+      "AU6 US2", "AU8 US4", "AU10 US6", "AU12 US8", "AU14 US10",
+      "au6 us2", "au8 us4", "au10 us6", "au12 us8", "au14 us10",
+      "au6", "us4", "au10", "us8", "us10",
+    ]
+
+    size_names.each do |size|
+      assert parser.valid_size_name?(size)
+    end
   end
 
   test "can detect data range first row" do

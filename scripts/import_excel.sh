@@ -5,6 +5,7 @@
 # doesn't works, create a brand new one by running the create_session script.
 TOKEN=$1
 BRAND_ID=$2
+FILE=$3
 
 if [[ $TOKEN && $BRAND_ID ]];
 then
@@ -12,7 +13,7 @@ then
          -H "Accepts: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -F "file=@../../data/pl1.xlsx" \
+         -F "file=@$FILE" \
          -F "brand_id=$BRAND_ID" \
          localhost:3000/stock/import
 else
