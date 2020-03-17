@@ -258,6 +258,17 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParser.can_parse?(plt6_path)
   end
 
+  test "T1 parser can parse check formats" do
+    assert PackingListParserT1.can_parse?(plt1_path)
+
+    assert !PackingListParserT1.can_parse?(plt2_path)
+    assert !PackingListParserT1.can_parse?(plt3_path)
+    assert !PackingListParserT1.can_parse?(plt4_path)
+    assert !PackingListParserT1.can_parse?(plt5_path)
+    assert !PackingListParserT1.can_parse?(plt6_path)
+  end
+
+
   test "T4 parser can parse check formats" do
     assert PackingListParserT4.can_parse?(plt4_path)
 
@@ -278,11 +289,6 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParserT5.can_parse?(plt6_path)
   end
 
-  test "parser headers" do
-    parser = PackingListParserT1.new(brand, plt1_path)
-    assert parser.headers.include?("STYLE NUMBER")
-  end
-
   test "T6 parser can parse check formats" do
     assert PackingListParserT6.can_parse?(plt6_path)
 
@@ -293,14 +299,18 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParserT6.can_parse?(plt5_path)
   end
 
-  test "T1 parser can parse check formats" do
-    assert PackingListParserT1.can_parse?(plt1_path)
+  test "parser headers" do
+    parser = PackingListParserT1.new(brand, plt1_path)
+    assert parser.headers.include?("STYLE NUMBER")
+  end
 
-    assert !PackingListParserT1.can_parse?(plt2_path)
-    assert !PackingListParserT1.can_parse?(plt3_path)
-    assert !PackingListParserT1.can_parse?(plt4_path)
-    assert !PackingListParserT1.can_parse?(plt5_path)
-    assert !PackingListParserT1.can_parse?(plt6_path)
+  test "select parser class" do
+    assert PackingListParserT1 == Stock.select_parser_class(plt1_path)
+    assert PackingListParser   == Stock.select_parser_class(plt2_path)
+    assert PackingListParser   == Stock.select_parser_class(plt3_path)
+    assert PackingListParserT4 == Stock.select_parser_class(plt4_path)
+    assert PackingListParserT5 == Stock.select_parser_class(plt5_path)
+    assert PackingListParserT6 == Stock.select_parser_class(plt6_path)
   end
   
   private

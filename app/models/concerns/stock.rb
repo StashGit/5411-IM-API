@@ -5,8 +5,7 @@ class Stock
   # Parsea un packing list y genera todas las transacciones necesarias para
   # ingresar los productos de esa lista al stock.
   def self.import(brand, file_path, user)
-    parser = PackingListParser.new(brand, file_path)
-    entries = parser.parse
+    entries = parse_packing_list(brand, file_path)
     # TODO: Validar que todos los movimientos de stock sean validos
     #       antes de grabar en al base de datos. Creo que en el caso de los
     #       imports, lo mas sano va a ser se "graba todo_" o 
@@ -16,6 +15,7 @@ class Stock
     Stock.create(entries, user)
     { ok: true }
   rescue Exception => ex
+    puts ex.message
     { ok: false, errors: [ex.message] }
   end
 
@@ -73,7 +73,36 @@ class Stock
     total
   end
 
+  # Para testear, nos queda mas comodo que esto sea public.
+  def self.select_parser_class(file_path)
+    available_parsers.each do |parser_class|
+      return parser_class if parser_class.can_parse?(file_path)
+    end
+  end
+
   private
+
+  def self.parse_packing_list(brand, file_path)
+    parser_class = select_parser_class(file_path)
+    parser = parser_class.new(brand, file_path)
+    entries = parser.parse
+    entries
+  end
+
+  def self.create_parser(file_path)
+    parser_class = select_parser_class(file_path)
+    parser_class&.new(brand, file_path)
+  end
+
+  def self.available_parsers
+    @@available_parsers ||= [
+      PackingListParser,
+      PackingListParserT1,
+      PackingListParserT4,
+      PackingListParserT5,
+      PackingListParserT6,
+    ]
+  end
 
   def self.save_transaction(t, user)
     t.user = user
