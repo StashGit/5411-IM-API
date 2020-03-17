@@ -6,6 +6,7 @@ module SizeNameSorter
   # La logica detras de esto es que preferimos que las columnas queden 
   # desordenadas a que la pagina crashee.
   def size_order_for(size_name)
+    return size_to_number(size_name)     if is_number?(size_name)
     return std_size_order_for(size_name) if std_size_name?(size_name)
 
     if valid_us_size_name?(size_name) || valid_au_size_name?(size_name)
@@ -16,6 +17,10 @@ module SizeNameSorter
   end
 
   private
+
+  def size_to_number(size_number)
+    size_number.to_i
+  end
 
   def std_size_order_for(size_name)
     std_sizes_order[size_name.upcase] || -1

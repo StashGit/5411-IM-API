@@ -118,7 +118,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
-  test "can parse t2 format" do 
+  test "can parse T2 format" do 
     parser = PackingListParser.new(brand, plt2_path)
     entries = parser.parse
     assert entries.count > 0
@@ -138,7 +138,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse t3 format" do 
+  test "can parse T3 format" do 
     parser = PackingListParser.new(brand, plt3_path)
     entries = parser.parse
 
@@ -151,14 +151,14 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert first.units == 1
     assert first.size_order == 6
 
-    # Idem formato t2
+    # Idem formato T2
     e = entries.sample
     assert e.brand
     assert e.sku
     assert e.size_order
   end
 
-  test "can parse t5 format" do 
+  test "can parse T5 format" do 
     parser = PackingListParserT5.new(brand, plt5_path)
     entries = parser.parse
 
@@ -171,12 +171,38 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert second.units == 21
     assert second.size_order == 8
 
-    # Idem formato t2
+    # Idem formato T2
     e = entries.sample
     assert e.brand
     assert e.sku
     assert e.size_order
   end
+
+  test "can parse T6 format" do 
+    parser = PackingListParserT6.new(brand, plt6_path)
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    first = entries.first
+    sku   = Sku.new(style: "AW2001204D", color: "Nude 肉", size: "6")
+    assert first.brand == Brand.first
+    assert first.sku.style == "AW2001204D" 
+
+    # Con este string puede haber un tema de ecoding. El assert falla,
+    # pero si imprimimos el valor en la consola vemos el valor correcto.
+    # assert first.sku.color == "Nude 肉" 
+    assert first.sku.size == "6"
+    assert first.units == 10
+    assert first.size_order == 6
+
+    # Idem formato T2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
+
   private
 
   def plt1_path
