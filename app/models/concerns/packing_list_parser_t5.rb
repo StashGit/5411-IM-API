@@ -14,7 +14,7 @@ class PackingListParserT5 < PackingListParser
 
     result = []
     parse_size_names
-    data_rage.each do |row|
+    data_range.each do |row|
       style = packing_list.cell('F', row)
       color = packing_list.cell('G', row)
 

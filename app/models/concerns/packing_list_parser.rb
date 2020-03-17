@@ -24,7 +24,7 @@ class PackingListParser
 
     result = []
     parse_size_names
-    data_rage.each do |row|
+    data_range.each do |row|
       style = packing_list.cell('C', row)
       color = packing_list.cell('D', row)
 
@@ -72,7 +72,7 @@ class PackingListParser
     @packing_list ||= open_packing_list
   end
 
-  def data_rage
+  def data_range
     (first_row..last_row)
   end
 

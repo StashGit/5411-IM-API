@@ -82,7 +82,7 @@ class PackingListParserTest < ActiveSupport::TestCase
   
   test "can detect the data range" do
     parser = PackingListParser.new(brand, pl_path)
-    assert_equal (16..57), parser.data_rage
+    assert_equal (16..57), parser.data_range
   end
 
   test "can parse stock entries from a packing list" do
@@ -217,6 +217,29 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert first.sku.size == "XS"
     assert first.units == 8
     assert first.size_order == 2
+
+    # Idem formato T2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
+
+  test "can parse T4 format" do 
+    parser = PackingListParserT4.new(brand, plt4_path)
+
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    first = entries.first
+
+    sku   = Sku.new(style: "SH2001100S", color: "BLACK", size: "6")
+    assert first.brand == Brand.first
+    assert first.sku.style == "SH2001100S" 
+    assert first.sku.size == "6"
+    assert first.units == 9
+    assert first.size_order == 6
 
     # Idem formato T2
     e = entries.sample
