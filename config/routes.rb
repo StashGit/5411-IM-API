@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
   # Brands.
   get 'brands/all'
+  get 'brands/show/:id', :to => 'brands#show'
   post 'brands/update'
   post 'brands/create'
+  post 'brands/delete'
 end

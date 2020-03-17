@@ -120,12 +120,6 @@ class StockController < ApplicationController
     dir
   end
 
-  def set_access_token
-    token = request.headers["Access-Token"]
-    @token = ApiKey.find_by_access_token(token)
-    puts "access-token: #{@token}"
-  end
-
   def authorize
     raise "Unathorized Request" unless @token
   end
