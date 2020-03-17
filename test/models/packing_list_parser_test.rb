@@ -138,25 +138,25 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  # test "can parse t3 format" do 
-  #   parser = PackingListParser.new(brand, plt3_path)
-  #   entries = parser.parse
-  #
-  #   assert entries.count > 0
-  #
-  #   first = entries.first
-  #   sku   = Sku.new(style: "SS200104T", color: "MINT", size: "AU6 US2")
-  #   assert first.brand == Brand.first
-  #   assert first.sku.to_s == sku.to_s
-  #   assert first.units == 7
-  #   assert first.size_order == 6
-  #
-  #   # Idem formato t2
-  #   e = entries.sample
-  #   assert e.brand
-  #   assert e.sku
-  #   assert e.size_order
-  # end
+  test "can parse t3 format" do 
+    parser = PackingListParser.new(brand, plt3_path)
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    first = entries.first
+    sku   = Sku.new(style: "AS170141D-RP(AS2001)", color: "GOLDEN ABSTRACT", size: "AU6 US2")
+    assert first.brand == Brand.first
+    assert first.sku.to_s == sku.to_s
+    assert first.units == 1
+    assert first.size_order == 6
+
+    # Idem formato t2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
 
   private
 
