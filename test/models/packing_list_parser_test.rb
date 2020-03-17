@@ -20,6 +20,16 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert parser.packing_list
   end
 
+  test "check if can parse packing list (true)" do
+    parser = PackingListParser.new(brand, pl_path)
+    assert parser.can_parse_packing_list?
+  end
+
+  test "check if can parse packing list (false)" do
+    parser = PackingListParser.new(brand, not_a_valid_pl_path)
+    assert !parser.can_parse_packing_list?
+  end
+
   test "can parse AU/US size names" do
     parser = PackingListParser.new(brand, pl_path)
     size_names = [
@@ -57,15 +67,18 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
-  test "can detect data range first row" do
-    parser = PackingListParser.new(brand, pl_path)
-    assert_equal 16, parser.first_row
-  end
-
-  test "can detect data range the last row" do
-    parser = PackingListParser.new(brand, pl_path)
-    assert_equal 57, parser.last_row
-  end
+  # Consultando la propiedad *data_range* podemos obtener las filas
+  # desde/hasta y eliminamos dos metodos de la interface publica del
+  # parser. 
+  # test "can detect data range first row" do
+  #   parser = PackingListParser.new(brand, pl_path)
+  #   assert_equal 16, parser.first_row
+  # end
+  #
+  # test "can detect data range the last row" do
+  #   parser = PackingListParser.new(brand, pl_path)
+  #   assert_equal 57, parser.last_row
+  # end
   
   test "can detect the data range" do
     parser = PackingListParser.new(brand, pl_path)
@@ -109,6 +122,10 @@ class PackingListParserTest < ActiveSupport::TestCase
   
   def pl_path
     file_fixture('pl1.xlsx').to_s
+  end
+
+  def not_a_valid_pl_path
+    file_fixture('not_a_valid_pl.xlsx').to_s
   end
 
   def brand

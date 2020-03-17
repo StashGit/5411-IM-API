@@ -2,19 +2,22 @@ class PackingListParser
   include SizeNameValidator
   include SizeNameSorter
 
-  attr_reader :brand, :packing_list, :size_columns, :size_names
+  attr_reader :brand, :size_columns, :size_names, :xls_path, 
+    :packing_list_name
 
   def initialize(brand, path)
     raise missing_file(path) unless File.exists?(path)
 
     @brand = brand
-    @packing_list = open_packing_list(path)
-    parse_size_names
+    @xls_path = path
+    @packing_list_name = 'PL'
   end
 
-  # Returns a collection of [sku, units]
   def parse
+    return nil unless can_parse_packing_list?
+
     result = []
+    parse_size_names
     data_rage.each do |row|
       style = packing_list.cell('C', row)
       color = packing_list.cell('D', row)
@@ -30,15 +33,45 @@ class PackingListParser
     result
   end
 
-  def open_packing_list(path)
-    wb = Roo::Spreadsheet.open(path)
-    wb.sheet('PL')
+  def can_parse_packing_list?
+    # Con este metodo tenemos que determinar si es posible parsear
+    # la packing list especificada utilizando la instancia actual del
+    # parser.
+    # Si detectamos que no podemos parsearla, simplemente retornamos false
+    # y el sistema le asigna el trabajo a otro parser.
+    contains_sheet?(@packing_list_name) && head_row != packing_list.last_row
+  end
+
+  def find_last_row
+    first_row.upto packing_list.last_row do |row|
+      cell_value = packing_list.cell('C', row)
+      return row - 1 unless cell_value
+    end
+    packing_list.last_row
+  end
+
+  def find_head_row
+    1.upto packing_list.last_row do |row|
+      return row + 1 if packing_list.cell('C', row) == "STYLE #"
+    end
+    packing_list.last_row
   end
 
   def possible_size_column_names
     ['E', 'F', 'G', 'H', 'I', 'J', 'K']
   end
 
+  def packing_list 
+    @packing_list ||= open_packing_list
+  end
+
+  def data_rage
+    (first_row..last_row)
+  end
+
+  # Este metodo es publico solo a los fines del testing. Los parsers
+  # que exiendand esta clase no deberian tener la necesidad de
+  # sobre-escribirlo.
   def parse_size_names
     @size_columns = []
     @size_names   = []
@@ -54,13 +87,23 @@ class PackingListParser
     @size_names
   end
 
+  private
+
+  def contains_sheet?(name)
+    workbook.sheets.include?name
+  end
+
+  def workbook
+    @wb ||= Roo::Spreadsheet.open(xls_path)
+  end
+
+  def open_packing_list
+    workbook.sheet(packing_list_name)
+  end
+
   # Nombre de la columna. (Capturado cuando armamos los headers.)
   def size_name(col)
     @size_names_by_column[col]
-  end
-
-  def data_rage
-    (first_row..last_row)
   end
 
   def is_num?(value)
@@ -80,21 +123,6 @@ class PackingListParser
 
   def last_row
     @last_row ||= find_last_row
-  end
-
-  def find_last_row
-    first_row.upto packing_list.last_row do |row|
-      cell_value = packing_list.cell('C', row)
-      return row - 1 unless cell_value
-    end
-    packing_list.last_row
-  end
-
-  def find_head_row
-    1.upto packing_list.last_row do |row|
-      return row + 1 if packing_list.cell('C', row) == "STYLE #"
-    end
-    packing_list.last_row
   end
 
   def missing_file(path)
