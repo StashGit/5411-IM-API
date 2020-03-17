@@ -118,8 +118,60 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
+  test "can parse t2 format" do 
+    parser = PackingListParser.new(brand, pl_path)
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    first = entries.first
+    sku   = Sku.new(style: "SS200104T", color: "MINT", size: "AU6 US2")
+    assert first.brand == Brand.first
+    assert first.sku.to_s == sku.to_s
+    assert first.units == 7
+    assert first.size_order == 6
+
+    # Tomo una entrada al azar y verifico que haya seteado
+    # todas las propiedades. (Menos *units* que puede ser nil.)
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+
+  end
+
+  # test "can parse t3 format" do 
+  #   parser = PackingListParser.new(brand, pl_path)
+  #   entries = parser.parse
+  #   assert entries.count > 0
+  # end
+
   private
-  
+
+  def plt1_path
+    file_fixture('plt1.xlsx').to_s
+  end
+
+  def plt2_path
+    file_fixture('plt2.xlsx').to_s
+  end
+
+  def plt3_path
+    file_fixture('plt3.xlsx').to_s
+  end
+
+  def plt4_path
+    file_fixture('plt4.xlsx').to_s
+  end
+
+  def plt5_path
+    file_fixture('plt5.xlsx').to_s
+  end
+
+  def plt6_path
+    file_fixture('plt6.xlsx').to_s
+  end
+
   def pl_path
     file_fixture('pl1.xlsx').to_s
   end
