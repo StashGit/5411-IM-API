@@ -278,62 +278,52 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParserT5.can_parse?(plt6_path)
   end
 
-  # Los formatos T1 y T6 son parcialente compatibles con 
-  # otros formatos. Ver como podemos hacer para desempatar
-  # la ambiguedad que presentan estos dos casos.
-  # test "T6 parser can parse check formats" do
-  #   assert PackingListParserT6.can_parse?(plt6_path)
-  #
-  #   assert !PackingListParserT6.can_parse?(plt1_path)
-  #   assert !PackingListParserT6.can_parse?(plt2_path)
-  #   assert !PackingListParserT6.can_parse?(plt3_path)
-  #   assert !PackingListParserT6.can_parse?(plt4_path)
-  #   assert !PackingListParserT6.can_parse?(plt5_path)
-  # end
+  test "parser headers" do
+    parser = PackingListParserT1.new(brand, plt1_path)
+    assert parser.headers.include?("STYLE NUMBER")
+  end
 
-  # test "T1 parser can parse check formats" do
-  #   assert PackingListParserT1.can_parse?(plt1_path)
-  #
-  #   assert !PackingListParserT1.can_parse?(plt2_path)
-  #   assert !PackingListParserT1.can_parse?(plt3_path)
-  #   assert !PackingListParserT1.can_parse?(plt4_path)
-  #   assert !PackingListParserT1.can_parse?(plt5_path)
-  #   assert !PackingListParserT1.can_parse?(plt6_path)
-  # end
+  test "T6 parser can parse check formats" do
+    assert PackingListParserT6.can_parse?(plt6_path)
+
+    assert !PackingListParserT6.can_parse?(plt1_path)
+    assert !PackingListParserT6.can_parse?(plt2_path)
+    assert !PackingListParserT6.can_parse?(plt3_path)
+    assert !PackingListParserT6.can_parse?(plt4_path)
+    assert !PackingListParserT6.can_parse?(plt5_path)
+  end
+
+  test "T1 parser can parse check formats" do
+    assert PackingListParserT1.can_parse?(plt1_path)
+
+    assert !PackingListParserT1.can_parse?(plt2_path)
+    assert !PackingListParserT1.can_parse?(plt3_path)
+    assert !PackingListParserT1.can_parse?(plt4_path)
+    assert !PackingListParserT1.can_parse?(plt5_path)
+    assert !PackingListParserT1.can_parse?(plt6_path)
+  end
   
   private
 
-  def plt1_path
-    file_fixture('plt1.xlsx').to_s
-  end
+  # Packing List generica. Es la primera que soportamos.
+  def pl_path;   file_fixture('pl1.xlsx').to_s; end
 
-  def plt2_path
-    file_fixture('plt2.xlsx').to_s
-  end
+  # Packing lists para validar testear can_parse?
+  # Basicamente, tenemos un ejemplo de cada formato que 
+  # vamos a soportar.
+  def plt1_path; file_fixture('plt1.xlsx').to_s; end
 
-  def plt3_path
-    file_fixture('plt3.xlsx').to_s
-  end
+  def plt2_path; file_fixture('plt2.xlsx').to_s; end
 
-  def plt4_path
-    file_fixture('plt4.xlsx').to_s
-  end
+  def plt3_path; file_fixture('plt3.xlsx').to_s; end
 
-  def plt5_path
-    file_fixture('plt5.xlsx').to_s
-  end
+  def plt4_path; file_fixture('plt4.xlsx').to_s; end
 
-  def plt6_path
-    file_fixture('plt6.xlsx').to_s
-  end
+  def plt5_path; file_fixture('plt5.xlsx').to_s; end
 
-  def pl_path
-    file_fixture('pl1.xlsx').to_s
-  end
+  def plt6_path; file_fixture('plt6.xlsx').to_s; end
 
-  def not_a_valid_pl_path
-    file_fixture('not_a_valid_pl.xlsx').to_s
-  end
+  def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 
   def brand
     @brand ||= brands(:nike)

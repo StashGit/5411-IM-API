@@ -94,9 +94,33 @@ class PackingListParser
     @size_names
   end
 
+  def headers
+    @headers ||= parse_headers
+  end
+
+  def parse_headers
+    headers     = []
+    headers_row = data_range.first - 1;
+    cols    = ('A'..'Z').to_a
+    cols.each do |col|
+      cell_value = packing_list.cell(col, headers_row)
+      if (cell_value.present?)
+        headers << cell_value
+      else
+        return headers
+      end
+    end
+    headers
+  end
+
   def self.can_parse?(path)
     subject = self.new(Brand.first, path)
     subject.can_parse_packing_list?
+  end
+
+  def self.has_header?(path, name)
+    subject = self.new(Brand.first, path)
+    subject.headers.include?(name)
   end
 
   private

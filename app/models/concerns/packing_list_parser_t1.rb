@@ -9,6 +9,10 @@ class PackingListParserT1 < PackingListParser
     @style_column_text = "STYLE NUMBER"
   end
 
+  def can_parse_packing_list?
+    super && headers.include?("STYLE NUMBER")
+  end
+
   def parse
     return nil unless can_parse_packing_list?
 
