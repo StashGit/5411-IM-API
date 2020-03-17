@@ -203,6 +203,28 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
+  test "can parse T1 format" do 
+    parser = PackingListParserT1.new(brand, plt1_path)
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    first = entries.first
+
+    sku   = Sku.new(style: "LTT199C", color: "VIOLET", size: "XS")
+    assert first.brand == Brand.first
+    assert first.sku.style == "LTT199C" 
+    assert first.sku.size == "XS"
+    assert first.units == 8
+    assert first.size_order == 2
+
+    # Idem formato T2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
+
   private
 
   def plt1_path
