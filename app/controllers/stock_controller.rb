@@ -77,7 +77,7 @@ class StockController < ApplicationController
 
   # Esto seria stock por marca.
   def by_brand
-    # EN lugar de mostrar todos los movimientos tenemos que mostrar
+    # En lugar de mostrar todos los movimientos tenemos que mostrar
     # el stock actual del producto (que surge de computar todos los movimientos
     # para cada sku.)
     render :json => Stock.compute_transactions_by(@brand)

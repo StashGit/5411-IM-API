@@ -12,6 +12,9 @@ require 'test_helper'
 # * Generar las transacciones de stock.
 
 class PackingListParserTest < ActiveSupport::TestCase
+  include SizeNameValidator
+  include SizeNameSorter
+
   test "can open a packing list" do
     parser = PackingListParser.new(brand, pl_path)
     assert parser.packing_list
@@ -29,8 +32,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert_equal size_names, parser.parse_size_names
   end
 
-  test "can parse standard size names" do
-    parser     = PackingListParser.new(brand, pl_path)
+  test "can parse any size name" do
     size_names = [
       "XXS", "XS", "S", "M", "L", "XL", "XXL",
       "xxs", "xs", "s", "m", "l", "xl", "xxl",
@@ -40,7 +42,18 @@ class PackingListParserTest < ActiveSupport::TestCase
     ]
 
     size_names.each do |size|
-      assert parser.valid_size_name?(size)
+      assert valid_size_name?(size)
+    end
+  end
+
+  test "can assign size order to all valid entries" do
+    parser = PackingListParser.new(brand, pl_path)
+    entries = parser.parse
+    entries.each do |entry|
+      if entry.size_order < 0
+        puts entry.to_s
+      end
+      assert entry.size_order > -1
     end
   end
 
@@ -65,6 +78,31 @@ class PackingListParserTest < ActiveSupport::TestCase
     skus  = 42
     sizes = 5
     assert_equal skus * sizes, entries.count
+  end
+
+  test "can detect non standad size names" do
+    assert valid_std_size_name?("AU10") == false
+  end
+
+  test "can get size order from standard size names" do
+    size_names = ["XXS", "Xs", "s", "m", "L", "xl", "xxl"]
+
+    # En el caso de los std sizes podemos utilizar este
+    # truco para testear.
+    size_names.each_with_index do |size, index|
+      assert_equal index + 1, size_order_for(size)
+    end
+  end
+
+  test "can get size order from AU/US size names" do
+    # Si tenemos dos nombres para el mismo talle (e.g., 'US6 AU2'), 
+    # para todo_ lo referent al **orden**, tomamos el primer talle y ya.
+    sizes_order = [["US6 US2", 6], ["us1", 1], ["AU10", 10]]
+
+    sizes_order.each do |e|
+      size, order = e
+      assert_equal order, size_order_for(size)
+    end
   end
 
   private

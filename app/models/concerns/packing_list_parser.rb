@@ -1,4 +1,7 @@
 class PackingListParser
+  include SizeNameValidator
+  include SizeNameSorter
+
   attr_reader :brand, :packing_list, :size_columns, :size_names
 
   def initialize(brand, path)
@@ -18,9 +21,10 @@ class PackingListParser
 
       size_columns.each do |col|
         size  = size_name(col)
+        size_order  = size_order_for(size)
         units = packing_list.cell(col, row)
         sku   = Sku.new(style: style, color: color, size: size)
-        result << StockEntry.new(brand, sku, units)
+        result << StockEntry.new(brand, sku, units, size_order)
       end
     end
     result
@@ -48,24 +52,6 @@ class PackingListParser
       end
     end
     @size_names
-  end
-
-  def valid_size_name?(name)
-    valid_us_size_name?(name) ||
-    valid_au_size_name?(name) ||
-    valid_st_size_name?(name)
-  end
-
-  def valid_st_size_name?(name)
-    /XXS|XS|S|M|L|XL|XXL/i =~ name 
-  end
-
-  def valid_us_size_name?(name)
-    /US[0-9]([0-9])?/i =~ name
-  end
-
-  def valid_au_size_name?(name)
-    /AU[0-9]([0-9])?/i =~ name
   end
 
   # Nombre de la columna. (Capturado cuando armamos los headers.)
