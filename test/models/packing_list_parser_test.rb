@@ -107,7 +107,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
-  test "can get size order from AU/US size names" do
+  test "get size order from AU/US size names" do
     # Si tenemos dos nombres para el mismo talle (e.g., 'US6 AU2'), 
     # para todo_ lo referent al **orden**, tomamos el primer talle y ya.
     sizes_order = [["US6 US2", 6], ["us1", 1], ["AU10", 10]]
@@ -118,7 +118,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
-  test "can parse T2 format" do 
+  test "parse T2 format" do 
     parser = PackingListParser.new(brand, plt2_path)
     entries = parser.parse
     assert entries.count > 0
@@ -138,7 +138,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse T3 format" do 
+  test "parse T3 format" do 
     parser = PackingListParser.new(brand, plt3_path)
     entries = parser.parse
 
@@ -158,7 +158,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse T5 format" do 
+  test "parse T5 format" do 
     parser = PackingListParserT5.new(brand, plt5_path)
     entries = parser.parse
 
@@ -178,7 +178,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse T6 format" do 
+  test "parse T6 format" do 
     parser = PackingListParserT6.new(brand, plt6_path)
     entries = parser.parse
 
@@ -203,7 +203,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse T1 format" do 
+  test "parse T1 format" do 
     parser = PackingListParserT1.new(brand, plt1_path)
     entries = parser.parse
 
@@ -225,7 +225,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "can parse T4 format" do 
+  test "parse T4 format" do 
     parser = PackingListParserT4.new(brand, plt4_path)
 
     entries = parser.parse
@@ -248,6 +248,59 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
+  test "default parser can parse check formats" do
+    assert PackingListParser.can_parse?(plt2_path)
+    assert PackingListParser.can_parse?(plt3_path)
+
+    assert !PackingListParser.can_parse?(plt1_path)
+    assert !PackingListParser.can_parse?(plt4_path)
+    assert !PackingListParser.can_parse?(plt5_path)
+    assert !PackingListParser.can_parse?(plt6_path)
+  end
+
+  test "T4 parser can parse check formats" do
+    assert PackingListParserT4.can_parse?(plt4_path)
+
+    assert !PackingListParserT4.can_parse?(plt1_path)
+    assert !PackingListParserT4.can_parse?(plt2_path)
+    assert !PackingListParserT4.can_parse?(plt3_path)
+    assert !PackingListParserT4.can_parse?(plt5_path)
+    assert !PackingListParserT4.can_parse?(plt6_path)
+  end
+
+  test "T5 parser can parse check formats" do
+    assert PackingListParserT5.can_parse?(plt5_path)
+
+    assert !PackingListParserT5.can_parse?(plt1_path)
+    assert !PackingListParserT5.can_parse?(plt2_path)
+    assert !PackingListParserT5.can_parse?(plt3_path)
+    assert !PackingListParserT5.can_parse?(plt4_path)
+    assert !PackingListParserT5.can_parse?(plt6_path)
+  end
+
+  # Los formatos T1 y T6 son parcialente compatibles con 
+  # otros formatos. Ver como podemos hacer para desempatar
+  # la ambiguedad que presentan estos dos casos.
+  # test "T6 parser can parse check formats" do
+  #   assert PackingListParserT6.can_parse?(plt6_path)
+  #
+  #   assert !PackingListParserT6.can_parse?(plt1_path)
+  #   assert !PackingListParserT6.can_parse?(plt2_path)
+  #   assert !PackingListParserT6.can_parse?(plt3_path)
+  #   assert !PackingListParserT6.can_parse?(plt4_path)
+  #   assert !PackingListParserT6.can_parse?(plt5_path)
+  # end
+
+  # test "T1 parser can parse check formats" do
+  #   assert PackingListParserT1.can_parse?(plt1_path)
+  #
+  #   assert !PackingListParserT1.can_parse?(plt2_path)
+  #   assert !PackingListParserT1.can_parse?(plt3_path)
+  #   assert !PackingListParserT1.can_parse?(plt4_path)
+  #   assert !PackingListParserT1.can_parse?(plt5_path)
+  #   assert !PackingListParserT1.can_parse?(plt6_path)
+  # end
+  
   private
 
   def plt1_path

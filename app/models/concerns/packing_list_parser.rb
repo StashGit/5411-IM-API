@@ -94,6 +94,11 @@ class PackingListParser
     @size_names
   end
 
+  def self.can_parse?(path)
+    subject = self.new(Brand.first, path)
+    subject.can_parse_packing_list?
+  end
+
   private
 
   def contains_sheet?(name)
