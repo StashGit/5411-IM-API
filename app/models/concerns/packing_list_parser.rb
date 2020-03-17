@@ -5,12 +5,18 @@ class PackingListParser
   attr_reader :brand, :size_columns, :size_names, :xls_path, 
     :packing_list_name
 
+  # Estos atributos nos sirven como referencia para poder establecer
+  # el rango de datos de la hoja actual.
+  attr_accessor :style_column_name, :style_column_text
+
   def initialize(brand, path)
     raise missing_file(path) unless File.exists?(path)
 
     @brand = brand
     @xls_path = path
     @packing_list_name = 'PL'
+    @style_column_name = "C"
+    @style_column_text = "STYLE #"
   end
 
   def parse
@@ -44,7 +50,7 @@ class PackingListParser
 
   def find_last_row
     first_row.upto packing_list.last_row do |row|
-      cell_value = packing_list.cell('C', row)
+      cell_value = packing_list.cell(style_column_name, row)
       return row - 1 unless cell_value
     end
     packing_list.last_row
@@ -52,7 +58,8 @@ class PackingListParser
 
   def find_head_row
     1.upto packing_list.last_row do |row|
-      return row + 1 if packing_list.cell('C', row) == "STYLE #"
+      # return row + 1 if packing_list.cell('C', row) == "STYLE #"
+      return row + 1 if packing_list.cell(style_column_name, row) == style_column_text
     end
     packing_list.last_row
   end

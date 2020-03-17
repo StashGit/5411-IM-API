@@ -53,7 +53,7 @@ module SizeNameSorter
     # logica indica que la correlacion se va a mantener para todos los talles
     # de ese set.
     start = /[0-9]/ =~ size_name
-    tmp = size_name[start..].split(' ')
+    tmp = size_name[start..].split(/\/| /)
     if tmp.length > 0
       order = tmp[0]
       return order.to_i if /^[0-9]+$/ =~ order

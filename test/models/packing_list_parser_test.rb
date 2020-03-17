@@ -158,6 +158,25 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
+  test "can parse t5 format" do 
+    parser = PackingListParserT5.new(brand, plt5_path)
+    entries = parser.parse
+
+    assert entries.count > 0
+
+    second = entries.second
+    sku   = Sku.new(style: "SL200160D", color: "ALHAMBRA PRINT", size: "AU8/US4")
+    assert second.brand == Brand.first
+    assert second.sku.to_s == sku.to_s
+    assert second.units == 21
+    assert second.size_order == 8
+
+    # Idem formato t2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
   private
 
   def plt1_path
