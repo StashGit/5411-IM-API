@@ -140,7 +140,7 @@ curl -H "Content-Type: multipart/mixed"   \
 ```
 
 ### Cómo se agrega una marca
-Las marcas se puede registrar utilziando el metodo **brands/create**.
+Las marcas se pueden registrar utilziando el metodo **brands/create**.
 
 **Parametros**
 * name
@@ -151,6 +151,47 @@ curl -H "Content-Type: application/json" \
      -X POST \
      -d "{ \"name\": \"Nike\" }" \
      localhost:3000/brands/create
+```
+
+
+### Cómo se modifica una marca
+Las marcas se pueden modificar utilziando el metodo **brands/update**.
+
+**Parametros**
+* id
+* name
+
+```
+curl -H "Content-Type: application/json" \
+	 -H "Access-Token: $TOKEN" \
+	 -X POST \
+	 -d "{ \"id\": \"1\", \"name\": \"Nuevo Nombre\" }" \
+	 localhost:3000/brands/update
+```
+
+### Cómo se elimina una marca
+Las marcas se pueden eliminar utilziando el metodo **brands/delete**.
+Tener en cuenta que no es un delete efectivo. Lo unico que hace este 
+metodo es marcar la marca como borrada.
+
+**Parametros**
+* id
+
+```
+curl -H "Content-Type: application/json" \
+	 -H "Access-Token: $TOKEN" \
+	 -X POST \
+	 -d "{ \"id\": \"1\" }" \
+	 localhost:3000/brands/delete
+```
+
+### Cómo visualizar los datos de una marca
+Las marcas se pueden visualizar utilziando el metodo **brands/show**.
+```
+    curl -H "Content-Type: application/json" \
+         -H "Access-Token: $TOKEN" \
+         -X GET \
+         localhost:3000/brands/show/1
 ```
 
 ### Cómo se generan los códigos QR
