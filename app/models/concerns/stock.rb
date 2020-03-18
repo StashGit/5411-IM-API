@@ -1,4 +1,5 @@
 class Stock
+  include SizeNameSorter
   KIND_IN  = 1
   KIND_OUT = -1
 
@@ -23,7 +24,8 @@ class Stock
     entries.each do |entry|
       next unless entry.units
 
-      adjust(entry.brand, entry.sku, entry.units.abs, user, "Mass Import")
+      adjust(entry.brand, entry.sku, entry.units.abs, 
+             user, "Mass Import", entry.size_order)
     end
   end
 
@@ -31,6 +33,7 @@ class Stock
     t = StockTransaction.new(
       brand: brand,
       style: sku.style, color: sku.color, size: sku.size,
+      size_order: size_order_for(sku.size),
       kind: KIND_IN, units: units.abs, reason: Reason::BUY, 
       comments: comments)
 
@@ -41,16 +44,18 @@ class Stock
     t = StockTransaction.new(
       brand: brand,
       style: sku.style, color: sku.color, size: sku.size, 
+      size_order: size_order_for(sku.size),
       kind: KIND_OUT, units: units.abs, reason: Reason::SALE, 
       comments: comments)
 
     save_transaction(t, user)
   end
 
-  def self.adjust(brand, sku, units, user, comments="")
+  def self.adjust(brand, sku, units, user, comments="", size_order=nil)
     t = StockTransaction.new(
       brand: brand,
       style: sku.style, color: sku.color, size: sku.size, 
+      size_order: size_order || size_order_for(sku.size),
       units: units.abs, reason: Reason::ADJUSTMENT, 
       comments: comments)
 
@@ -120,8 +125,14 @@ class Stock
   #       Si podemos cocinar la vista a medida que vamos grabando mejor.
   def self.compute_transactions_by(brand)
     res = []
-    collect_skus_by(brand).each do |sku|
-      res << { sku: sku, units: units(brand, sku) }
+    collect_skus_by(brand).each do |entry|
+      sku, order, user_id = entry
+      res << { 
+        sku: sku, 
+        units: units(brand, sku), 
+        size_order: order,
+        user_email: User.find(user_id).email
+      }
     end
     res
   end
@@ -129,9 +140,12 @@ class Stock
   def self.collect_skus_by(brand)
     sts  = StockTransaction.where(brand_id: brand.id)
     tmp = sts.collect { |t| 
-      { style: t.style, color: t.color, size: t.size } 
+      [{ style: t.style, color: t.color, size: t.size }, t.size_order, t.user_id ] 
     }.uniq
 
-    tmp.collect { |sku| Sku.new(**sku) }
+    tmp.collect { |entry| 
+      sku, order, user_id = entry
+      [Sku.new(**sku), order, user_id]
+    }
   end
 end
