@@ -1,5 +1,5 @@
 class Stock
-  include SizeNameSorter
+  extend SizeNameSorter
   KIND_IN  = 1
   KIND_OUT = -1
 

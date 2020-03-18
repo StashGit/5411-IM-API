@@ -9,10 +9,6 @@ class StockController < ApplicationController
                                    :labels, :units, :import,
                                    :by_brand]
 
-  # Limite de entradas que retornamos cuando nos piden el registro
-  # de transacciones.
-  LOG_SIZE = 50
-
   def index
   end
 
@@ -69,10 +65,7 @@ class StockController < ApplicationController
   end
 
   def log
-    # 3. Agregar paginador (este no es urgente, pero lo vamos a tener que hacer.)
-    render :json => StockTransaction.all.
-      order(created_at: :desc).
-      take(LOG_SIZE)
+    render :json => StockTransaction.log
   end
 
   # Esto seria stock por marca.
@@ -125,7 +118,7 @@ class StockController < ApplicationController
   end
 
   def set_sku
-    @sku  = Sku.new(**sku_params)
+    @sku = Sku.new(**sku_params)
   end
 
   def set_units
