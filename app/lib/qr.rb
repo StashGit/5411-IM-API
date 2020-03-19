@@ -24,7 +24,9 @@ module Qr
       size: IMG_SIZE,
     )
 
-    save(png, qr_path(brand_id, style, color, size))
+    uid = create_uid(brand_id, style, color, size)
+    save(png, qr_path(uid))
+    uid
   end
 
   def delete_all
@@ -34,11 +36,15 @@ module Qr
 
   private
 
+  def create_uid(brand_id, style, color, size)
+    "#{brand_id}_#{style}_#{color}_#{size}.png"
+  end
+
   def ensure_args_present!(brand_id, style, color, size)
-    raise "brand_id is required" unless brand_id
-    raise "style is required"    unless style
-    raise "color is required"    unless color
-    raise "size is required"     unless size
+    raise "brand_id is required" unless brand_id.present?
+    raise "style is required"    unless style.present?
+    raise "color is required"    unless color.present?
+    raise "size is required"     unless size.present?
   end
 
   def save(png, path)
@@ -53,8 +59,7 @@ module Qr
     path
   end
 
-  def qr_path(brand_id, style, color, size)
-    uid = "#{brand_id}_#{style}_#{color}_#{size}.png"
+  def qr_path(uid)
     "#{qr_dir}/#{uid}".gsub " ", "_"
   end
 end

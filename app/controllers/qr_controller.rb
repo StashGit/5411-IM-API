@@ -6,7 +6,8 @@ class QrController < ApplicationController
   before_action :set_access_token
 
   def create
-    @qr_path = create_qr_code(**qr_params)
+    uid = create_qr_code(**qr_params)
+    @qr_path = "#{request.base_url}/qr/#{uid}"
     render "qr/show", { layout: false }
   end
 
