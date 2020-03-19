@@ -1,9 +1,13 @@
 module Qr
   SEP = "~"
+  SIZE = 100
+  FILLER = '^'
 
   def create_qr_code(brand_id:, style:, color:, size:)
-    qrcode = RQRCode::QRCode.new(
-      "#{brand_id}#{SEP}#{style}#{SEP}#{color}#{SEP}#{size}")
+    content = "#{brand_id}#{SEP}#{style}#{SEP}#{color}#{SEP}#{size}#{SEP}".
+      ljust(SIZE, FILLER)
+
+    qrcode = RQRCode::QRCode.new(content)
     svg = qrcode.as_svg(
       offset: 0,
       color: '000',
