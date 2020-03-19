@@ -1,5 +1,4 @@
 require 'qr.rb'
-
 include ::Qr
 
 class QrController < ApplicationController
@@ -7,14 +6,17 @@ class QrController < ApplicationController
   before_action :set_access_token
 
   def create
-    @qr = create_qr_code(**qr_params)
+    @qr_path = create_qr_code(**qr_params)
     render "qr/show", { layout: false }
   end
 
-  def set_access_token
-    token = request.headers["Access-Token"]
-    @token = ApiKey.find_by_access_token(token)
-    puts "access-token: #{@token}"
+  def destroy_all
+    result = delete_all
+    if result == :ok
+      render :json => "OK", status: 200
+    else
+      render :json => "ERR", status: 500
+    end
   end
 
   private
@@ -27,5 +29,4 @@ class QrController < ApplicationController
     qr[:size]     = params[:size]
     qr
   end
-
 end

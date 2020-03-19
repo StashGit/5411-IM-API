@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   # QR
   post 'qr/create'
+  delete 'qr/destroy_all'
 
   # Session.
   post 'session/new',     :to => 'session#new'

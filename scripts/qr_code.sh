@@ -1,14 +1,17 @@
 #!/bin/bash
 
 TOKEN=$1
+BRAND_ID=$2
+STYLE=$3
+COLOR=$4
+SIZE=$5
 
 if [[ $TOKEN ]];
 then
-    curl -H "Content-Type: text/html" \
+    curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \ 
-		 \"color\": \"RED\", \"size\": \"XL\" }" \
+         -d "{ \"brand_id\": \"$BRAND_ID\", \"style\": \"$STYLE\", \"color\": \"$COLOR\", \"size\": \"$SIZE\" }" \
          localhost:3000/qr/create
 else
     echo "Must provide a valid access token."
