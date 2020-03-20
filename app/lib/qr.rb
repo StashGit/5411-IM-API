@@ -37,7 +37,7 @@ module Qr
   private
 
   def create_uid(brand_id, style, color, size)
-    "#{brand_id}_#{style}_#{color}_#{size}.png"
+    "#{brand_id}_#{style}_#{color}_#{size}.png".gsub " ", "_"
   end
 
   def ensure_args_present!(brand_id, style, color, size)
