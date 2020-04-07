@@ -138,9 +138,9 @@ class Stock
   end
 
   def self.collect_skus_by(brand)
-    sts  = StockTransaction.where(brand_id: brand.id)
+    sts = StockTransaction.where(brand_id: brand.id)
     tmp = sts.collect { |t| 
-      [{ style: t.style, color: t.color, size: t.size }, t.size_order, t.user_id ] 
+      [{ style: t.style, color: t.color, size: t.size }, t.size_order] 
     }.uniq
 
     tmp.collect { |entry| 
