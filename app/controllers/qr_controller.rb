@@ -10,8 +10,8 @@ class QrController < ApplicationController
     @qr_path = "#{request.base_url}/qr/#{uid}"
     # render "qr/show", { layout: false }
     #
-    image  = open(path) { |io| io.read }
-    base64 = ActiveSupport::Base64.encode64(image)
+    image  = open("./public/qr/#{uid}") { |io| io.read }
+    base64 = Base64.encode64(image)
     render json: { path: @qr_path, base_64: base64 }
   end
 
