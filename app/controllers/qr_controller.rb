@@ -8,7 +8,11 @@ class QrController < ApplicationController
   def create
     uid = create_qr_code(**qr_params)
     @qr_path = "#{request.base_url}/qr/#{uid}"
-    render "qr/show", { layout: false }
+    # render "qr/show", { layout: false }
+    #
+    image  = open(path) { |io| io.read }
+    base64 = ActiveSupport::Base64.encode64(image)
+    render json: { path: @qr_path, base_64: base64 }
   end
 
   def destroy_all
