@@ -2,6 +2,14 @@ class StockTransaction < ApplicationRecord
   belongs_to :user
   belongs_to :brand
   validates_presence_of :size_order
+  validates :reason, numericality: true
+
+  def reason=(value)
+    # Si especifican un valor fuera de rango, utilizamos OTHER.
+    reason = value&.to_i
+    reason = Reason::OTHER unless (1..7).include?(reason)
+    super reason.to_s
+  end
 
   # Limite de entradas que retornamos cuando nos piden el registro
   # de transacciones.

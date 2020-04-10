@@ -25,6 +25,19 @@ class StockTransactionTest < ActiveSupport::TestCase
     assert 5 == Stock.units(brand, sku)
   end
 
+  test "can't set invalid transactions reasons" do
+    sku    = Sku.new(style: "ST0003", color: "Midnight", size: "L")
+    brand  = brands(:nike)
+    user   = users(:joe)
+    result = Stock.buy(brand, sku, 10, user)
+    result = Stock.adjust(brand, sku, 5, user, "no comments", nil, 8)
+    tnx    = StockTransaction.find(result.id)
+    
+    # Como 8 no es una razon valida para realizar la transaccion, el setter de
+    # esa propiedad utiliza el numero 7 (Other.)
+    assert ::Reason::OTHER == tnx.reason.to_i
+  end
+
   test "add units thru stock adjustment" do
     sku  = Sku.new(style: "ST0003", color: "Midnight", size: "L")
     brand = brands(:nike)

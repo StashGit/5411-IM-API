@@ -81,13 +81,28 @@ negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso
 * size
 * units
 * comments
+* reason
 
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X POST \
-     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"10", \"comments\":\"This is a comment.\" }" \
+     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"10", \"comments\":\"This is a comment.\", "reason" : \"4\" }" \
      localhost:3000/stock/adjust
+```
+
+Las razones posibles para realizar ajustes de stock, son:
+
+``` ruby
+module Reason
+  BUY        = 1
+  SALE       = 2
+  ADJUSTMENT = 3
+  IN         = 4
+  OUT        = 5
+  RETURN     = 6
+  OTHER      = 7
+end
 ```
 
 ### Cómo se registran las compra

@@ -51,12 +51,15 @@ class Stock
     save_transaction(t, user)
   end
 
-  def self.adjust(brand, sku, units, user, comments="", size_order=nil)
+  def self.adjust(brand, sku, units, user, comments="", size_order=nil, reason=nil)
     t = StockTransaction.new(
       brand: brand,
-      style: sku.style, color: sku.color, size: sku.size, 
+      style: sku.style, 
+      color: sku.color, 
+      size: sku.size, 
       size_order: size_order || size_order_for(sku.size),
-      units: units.abs, reason: Reason::ADJUSTMENT, 
+      units: units.abs, 
+      reason: reason, 
       comments: comments)
 
     t.kind  = units > 0 ? KIND_IN : KIND_OUT

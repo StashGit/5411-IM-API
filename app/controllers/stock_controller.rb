@@ -52,7 +52,10 @@ class StockController < ApplicationController
   end
 
   def adjust
-    result = Stock.adjust(@brand, @sku, @units, @user, params[:comments])
+    result = Stock.adjust(@brand, @sku, @units, @user, 
+                          params[:comments],
+                          nil, # <- size_order
+                          params[:reason])
     if result.ok
       render :json => units_in_stock, :status => 200
     else
