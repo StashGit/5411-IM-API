@@ -48,7 +48,7 @@ class SessionController < ApplicationController
   end
 
   def set_user
-    @user = User.find_by_email(params[:email])
+    @user = User.find_by_email(params[:email]&.downcase)
   end
 
   def user_not_found
