@@ -131,7 +131,7 @@ class Stock
         sku: sku, 
         units: units(brand, sku), 
         size_order: order,
-        user_email: User.find(user_id).email
+        # user_email: User.find(user_id).email
       }
     end
     res
