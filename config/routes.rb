@@ -20,10 +20,12 @@ Rails.application.routes.draw do
   post 'stock/sale'
   post 'stock/adjust'
   post 'stock/labels'
+  post 'stock/create_label'
 	# Andrew me pidio si estos podian ser POST para que sea posible hacer
 	# el request utilizando la API fetch de ES6.
   post 'stock/by_brand'
   post 'stock/units'
+  # ===
 
   # Brands.
   get 'brands/all'

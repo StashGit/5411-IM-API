@@ -1,4 +1,6 @@
 class StockController < ApplicationController
+  include ::Qr
+
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
   before_action :authorize, except: [:index]
@@ -64,6 +66,27 @@ class StockController < ApplicationController
   end
 
   def labels
+    raise "Not implemented."
+  end
+
+  def create_label
+    uid     = create_qr_code(**lbl_params)
+    qr_path = "public/qr/#{uid}"
+    result  = Label::create(
+      qr_path: qr_path, 
+      style:   lbl_params[:style],
+      color:   lbl_params[:color],
+      size:    lbl_params[:size])
+
+    if result.ok
+      pdf_path = "#{request.base_url}/labels/#{result.pdf_path}"
+      render :json => { path: pdf_path }, :status => 200
+    else
+      render :json => { errors: result.errors }, :status => 500
+    end
+  end
+
+  def print_label
     raise "Not implemented."
   end
 
@@ -142,5 +165,14 @@ class StockController < ApplicationController
     sku[:color] = params[:color]
     sku[:size]  = params[:size]
     sku
+  end
+
+  def lbl_params
+    lbl = {}
+    lbl[:brand_id] = params[:brand_id]
+    lbl[:style]    = params[:style]
+    lbl[:color]    = params[:color]
+    lbl[:size]     = params[:size]
+    lbl
   end
 end
