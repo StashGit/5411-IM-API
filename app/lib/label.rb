@@ -11,6 +11,7 @@ module Label
   TEXT_START  = -15
   TEXT_SIZE   =   6
   LINE_HEIGHT =  -7
+  IMG_TOP     = 38
 
   def self.create(qr_path:, style:, color:, size:) 
     result = Struct.new(:ok, :pdf_path, :errors)

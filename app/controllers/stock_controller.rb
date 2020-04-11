@@ -65,6 +65,16 @@ class StockController < ApplicationController
     end
   end
 
+  def mass_create_labels
+    # Estos ids los tienen que pasar como argumentos cuando hacen el request.
+    # En este punto se asume que los codigos QR ya fueron generados.
+    # (Probablemente cuando hicieron el import.)
+    qrcodes = Qrcode.all.take(10)
+    Qrcode.print_all qrcodes
+    render :json => { message: "Success" }, :status => 200
+  end
+
+  # Genera una o varias etiquetas para *un* sku.
   def labels
     raise "Not implemented."
   end
@@ -78,9 +88,10 @@ class StockController < ApplicationController
     qr = Qrcode.new(**lbl_params)
     if qr.save
       path, base64 = create_qr_img(qr.id)
-      qr_path = "public/qr/#{File.basename(path)}"
+      qr.update! path: "public/qr/#{File.basename(path)}"
+
       result  = Label::create(
-        qr_path: qr_path, 
+        qr_path: qr.path, 
         style:   lbl_params[:style],
         color:   lbl_params[:color],
         size:    lbl_params[:size])

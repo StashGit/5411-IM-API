@@ -27,3 +27,19 @@ Brand.create_with(
   name: "Nike",
   user_id: User.first.id).find_or_create_by(name: "Nike")
 
+
+unless Qrcode.any?
+  # Estos QRs nos permiten probar la impresion sin tener que importar
+  # productos.
+  1.upto 21 do |i|
+    qr = Qrcode.create!(brand_id: Brand.first.id,
+      style: "STYLE #{i}",
+      color: i % 2 == 0 ? "BLUE" : "RED",
+      size:  i % 3 == 0 ? "S" : "M")
+    qr.create_img
+  end
+end
+
+
+
+
