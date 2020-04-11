@@ -209,7 +209,10 @@ Las marcas se pueden visualizar utilziando el metodo **brands/show**.
          localhost:3000/brands/show/1
 ```
 
-### Cómo se generan los códigos QR
+### Cómo se generan los códigos QR - OBSOLETO!
+_**Si bien este metodo sigue funcionando se recomienda utilizar QRs basados en
+  IDs.**_
+
 Para generar el código QR de un producto tenemos que ejecutar el método **qr/create**.
 
 Al decodificar este código, se obtiene un string que contiene 
@@ -230,11 +233,65 @@ por un tilde (**~**).
          localhost:3000/qr/create
 ```
 
+### Cómo se generan los códigos QR basados en IDs
+Para generar el código QR de un producto tenemos que ejecutar el método **qr/encode**.
+
+Este metodo genera un registro con los datos del producto, le asigna un ID, y
+produce un codigo QR en base a ese ID.
+
+Es importante tener en cuenta que la unica informacion que contiene el QR es el
+ID del registro generado. Si queremos recuperar los datos del producto, tenemos
+que hacer un request adicional al metodo **qr/decode** utilizando ese ID.
+
+**Parámetros**
+* brand_id
+* style
+* color
+* size
+
+```
+    curl -H "Content-Type: text/html" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
+         localhost:3000/qr/encode
+```
+
+Respuesta:
+
+```
+{"id":2,"path":"http://localhost:3000/qr/0000000002.png","base_64":"..."}
+
+```
+
+### Cómo se recuperan los datos de productos cuando utilizamos QRs basados en IDs
+Para obtener la informacion de un producto partiendo de un QR basado en ID
+tenemos que hacer un request al metodo **qr/decode** utilizando el ID del QR.
+
+**Parámetros**
+* id
+
+```
+curl -H "Content-Type: application/json"   \
+     -H "Access-Token: $TOKEN" \
+	 -H "Accepts: application/json" -X POST \
+	 -d "{ \"id\":\"2\" }" \
+   	 localhost:3000/qr/decode
+```
+
+Respuesta:
+
+```
+{"id":2,"brand_id":2,"style":"GRACE STYLE","color":"RED","size":"S","created_at":"2020-04-11T18:18:20.416Z","updated_at":"2020-04-11T18:18:20.416Z"}
+```
+
+
 ### Cómo crear una etiqueta
 Para crear una etiqueta tenemos que especificar los mismos parametros que
 utilizamos para generar un codigo QR.
 
-Nota: Este metodo **genera** una etique. No inicia el proceso de impresion.
+Nota: Este metodo solo **genera** la etiqueta. No inicia el proceso de impresion
+ni nada por el estilo.
 
 **Parámetros**
 * brand_id

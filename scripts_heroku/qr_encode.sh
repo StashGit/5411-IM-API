@@ -12,8 +12,9 @@ then
          -H "Access-Token: $TOKEN" \
          -X POST \
          -d "{ \"brand_id\": \"$BRAND_ID\", \"style\": \"$STYLE\", \"color\": \"$COLOR\", \"size\": \"$SIZE\" }" \
-		stock-api-5411.herokuapp.com/stock/create_label
+		stock-api-5411.herokuapp.com/qr/encode
 else
     echo "Must provide a valid access token."
 fi
+echo
 
