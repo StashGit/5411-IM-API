@@ -8,17 +8,8 @@ class Qrcode < ApplicationRecord
   end
 
   def print
-    # El metodo print se tiene que ejecutar con un delayed job.
-    create_img unless self.path
-
-    pdf_name = Label::create(
-      qr_path:  self.path, 
-      style: self.style, 
-      size:  self.size,
-      color: self.color)
-    
-    pdf_path = File.join(Label::labels_path, pdf_name.pdf_path)
-    puts "TODO: Send #{pdf_path} to the printer via delayed job."
+    # Esto es async. Envia el job a la cola de impresion.
+    PrintLabelJob.perform_later(self)
   end
 
   def self.print_all qrcodes
