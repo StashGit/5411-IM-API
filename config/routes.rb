@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   # QR
   post 'qr/create'
+  post 'qr/encode'
+  post 'qr/decode' # <- Idem a stock/by_brand
   delete 'qr/destroy_all'
 
   # Session.

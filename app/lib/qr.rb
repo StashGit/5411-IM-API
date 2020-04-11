@@ -4,12 +4,30 @@ module Qr
   STR_SIZE = 100
   IMG_SIZE = 180
 
+  def create_qr_code_for_id(id:)
+    content = id.to_s.rjust(10, '0')
+    uid     = "#{content}.png"
+    create_qr(content, uid, 90)
+  end
+
   def create_qr_code(brand_id:, style:, color:, size:)
     ensure_args_present! brand_id, style, color, size
 
     content = "#{brand_id}#{SEP}#{style}#{SEP}#{color}#{SEP}#{size}#{SEP}".
       ljust(STR_SIZE, FILLER)
 
+    uid = create_uid(brand_id, style, color, size)
+    create_qr(content, uid)
+  end
+
+  def delete_all
+    FileUtils.rm_rf(qr_dir)
+    :ok
+  end
+
+  private
+
+  def create_qr content, uid, size = nil
     qrcode = RQRCode::QRCode.new(content)
     png = qrcode.as_png(
       bit_depth: 1,
@@ -21,20 +39,11 @@ module Qr
       module_px_size: 6,
       resize_exactly_to: false,
       resize_gte_to: false,
-      size: IMG_SIZE,
+      size: size || IMG_SIZE,
     )
-
-    uid = create_uid(brand_id, style, color, size)
     save(png, qr_path(uid))
     uid
   end
-
-  def delete_all
-    FileUtils.rm_rf(qr_dir)
-    :ok
-  end
-
-  private
 
   def create_uid(brand_id, style, color, size)
     "#{brand_id}_#{style}_#{color}_#{size}.png".gsub " ", "_"
