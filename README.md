@@ -222,15 +222,32 @@ por un tilde (**~**).
 * color
 * size
 
-_**Nota:** Tener en cuenta que a diferencia del resto de las operaciones de
-esta API, el resultado de esta llamada es un fragmento de código HTML._
-
 ```
     curl -H "Content-Type: text/html" \
          -H "Access-Token: $TOKEN" \
          -X POST \
          -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
          localhost:3000/qr/create
+```
+
+### Cómo crear una etiqueta
+Para crear una etiqueta tenemos que especificar los mismos parametros que
+utilizamos para generar un codigo QR.
+
+Nota: Este metodo **genera** una etique. No inicia el proceso de impresion.
+
+**Parámetros**
+* brand_id
+* style
+* color
+* size
+
+```
+    curl -H "Content-Type: text/html" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" }" \
+         localhost:3000/stock/create_label
 ```
 
 ### Cómo obtener todas las marcas
