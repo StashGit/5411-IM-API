@@ -70,19 +70,29 @@ class StockController < ApplicationController
   end
 
   def create_label
-    uid     = create_qr_code(**lbl_params)
-    qr_path = "public/qr/#{uid}"
-    result  = Label::create(
-      qr_path: qr_path, 
-      style:   lbl_params[:style],
-      color:   lbl_params[:color],
-      size:    lbl_params[:size])
+    # Este metodo genera la metadata del QR, graba esos datos en la base de
+    # datos, y arma un QR con el *id* de ese registro.
+    # Para recuperar los datos del producto hay que escanear el QR para obtener
+    # el id y con ese id hacer una consulta adicional al metodo qr/decode. El 
+    # metodo decode nos devuelve la marca, el estilo, etc...
+    qr = Qrcode.new(**lbl_params)
+    if qr.save
+      path, base64 = create_qr_img(qr.id)
+      qr_path = "public/qr/#{File.basename(path)}"
+      result  = Label::create(
+        qr_path: qr_path, 
+        style:   lbl_params[:style],
+        color:   lbl_params[:color],
+        size:    lbl_params[:size])
 
-    if result.ok
-      pdf_path = "#{request.base_url}/labels/#{result.pdf_path}"
-      render :json => { path: pdf_path }, :status => 200
+      if result.ok
+        pdf_path = "#{request.base_url}/labels/#{result.pdf_path}"
+        render :json => { id: qr.id, path: pdf_path }, :status => 200
+      else
+        render :json => { errors: qr.errors.full_messages }, status: 500
+      end
     else
-      render :json => { errors: result.errors }, :status => 500
+      render :json => { errors: qr.errors.full_messages }, status: 500
     end
   end
 
@@ -103,6 +113,14 @@ class StockController < ApplicationController
   end
 
   private
+
+  def create_qr_img(id)
+    uid    = create_qr_code_for_id(id: id)
+    path   = "#{request.base_url}/qr/#{uid}"
+    image  = open("./public/qr/#{uid}") { |io| io.read }
+    base64 = Base64.encode64(image)
+    [path, base64]
+  end
 
   def units_in_stock
     result = {}

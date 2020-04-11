@@ -7,8 +7,8 @@ module Label
 
   HEIGHT      =  72 #<- 1   Inch.
   WIDTH       = 108 #<- 1.5 Inches.
-  LEFT        = -33
-  TEXT_START  = -19
+  LEFT        = -30
+  TEXT_START  = -15
   TEXT_SIZE   =   6
   LINE_HEIGHT =  -7
 
@@ -21,7 +21,7 @@ module Label
         pdf_path,
         page_size: [HEIGHT, WIDTH], 
         page_layout: :landscape) do
-          image qr_path, width: 68, at: [LEFT - 11, 44]
+          image qr_path, width: 50, at: [LEFT - 7, 38]
           current_line = TEXT_START
           draw_text style, at: [LEFT, current_line], size: TEXT_SIZE
 
