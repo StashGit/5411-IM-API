@@ -178,10 +178,10 @@ Las marcas se pueden modificar utilziando el metodo **brands/update**.
 
 ```
 curl -H "Content-Type: application/json" \
-	 -H "Access-Token: $TOKEN" \
-	 -X POST \
-	 -d "{ \"id\": \"1\", \"name\": \"Nuevo Nombre\" }" \
-	 localhost:3000/brands/update
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{ \"id\": \"1\", \"name\": \"Nuevo Nombre\" }" \
+     localhost:3000/brands/update
 ```
 
 ### Cómo se elimina una marca
@@ -194,10 +194,10 @@ metodo es marcar la marca como borrada.
 
 ```
 curl -H "Content-Type: application/json" \
-	 -H "Access-Token: $TOKEN" \
-	 -X POST \
-	 -d "{ \"id\": \"1\" }" \
-	 localhost:3000/brands/delete
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{ \"id\": \"1\" }" \
+     localhost:3000/brands/delete
 ```
 
 ### Cómo visualizar los datos de una marca
@@ -274,15 +274,15 @@ tenemos que hacer un request al metodo **qr/decode** utilizando el ID del QR.
 ```
 curl -H "Content-Type: application/json"   \
      -H "Access-Token: $TOKEN" \
-	 -H "Accepts: application/json" -X POST \
-	 -d "{ \"id\":\"2\" }" \
-   	 localhost:3000/qr/decode
+     -H "Accepts: application/json" -X POST \
+     -d "{ \"id\":\"2\" }" \
+        localhost:3000/qr/decode
 ```
 
 Respuesta:
 
 ```
-{"id":2,"brand_id":2,"style":"GRACE STYLE","color":"RED","size":"S","created_at":"2020-04-11T18:18:20.416Z","updated_at":"2020-04-11T18:18:20.416Z"}
+{"id":2,"brand_id":2,"style":"GRACE STYLE","color":"RED","size":"S"}
 ```
 
 
@@ -290,8 +290,8 @@ Respuesta:
 Para crear una etiqueta tenemos que especificar los mismos parametros que
 utilizamos para generar un codigo QR.
 
-Nota: Este metodo solo **genera** la etiqueta. No inicia el proceso de impresion
-ni nada por el estilo.
+_Nota: Este metodo **solo genera la etiqueta**. No inicia el proceso de impresion
+ni nada por el estilo._
 
 **Parámetros**
 * brand_id
@@ -342,9 +342,9 @@ que maneja el sistema.
 
 ```
 curl -H "Content-Type: application/json" \
-	 -H "Access-Token: $TOKEN" \
-	 -X GET \
-	 stock-api-5411.herokuapp.com/brands/all
+     -H "Access-Token: $TOKEN" \
+     -X GET \
+     stock-api-5411.herokuapp.com/brands/all
 ```
 
 
