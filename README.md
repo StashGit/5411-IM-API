@@ -307,6 +307,35 @@ ni nada por el estilo.
          localhost:3000/stock/create_label
 ```
 
+### Cómo imprimir etiquetas
+El metodo **stock/mass\_print\_labels** permite imprimir un set de etiquetas para
+codigos QR badados en ID.
+
+(Para obtener mas detalles sobre como generar un codigo QR basado en ID, ver la
+documentatcion del metodo **qr/encode**.) 
+
+
+_Tener en cuenta que este metodo funciona unicamente si la API esta
+corriendo en una maquina que tiene acceso a una impresora._
+
+```
+    curl -H "Content-Type: application/json" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"qr_ids\": [36, 37, 38, 39, 40] }" \
+         localhost:3000/stock/mass_print_labels
+```
+
+**Parámetros**
+* qr\_ids (lista de codigos QR que queremos imprimir.)
+* printer\_name (opcional)
+
+Si se omite el argumento **printer\_name** el servicio utiliza el valor
+configurado en la variable de entorno "PINTER\_NAME"; si esa variable no esta
+configurada, imprime en la impresora default. Si no hay impresora default,
+error.
+
+
 ### Cómo obtener todas las marcas
 El método **brands/all** permite recuperar información de todas las marcas 
 que maneja el sistema.

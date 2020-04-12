@@ -69,8 +69,11 @@ class StockController < ApplicationController
     # Estos ids los tienen que pasar como argumentos cuando hacen el request.
     # En este punto se asume que los codigos QR ya fueron generados.
     # (Probablemente cuando hicieron el import.)
-    qrcodes = Qrcode.all.take(2)
-    Qrcode.print_all qrcodes
+    #
+    # params[:qr_ids] (obligatorio)
+    # params[:printer_name] (opcional)
+    qrcodes = Qrcode.where(id: params[:qr_ids])
+    Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
     render :json => { message: "Success" }, :status => 200
   end
 

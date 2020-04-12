@@ -2,18 +2,20 @@ class PrintLabelJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    qr = args[0]
+    qr   = args[0]
+    opts = args[1]
+
     qr.create_img
 
     result = Label::create(
       qr_path:  qr.path, 
-      style: qr.style, 
-      size:  qr.size,
-      color: qr.color)
+      style:    qr.style, 
+      size:     qr.size,
+      color:    qr.color)
     
     if result.ok
       pdf_path = File.join(Label::labels_path, result.pdf_path)
-      printer = select_printer
+      printer = opts[:printer_name] || select_printer
       # Para ver mas opciones sobre el comando print:
       # https://www.cups.org/doc/options.html
       if printer
