@@ -72,9 +72,13 @@ class StockController < ApplicationController
     #
     # params[:qr_ids] (obligatorio)
     # params[:printer_name] (opcional)
-    qrcodes = Qrcode.where(id: params[:qr_ids])
-    Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
-    render :json => { message: "Success" }, :status => 200
+    if heroku
+      render :json => { message: "Not available on heroku" }, :status => 404
+    else
+      qrcodes = Qrcode.where(id: params[:qr_ids])
+      Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
+      render :json => { message: "Success" }, :status => 200
+    end
   end
 
   # Genera una o varias etiquetas para *un* sku.
@@ -206,5 +210,9 @@ class StockController < ApplicationController
     lbl[:color]    = params[:color]
     lbl[:size]     = params[:size]
     lbl
+  end
+
+  def heroku
+    request.original_url =~ /heroku/
   end
 end
