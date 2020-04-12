@@ -8,7 +8,7 @@ then
          -H "Access-Token: $TOKEN" \
          -X POST \
          -d "{ \"qr_ids\": \"\" }" \
-         localhost:3000/stock/mass_create_labels
+         localhost:3000/stock/mass_print_labels
 else
     echo "Must provide a valid access token."
 fi
