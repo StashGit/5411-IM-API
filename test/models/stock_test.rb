@@ -35,18 +35,18 @@ class StockTransactionTest < ActiveSupport::TestCase
 
   test "can use import tokens to get import transaction IDs" do
     result = Stock.import(brand, pl_path, user) 
-    data   = Token.find_by_hashcode result[:token].hashcode
+    data   = Token.find_by_hashcode result[:token]
 
     assert data
 
     ids = JSON.parse(data.value)
     assert_equal Array, ids.class
-    assert_equal result[:ids].count, ids.count
+    assert ids.count > 0
   end
 
   test "can create QR codes from stock transaction IDs" do
     result  = Stock.import(brand, pl_path, user)
-    data    = Token.find_by_hashcode result[:token].hashcode
+    data    = Token.find_by_hashcode result[:token]
     ids     = JSON.parse(data.value)
     qrcodes = Qrcode.create_from_transaction ids
 
