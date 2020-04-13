@@ -307,7 +307,30 @@ ni nada por el estilo._
          localhost:3000/stock/create_label
 ```
 
-### Cómo imprimir etiquetas
+Tener en cuenta que la impresion de etiquetas corre en un background job. Esto
+quiere decir que el request retorna de forma instantanea mientras que la
+impresion puede demorar. (Este tipo de request no son bloqueantes.)
+
+### Cómo imprimir una etiqueta
+El metodo **stock/print\_label** permite imprimir una etiquetas para un 
+codigo QR badado en ID.
+
+(Para obtener mas detalles sobre como generar un codigo QR basado en ID, ver la
+documentatcion del metodo **qr/encode**.) 
+
+_Tener en cuenta que este metodo funciona unicamente si la API esta
+corriendo en una maquina que tiene acceso a una impresora._
+
+```
+    curl -H "Content-Type: application/json" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"id\": 36 }" \
+         localhost:3000/stock/print_label
+```
+
+
+### Cómo imprimir muchas etiquetas con un solo request
 El metodo **stock/mass\_print\_labels** permite imprimir un set de etiquetas para
 codigos QR badados en ID.
 

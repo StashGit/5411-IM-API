@@ -65,6 +65,20 @@ class StockController < ApplicationController
     end
   end
 
+  def print_label
+    if heroku
+      render :json => { message: "Unavailable on heroku" }, :status => 403
+    else
+      qrcode = Qrcode.find_by_id(params[:id])
+      if qrcode
+        qrcode.print
+        render :json => { message: "Success" }, :status => 200
+      else
+        render :json => { message: "Not found" }, :status => 404
+      end
+    end
+  end
+
   def mass_print_labels
     # Estos ids los tienen que pasar como argumentos cuando hacen el request.
     # En este punto se asume que los codigos QR ya fueron generados.
@@ -73,7 +87,7 @@ class StockController < ApplicationController
     # params[:qr_ids] (obligatorio)
     # params[:printer_name] (opcional)
     if heroku
-      render :json => { message: "Not available on heroku" }, :status => 404
+      render :json => { message: "Unavailable on heroku" }, :status => 403
     else
       qrcodes = Qrcode.where(id: params[:qr_ids])
       Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
@@ -112,10 +126,6 @@ class StockController < ApplicationController
     else
       render :json => { errors: qr.errors.full_messages }, status: 500
     end
-  end
-
-  def print_label
-    raise "Not implemented."
   end
 
   def log
