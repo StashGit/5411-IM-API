@@ -15,7 +15,7 @@ class StockController < ApplicationController
   end
 
   # Vista de prueba para seleccionar el archivo excel a manopla. Desde
-  # el punto de vista de la API no tiene ningun efecto.
+  # el punto de vista de la API, no tiene ningun efecto.
   def prepare_import
   end
 

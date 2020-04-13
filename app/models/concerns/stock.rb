@@ -7,26 +7,57 @@ class Stock
   # ingresar los productos de esa lista al stock.
   def self.import(brand, file_path, user)
     entries = parse_packing_list(brand, file_path)
-    # TODO: Validar que todos los movimientos de stock sean validos
-    #       antes de grabar en al base de datos. Creo que en el caso de los
-    #       imports, lo mas sano va a ser se "graba todo_" o 
-    #       "no se graba nada."
-    #       De esta forma, si algun registro tiene un error lo pueden corregir
-    #       a manopla en el Excel y re-intentar la operacion.
-    Stock.create(entries, user)
-    { ok: true }
+
+    # Seguir desde aca. Verificar que las validaciones funciones y que el 
+    # token se genere correctamente.
+    # Cuando hayamos completado el punto anterior, utilizar el token para
+    # recuperar los IDs e imprimir todas las etiquetas para el lote.
+    if StockEntry.all_valid? entries
+      ok, ids, errors = Stock.create(entries, user)
+      
+      # Dado que validamos los registros antes de generar la transaccion, 
+      # no deberiamos tener ningun error. De todas formas, en el caso de que se 
+      # produzca algun error, lo que hacemos es loguearlo en el server y 
+      # retornar la lista de errores al codigo cliente para que la manejen
+      # desde el front.
+      puts errors unless ok
+      { ok: true, ids: ids, errors: errors, token: create_token(ids) }
+    else
+      # TODO: Con un poco mas de tiempo aca podemos mostrar informacion
+      # detallada. Por ejemplo, que fila tiene datos incorrectos y cosas por el
+      # esitlo.
+      { ok: true, errors: ["Failed to import the packing list. The list contains invalid records."] }
+    end
   rescue Exception => ex
     puts ex.message
     { ok: false, errors: [ex.message] }
   end
 
+  def self.create_token(ids)
+    hs = nil
+    begin
+      hs = SecureRandom.hex
+    end while Token.find_by_hash hs
+    Token.create! hash: hs, value: ids.to_json
+  end
+
   def self.create(entries, user)
+    ids = []
+    errors = []
     entries.each do |entry|
       next unless entry.units
 
-      adjust(entry.brand, entry.sku, entry.units.abs, 
-             user, "Mass Import", entry.size_order)
+      t.save ? Result.new(true, t.id, nil) : Result.new(false, -1, t.errors)
+      res = adjust(entry.brand, entry.sku, entry.units.abs, 
+                   user, "Mass Import", entry.size_order)
+
+      if res.ok
+        ids << r.id
+      else
+        errors << t.errors
+      end
     end
+    [errors.count == 0, ids, errors]
   end
 
   def self.buy(brand, sku, units, user, comments="")
