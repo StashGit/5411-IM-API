@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_11_190913) do
+ActiveRecord::Schema.define(version: 2020_04_13_213835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,13 @@ ActiveRecord::Schema.define(version: 2020_04_11_190913) do
     t.integer "units"
     t.integer "brand_id"
     t.integer "size_order"
+  end
+
+  create_table "tokens", force: :cascade do |t|
+    t.string "hashcode"
+    t.json "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|

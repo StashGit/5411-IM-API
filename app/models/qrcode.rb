@@ -12,6 +12,19 @@ class Qrcode < ApplicationRecord
     PrintLabelJob.perform_later(self, opts)
   end
 
+  def self.create_from_transaction ids
+    res = []
+    StockTransaction.where(id: ids).each do |st|
+      qr = Qrcode.create!(brand_id: st.brand_id,
+                          style:    st.style, 
+                          color:    st.color,
+                          size:     st.size)
+      qr.create_img
+      res << qr
+    end
+    res
+  end
+
   def self.print_all qrcodes, opts={}
     # En este caso no usamos el clasico [ok, errors] porque la impresion en si
     # la vamos a manejar con un delayed job.

@@ -21,8 +21,9 @@ class Stock
       # retornar la lista de errores al codigo cliente para que la manejen
       # desde el front.
       puts errors unless ok
-      { ok: true, ids: ids, errors: errors, token: create_token(ids) }
+      { ok: true, errors: errors, token: create_token(ids).hashcode }
     else
+      # puts StockEntry.select_invalid entries
       # TODO: Con un poco mas de tiempo aca podemos mostrar informacion
       # detallada. Por ejemplo, que fila tiene datos incorrectos y cosas por el
       # esitlo.
@@ -37,8 +38,8 @@ class Stock
     hs = nil
     begin
       hs = SecureRandom.hex
-    end while Token.find_by_hash hs
-    Token.create! hash: hs, value: ids.to_json
+    end while Token.find_by_hashcode hs
+    Token.create! hashcode: hs, value: ids.to_json
   end
 
   def self.create(entries, user)
@@ -47,12 +48,11 @@ class Stock
     entries.each do |entry|
       next unless entry.units
 
-      t.save ? Result.new(true, t.id, nil) : Result.new(false, -1, t.errors)
       res = adjust(entry.brand, entry.sku, entry.units.abs, 
                    user, "Mass Import", entry.size_order)
 
       if res.ok
-        ids << r.id
+        ids << res.id
       else
         errors << t.errors
       end

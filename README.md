@@ -36,8 +36,21 @@ curl -H "Content-Type: multipart/mixed"   \
      localhost:3000/stock/import
 ```
 
+Si la operacion finaliza correctamente, la respuesta de la llamada contiene 
+un "token de impresion." 
+
+Utilizando ese token, podemos invocar el metodo **stock/print\_labels** e 
+imprimir todas las etiquetas con los codigos QR para el lote que acabamos de 
+importar. 
+
+```
+{ "ok": true, "errors": [], "token": "8a5ca2e830f7b381ede318b871a4253e" }
+```
+
 ### Cómo se consulta el stock de un producto
-El stock de un producto se calcula en base a la diferencia entre las transacciones de entrada y salida para la combinación **marca-sku** especificada.
+El stock de un producto se calcula en base a la diferencia entre las 
+transacciones de entrada y salida para la combinación **marca-sku** 
+especificada.
 
 **Párametros**
 * brand_id
@@ -330,7 +343,38 @@ corriendo en una maquina que tiene acceso a una impresora._
 ```
 
 
-### Cómo imprimir muchas etiquetas con un solo request
+### Cómo imprimir muchas etiquetas si contamos con un token de impresion
+El metodo **stock/print\_labels** permite imprimir un conjunto de etiquetas
+en un solo request utilizando un **token de impresion**.
+
+_(Para obtener mas detalles sobre como obtener un **token de impresion** ver la
+documentatcion del metodo **stock/import**.)_
+
+```
+    curl -H "Content-Type: application/json" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"token\": \"8a5ca2e830f7b381ede318b871a4253e\" }" \
+         localhost:3000/stock/print_labels
+```
+
+**Parámetros**
+* token (obligatorio)
+* printer\_name (opcional)
+
+Si se omite el argumento **printer\_name** el servicio utiliza el valor
+configurado en la variable de entorno "PINTER\_NAME"; si esa variable no esta
+configurada, imprime en la impresora default. Si no hay impresora default,
+error.
+
+
+_Nota: Al igual que el resto de los metodos de la impresion, esta operacion esta 
+disponible unicamente si la API esta corriendo en una maquina 
+que tiene acceso a una impresora._
+
+
+### Cómo imprimir muchas etiquetas si contamos con una lista de IDs de codigos
+QR
 El metodo **stock/mass\_print\_labels** permite imprimir un set de etiquetas para
 codigos QR badados en ID.
 

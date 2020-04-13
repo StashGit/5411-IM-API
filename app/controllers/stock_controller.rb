@@ -4,12 +4,11 @@ class StockController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
   before_action :authorize, except: [:index]
-  before_action :set_sku,   only: [:buy, :sale, :adjust, :labels, :units]
-  before_action :set_units, only: [:buy, :sale, :adjust, :labels]
-  before_action :set_user,  only: [:buy, :sale, :adjust, :labels]
-  before_action :set_brand, only: [:buy, :sale, :adjust, 
-                                   :labels, :units, :import,
-                                   :by_brand]
+  before_action :set_sku,   only:   [:buy, :sale, :adjust, :labels, :units]
+  before_action :set_units, only:   [:buy, :sale, :adjust, :labels]
+  before_action :set_user,  only:   [:buy, :sale, :adjust, :labels]
+  before_action :set_brand, only:   [:buy, :sale, :adjust, :labels, :units, 
+                                     :import, :by_brand]
 
   def index
   end
@@ -62,6 +61,22 @@ class StockController < ApplicationController
       render :json => units_in_stock, :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
+    end
+  end
+
+  def print_labels
+    if heroku
+      render :json => { message: "Unavailable on heroku" }, :status => 403
+    else
+      token = Token.find_by_hashcode(params[:token]) 
+      if token
+        ids    = JSON.parse(token.value) 
+        qrcodes = Qrcode.create_from_transaction ids
+        Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
+        render :json => { message: "Success" }, :status => 200
+      else 
+        render :json => { errors: ["The given token doesn't exists."] }, :status => 404
+      end
     end
   end
 

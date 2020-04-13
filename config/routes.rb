@@ -24,7 +24,9 @@ Rails.application.routes.draw do
   post 'stock/labels'
   post 'stock/create_label'
   post 'stock/print_label'
-  post 'stock/mass_print_labels'
+  post 'stock/print_labels'      #<- Si tenemos un token de impresion.
+  post 'stock/mass_print_labels' #<- Si tenemos una lista de QRs' IDs.
+
 	# Andrew me pidio si estos podian ser POST para que sea posible hacer
 	# el request utilizando la API fetch de ES6.
   post 'stock/by_brand'
