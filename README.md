@@ -397,7 +397,7 @@ corriendo en una maquina que tiene acceso a una impresora._
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"qrs\": [ { \"id\": 1, \"copies\": 1 }, { \"id\": 2, \"copies\": 6 } ] }"
+         -d "{ \"qrs\": [ { \"id\": 1, \"copies\": 2 }, { \"id\": 2, \"copies\": 6 } ] }"
          localhost:3000/stock/mass_print_labels
 ```
 
