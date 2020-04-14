@@ -7,3 +7,5 @@ node_modules
 log
 .DS_Store
 public/labels/
+public/qr/
+public/uploads_dir/

@@ -86,7 +86,7 @@ class StockController < ApplicationController
     else
       qrcode = Qrcode.find_by_id(params[:id])
       if qrcode
-        qrcode.print copies: params[:copies].to_i, { printer_name: params[:printer_name] }
+        qrcode.print params[:copies].to_i, { printer_name: params[:printer_name] }
         render :json => { message: "Success" }, :status => 200
       else
         render :json => { message: "Not found" }, :status => 404
