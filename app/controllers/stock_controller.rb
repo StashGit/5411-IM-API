@@ -86,7 +86,7 @@ class StockController < ApplicationController
     else
       qrcode = Qrcode.find_by_id(params[:id])
       if qrcode
-        qrcode.print
+        qrcode.print params[:copies].to_i, { printer_name: params[:printer_name] }
         render :json => { message: "Success" }, :status => 200
       else
         render :json => { message: "Not found" }, :status => 404
@@ -96,15 +96,14 @@ class StockController < ApplicationController
 
   def mass_print_labels
     # Estos ids los tienen que pasar como argumentos cuando hacen el request.
-    # En este punto se asume que los codigos QR ya fueron generados.
-    # (Probablemente cuando hicieron el import.)
+    # Este metodo asume que los codigos QR ya fueron generados.
     #
-    # params[:qr_ids] (obligatorio)
+    # params[:qrs] (obligatorio) => [{ id: 1, copies: 1 }, {id: 3, copies: 3 }]
     # params[:printer_name] (opcional)
     if heroku
       render :json => { message: "Unavailable on heroku" }, :status => 403
     else
-      qrcodes = Qrcode.where(id: params[:qr_ids])
+      qrcodes = Qrcode.mass_prepare params
       Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
       render :json => { message: "Success" }, :status => 200
     end

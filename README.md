@@ -338,14 +338,22 @@ corriendo en una maquina que tiene acceso a una impresora._
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"id\": 36 }" \
+         -d "{ \"id\": 36, \"copies\" : 4 }" \
          localhost:3000/stock/print_label
 ```
-
+**Parámetros**
+* id     (obligatorio) ID del codigo QR.
+* copies (obligatorio) Cantidad de copias que queremos imprimir.
+```
 
 ### Cómo imprimir muchas etiquetas si contamos con un token de impresion
 El metodo **stock/print\_labels** permite imprimir un conjunto de etiquetas
 en un solo request utilizando un **token de impresion**.
+
+Una restriccion importante a tener en cuenta es que este metodo no permite
+especificar la cantidad de etiquetas que queremos imprimir para cada codigo QR.
+La cantidad de impresiones para cada codigo QR se establece al momento de
+generar el token.
 
 _(Para obtener mas detalles sobre como obtener un **token de impresion** ver la
 documentatcion del metodo **stock/import**.)_
@@ -389,12 +397,12 @@ corriendo en una maquina que tiene acceso a una impresora._
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"qr_ids\": [36, 37, 38, 39, 40] }" \
+         -d "{ \"qrs\": [ { \"id\": 1, \"copies\": 1 }, { \"id\": 2, \"copies\": 6 } ] }"
          localhost:3000/stock/mass_print_labels
 ```
 
 **Parámetros**
-* qr\_ids (lista de codigos QR que queremos imprimir.)
+* qrs (obligatorio) Lista de codigos QR y cantidad de copias que queremos imprimir.
 * printer\_name (opcional)
 
 Si se omite el argumento **printer\_name** el servicio utiliza el valor

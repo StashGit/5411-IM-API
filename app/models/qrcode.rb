@@ -7,9 +7,16 @@ class Qrcode < ApplicationRecord
     self.update!(path: path)
   end
 
-  def print opts={}
+  def print number_of_copies, opts={}
     # Esto es async. Envia el job a la cola de impresion.
-    PrintLabelJob.perform_later(self, opts)
+    PrintLabelJob.perform_later(self, number_of_copies,  opts)
+  end
+
+  def self.mass_prepare params
+    # params[:qrs] => [{ id: 1, copies: 1 }, {id: 2, copies: 6 }]
+    params[:qrs].collect do |qr|
+      { qr: Qrcode.find_by_id(qr[:id]), copies: qr[:copies] }
+    end
   end
 
   def self.create_from_transaction ids
@@ -20,14 +27,16 @@ class Qrcode < ApplicationRecord
                           color:    st.color,
                           size:     st.size)
       qr.create_img
-      res << qr
+      res << { qr: qr, copies: st.units }
     end
     res
   end
 
   def self.print_all qrcodes, opts={}
-    # En este caso no usamos el clasico [ok, errors] porque la impresion en si
-    # la vamos a manejar con un delayed job.
-    qrcodes.each { |qr| qr.print(opts) }
+    # Esta es la estructura que tiene *qrcodes*:
+    # qrcodes = [{ qr: qr1, copies: 2 }, { qr: qr2, copies: 3 }]
+    qrcodes.each do |e|
+      e[:qr].print(e[:copies], opts)
+    end
   end
 end
