@@ -338,7 +338,7 @@ corriendo en una maquina que tiene acceso a una impresora._
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"id\": 36 }" \
+         -d "{ \"id\": 36, \"copies\" : 4 }" \
          localhost:3000/stock/print_label
 ```
 

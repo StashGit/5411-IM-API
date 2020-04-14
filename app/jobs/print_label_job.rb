@@ -3,7 +3,8 @@ class PrintLabelJob < ApplicationJob
 
   def perform(*args)
     qr   = args[0]
-    opts = args[1]
+    num_of_copies = args[1]
+    opts = args[2]
 
     qr.create_img
 
@@ -18,12 +19,14 @@ class PrintLabelJob < ApplicationJob
       printer = opts[:printer_name] || select_printer
       # Para ver mas opciones sobre el comando print:
       # https://www.cups.org/doc/options.html
-      if printer
-        `lp -d #{printer} -o media=Custom.108x72 #{pdf_path}`
-      else
-        `lp -o media=Custom.108x72 #{pdf_path}`
+      1.upto num_of_copies do |num|
+        if printer
+          `lp -d #{printer} -o media=Custom.108x72 #{pdf_path}`
+        else
+          `lp -o media=Custom.108x72 #{pdf_path}`
+        end
+        puts "ERROR: #{$?.exitstatus} - copy number #{num}" unless $?.success?
       end
-      puts "ERROR: #{$?.exitstatus}" unless $?.success?
     else
       puts "ERROR creating label for QR ##{qr.id}."
       puts "QR's path ##{qr.path}."
