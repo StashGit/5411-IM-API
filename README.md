@@ -341,11 +341,19 @@ corriendo en una maquina que tiene acceso a una impresora._
          -d "{ \"id\": 36, \"copies\" : 4 }" \
          localhost:3000/stock/print_label
 ```
-
+**Parámetros**
+* id     (obligatorio) ID del codigo QR.
+* copies (obligatorio) Cantidad de copias que queremos imprimir.
+```
 
 ### Cómo imprimir muchas etiquetas si contamos con un token de impresion
 El metodo **stock/print\_labels** permite imprimir un conjunto de etiquetas
 en un solo request utilizando un **token de impresion**.
+
+Una restriccion importante a tener en cuenta es que este metodo no permite
+especificar la cantidad de etiquetas que queremos imprimir para cada codigo QR.
+La cantidad de impresiones para cada codigo QR se establece al momento de
+generar el token.
 
 _(Para obtener mas detalles sobre como obtener un **token de impresion** ver la
 documentatcion del metodo **stock/import**.)_
