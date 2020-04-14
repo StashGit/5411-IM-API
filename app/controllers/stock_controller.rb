@@ -141,8 +141,8 @@ class StockController < ApplicationController
     else
       render :json => { errors: qr.errors.full_messages }, status: 500
     end
-  rescue
-      render :json => { errors: qr.errors.full_messages }, status: 500
+  rescue Exception => ex
+    render :json => { errors: [ ex. message ] }, status: 500
   end
 
   def log
