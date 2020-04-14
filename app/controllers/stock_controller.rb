@@ -122,25 +122,27 @@ class StockController < ApplicationController
     # el id y con ese id hacer una consulta adicional al metodo qr/decode. El 
     # metodo decode nos devuelve la marca, el estilo, etc...
     qr = Qrcode.new(**lbl_params)
-    if qr.save
-      path, base64 = create_qr_img(qr.id)
-      qr.update! path: "public/qr/#{File.basename(path)}"
 
-      result  = Label::create(
-        qr_path: qr.path, 
-        style:   lbl_params[:style],
-        color:   lbl_params[:color],
-        size:    lbl_params[:size])
+    # No podemos usar save sin el bang porque entra en conflicto con el metodo
+    # save que importamos del modulo Qr.
+    qr.save!
+    path, base64 = create_qr_img(qr.id)
+    qr.update! path: "public/qr/#{File.basename(path)}"
 
-      if result.ok
-        pdf_path = "#{request.base_url}/labels/#{result.pdf_path}"
-        render :json => { id: qr.id, path: pdf_path }, :status => 200
-      else
-        render :json => { errors: qr.errors.full_messages }, status: 500
-      end
+    result  = Label::create(
+      qr_path: qr.path, 
+      style:   lbl_params[:style],
+      color:   lbl_params[:color],
+      size:    lbl_params[:size])
+
+    if result.ok
+      pdf_path = "#{request.base_url}/labels/#{result.pdf_path}"
+      render :json => { id: qr.id, path: pdf_path }, :status => 200
     else
       render :json => { errors: qr.errors.full_messages }, status: 500
     end
+  rescue
+      render :json => { errors: qr.errors.full_messages }, status: 500
   end
 
   def log
