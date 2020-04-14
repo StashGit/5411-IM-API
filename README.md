@@ -389,12 +389,12 @@ corriendo en una maquina que tiene acceso a una impresora._
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -d "{ \"qr_ids\": [36, 37, 38, 39, 40] }" \
+         -d "{ \"qrs\": [ { \"id\": 1, \"copies\": 1 }, { \"id\": 2, \"copies\": 6 } ] }"
          localhost:3000/stock/mass_print_labels
 ```
 
 **Parámetros**
-* qr\_ids (lista de codigos QR que queremos imprimir.)
+* qrs (obligatorio) Lista de codigos QR y cantidad de copias que queremos imprimir.
 * printer\_name (opcional)
 
 Si se omite el argumento **printer\_name** el servicio utiliza el valor
