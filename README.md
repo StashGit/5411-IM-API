@@ -1,7 +1,74 @@
 # API Control de Stock
-A continuación de describen todas las operaciones que expone la API de control
-de stock y la lista de argumentos que espera cada una de ellas.
+A continuación de describe como instlar la API  y todas las operaciones que 
+expone para el control de stock.
 
+### Instalación
+Los componentes escenciales para la instalacion de la API, son:
+* Ruby
+* Rails
+* Postgres
+
+Si bien la mayoría de los sistemas cuentan con alguna version de Ruby, 
+suele ser la version incorrecta. Por lo tanto, el primer paso, es instalar
+Ruby.
+
+En OSX, la forma mas sencilla de hacerlo es utilizando **rbenv**.
+Esta herramienta se puede instalar via **homebrew** siguiendo las instrucciones 
+detalladas en su pagina de github: https://github.com/rbenv/rbenv#homebrew-on-macos
+
+Luego de instalar y configurar **rbenv** tenemos que ejecutar:
+
+```
+$ rbenv install 2.6.3
+$ rbenv local 2.6.3
+```
+
+Para comprobar el resultado de los comandos anteriores, podemos ejecutar:
+
+```
+$ ruby --version
+2.6.3[algo...]
+```
+
+Antes de pasar a la instalacion de Rails, tenemos que instalar *postgres**.
+El mecanismo mas rápido para instalar y configurar esta base de datos, es
+utilizando **homebrew**.
+
+```
+$ brew install postgresql
+$ brew services start postgresql
+```
+
+Una vez que contamos con la base de datos, pasamos a instalar Rails y 
+todas las librerias que utiliza la API.
+
+```
+$ gem install bundler
+$ bundle install
+```
+
+En este punto contamos con Ruby, Rails y todas las gems requeridas por la API.
+
+El ultimo paso de la instalacion, es crear la base de datos y correr las 
+migraciones. Para completar este paso, vamos a utilzar **rake**.
+
+```
+$ rake db:create
+$ rake db:migrate
+$ rake db:seed
+```
+
+Si todos los comandos finalizaron correctamente, podemos iniciar el servicio
+ejecutando:
+
+```
+$ rails s
+```
+
+_(\*) Por default la API  corre en http://localhost:3000_
+
+
+## Sobre los metodos que expone la API
 A excepción del método de inicio de sesión, siempre es necesario
 agregar un header especificando el **access-token del usuario actual**.
 
