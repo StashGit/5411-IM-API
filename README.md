@@ -1,9 +1,9 @@
 # API Control de Stock
-A continuación de describe como instlar la API  y todas las operaciones que 
-expone para el control de stock.
+A continuación de describe como instlar y cuales son las operaciones que 
+expone la API para el control de stock.
 
 ### Instalación
-Los componentes escenciales para la instalacion de la API, son:
+Los componentes de base que necesitamos para instalar la API, son:
 * Ruby
 * Rails
 * Postgres
