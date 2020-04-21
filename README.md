@@ -9,7 +9,7 @@ Los componentes de base que necesitamos para instalar la API, son:
 * Postgres
 
 Si bien la mayoría de los sistemas cuentan con alguna version de Ruby, 
-suele ser la version incorrecta. Por lo tanto, el primer paso, es instalar
+suele ser la version incorrecta. Por lo tanto, el primer paso es instalar
 Ruby.
 
 En OSX, la forma mas sencilla de hacerlo es utilizando **rbenv**.
