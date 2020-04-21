@@ -16,22 +16,18 @@ En OSX, la forma mas sencilla de hacerlo es utilizando **rbenv**.
 Esta herramienta se puede instalar via **homebrew** siguiendo las instrucciones 
 detalladas en su pagina de github: https://github.com/rbenv/rbenv#homebrew-on-macos
 
-Luego de instalar y configurar **rbenv** tenemos que ejecutar:
+Luego de instalar y configurar **rbenv**, tenemos que ejecutar:
 
 ```
 $ rbenv install 2.6.3
 $ rbenv local 2.6.3
-```
-
-Para comprobar el resultado de los comandos anteriores, podemos ejecutar:
-
-```
 $ ruby --version
-2.6.3[algo...]
 ```
 
-Antes de pasar a la instalacion de Rails, tenemos que instalar *postgres**.
-El mecanismo mas rápido para instalar y configurar esta base de datos, es
+Si la salida del ultimo comando es `2.6.3[algo...]` podemos continuar.
+
+Antes de pasar a la instalacion de Rails, vamos a instalar y configurar **postgres**.
+El mecanismo mas rápido para instalar y configurar esta base de datos, es 
 utilizando **homebrew**.
 
 ```
