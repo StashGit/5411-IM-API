@@ -20,6 +20,7 @@ Luego de instalar y configurar **rbenv**, tenemos que ejecutar:
 
 ```
 $ rbenv install 2.6.3
+$ cd <path_repo>
 $ rbenv local 2.6.3
 $ ruby --version
 ```
