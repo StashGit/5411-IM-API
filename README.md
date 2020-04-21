@@ -1,5 +1,5 @@
 # API Control de Stock
-A continuación de describe como instlar y cuales son las operaciones que 
+A continuación de describe como instalar y cuales son las operaciones que 
 expone la API para el control de stock.
 
 ### Instalación
