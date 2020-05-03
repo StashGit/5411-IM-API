@@ -44,6 +44,17 @@ class QrQueueTest < ActiveSupport::TestCase
     assert 0 == jobs.count
   end
 
+  test "can deque all QR codes in one go" do
+    printing_queue.enqueue [@job1, @job2]
+
+    ok, error = printing_queue.dequeue_all
+
+    jobs = printing_queue.pending
+
+    assert ok
+    assert 0 == jobs.count
+  end
+
   test "can get pending jobs ids" do
     printing_queue.enqueue [@job1, @job2]
 

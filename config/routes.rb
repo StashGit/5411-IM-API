@@ -6,7 +6,9 @@ Rails.application.routes.draw do
   ## Print labels.
   post 'print/enqueue' 
   post 'print/dequeue' 
+  post 'print/dequeue_all' 
   get  'print/pending'
+  get  'print/pending_jobs_ids'
   ##
 
 

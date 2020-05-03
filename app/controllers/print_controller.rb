@@ -25,7 +25,21 @@ class PrintController < ApplicationController
     end
   end
 
+  def dequeue_all
+    # Marca todos los items de la cola como impresos.
+    ok, errors = QrQueue.dequeue_all
+    if ok
+      render :json => { message: "Success!" }, :status => 200
+    else
+      render :json => { errors: errors }, :status => 400
+    end
+  end
+
   def pending
     render :json => QrQueue.pending, :status => 200
+  end
+
+  def pending_jobs_ids
+    render :json => QrQueue.pending_jobs_ids, :status => 200
   end
 end

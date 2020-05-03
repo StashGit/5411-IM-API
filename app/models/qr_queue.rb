@@ -25,6 +25,13 @@ class QrQueue < ApplicationRecord
     return [false, [ex.message]]
   end
 
+  def self.dequeue_all
+    QrQueue.update_all printed: true
+    [true, nil]
+  rescue ActiveRecord::ActiveRecordError => ex
+    return [false, [ex.message]]
+  end
+
   # Retorna la lista items que tenemos que imprimir. Esta lista contiene todos
   # los datos del codigo QR y la cantidad de copias que tenemos que imprimir en
   # cada caso.
