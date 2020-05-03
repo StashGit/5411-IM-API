@@ -21,9 +21,9 @@ class Service
     # trabajo la impresora. Solo imprime un mensaje en la terminal.
     # Generalmente solo se usa en sesiones de debug.
     @qrs_path  = File.join(root_path, "qr")
-    @lbls_path = File.join(root_path, "lbl")
+    @lbls_path = File.join(root_path, "labels")
     @printer   = ENV["LBL_PRINTER"]
-    @virtual_printing = true
+    @virtual_printing = false
 
     set_qr_root root_path
     set_lbl_root root_path
@@ -72,6 +72,7 @@ class Service
       # Para ver mas opciones sobre el comando print:
       # https://www.cups.org/doc/options.html
       1.upto copies do |num|
+        puts "pdf path: #{pdf_path}"
         if @printer
           `lp -d #{@printer} -o media=Custom.108x72 #{pdf_path}`
         else
@@ -115,7 +116,6 @@ class Service
 
     printed_jobs_ids = []
     jobs&.each do |job|
-      puts "----"
       qr_hash = job["qr"]
       # Full QR 
       # path = create_qr_code brand_id: qr_hash["brand_id"]&.to_s, 
@@ -123,7 +123,9 @@ class Service
       #   color:    qr_hash["color"], 
       #   size:     qr_hash["size"]
       #   ID-based QR
-      path = create_qr_code_for_id id: qr_hash["id"]
+      qr_id = qr_hash["id"]
+      puts "printing qr id: #{qr_id}"
+      path = create_qr_code_for_id id: qr_id
 
       ok = print_label qr_hash, path, job["copies"].to_i
       if ok
@@ -134,7 +136,6 @@ class Service
       # armamos para los QR no hace nada si el arhivo ya existe, con lo cual
       # mejoramos la performance de la impresion dejando los archivos previos
       # ahi.
-      puts "----"
     end
     success!
     printed_jobs_ids
