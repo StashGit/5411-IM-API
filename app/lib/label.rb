@@ -13,6 +13,12 @@ module Label
   LINE_HEIGHT =  -7
   IMG_TOP     = 38
 
+  @@root_path = nil
+
+  def set_lbl_root path
+    @@root_path = path
+  end
+
   def self.create(qr_path:, style:, color:, size:) 
     result = Struct.new(:ok, :pdf_path, :errors)
     begin
@@ -45,7 +51,14 @@ module Label
   end
 
   def self.labels_path
-    path = File.join("public", "labels")
+    path = ""
+    
+    if @@root_path
+      path = File.join(@@root_path, "labels")
+    else
+      path = File.join("public", "labels")
+    end
+
     FileUtils.mkdir(path) unless Dir.exists?(path)
     path
   end

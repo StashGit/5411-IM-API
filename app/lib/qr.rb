@@ -4,7 +4,9 @@ module Qr
   STR_SIZE = 100
   IMG_SIZE = 180
 
-  def set_root path
+  @@root_path = nil
+
+  def set_qr_root path
     @@root_path = path
   end
 
