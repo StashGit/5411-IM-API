@@ -385,96 +385,97 @@ ni nada por el estilo._
          localhost:3000/stock/create_label
 ```
 
-Tener en cuenta que la impresion de etiquetas corre en un background job. Esto
+Tener en cuenta que la creacion de etiquetas corre en un background job. Esto
 quiere decir que el request retorna de forma instantanea mientras que la
 impresion puede demorar. (Este tipo de request no son bloqueantes.)
 
-### Cómo imprimir una etiqueta
-El metodo **stock/print\_label** permite imprimir una etiquetas para un 
-codigo QR badado en ID.
+### Cómo imprimir etiquetas
+El nuevo mecanimos de impresion divide el proceso en dos etapas. Por un lado
+tenemos el metodo **print/enqueue** que tienen que utilizar los clientes de la
+API para encolar trabajos de impresion. Y por el otro, el metodo
+**print/pending** que utiliza el servicio de impresion para recuperar los
+trabajos encolados y mandarlos a imprimir desde una maquina contectada a una
+impresora.
 
-(Para obtener mas detalles sobre como generar un codigo QR basado en ID, ver la
-documentatcion del metodo **qr/encode**.) 
+**Parámetros obligatorios**
+* jobs
 
-_Tener en cuenta que este metodo funciona unicamente si la API esta
-corriendo en una maquina que tiene acceso a una impresora._
-
-```
-    curl -H "Content-Type: application/json" \
-         -H "Access-Token: $TOKEN" \
-         -X POST \
-         -d "{ \"id\": 36, \"copies\" : 4 }" \
-         localhost:3000/stock/print_label
-```
-
-**Parámetros**
-* id     (obligatorio) ID del codigo QR.
-* copies (obligatorio) Cantidad de copias que queremos imprimir.
-
-### Cómo imprimir muchas etiquetas si contamos con un token de impresion
-El metodo **stock/print\_labels** permite imprimir un conjunto de etiquetas
-en un solo request utilizando un **token de impresion**.
-
-Una restriccion importante a tener en cuenta es que este metodo no permite
-especificar la cantidad de etiquetas que queremos imprimir para cada codigo QR.
-La cantidad de impresiones para cada codigo QR se establece al momento de
-generar el token.
-
-_(Para obtener mas detalles sobre como obtener un **token de impresion** ver la
-documentatcion del metodo **stock/import**.)_
+Jobs es una coleccion de items donde cada elemento tiene el id del codigo QR
+que queremos imprimir y la cantidad de copias que queremos para ese elemento.
 
 ```
-    curl -H "Content-Type: application/json" \
-         -H "Access-Token: $TOKEN" \
-         -X POST \
-         -d "{ \"token\": \"8a5ca2e830f7b381ede318b871a4253e\" }" \
-         localhost:3000/stock/print_labels
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{\"jobs\": [{ 
+         \"qr_id\": \"$QR_ID\", 
+         \"copies\": \"$COPIES\" }]}" \
+     "localhost:3000/print/enqueue"
 ```
 
-**Parámetros**
-* token (obligatorio)
-* printer\_name (opcional)
-
-Si se omite el argumento **printer\_name** el servicio utiliza el valor
-configurado en la variable de entorno "PINTER\_NAME"; si esa variable no esta
-configurada, imprime en la impresora default. Si no hay impresora default,
-error.
-
-
-_Nota: Al igual que el resto de los metodos de la impresion, esta operacion esta 
-disponible unicamente si la API esta corriendo en una maquina 
-que tiene acceso a una impresora._
-
-
-### Cómo imprimir muchas etiquetas si contamos con una lista de IDs de codigos
-QR
-El metodo **stock/mass\_print\_labels** permite imprimir un set de etiquetas para
-codigos QR badados en ID.
-
-(Para obtener mas detalles sobre como generar un codigo QR basado en ID, ver la
-documentatcion del metodo **qr/encode**.) 
-
-
-_Tener en cuenta que este metodo funciona unicamente si la API esta
-corriendo en una maquina que tiene acceso a una impresora._
+Resultado:
 
 ```
-    curl -H "Content-Type: application/json" \
-         -H "Access-Token: $TOKEN" \
-         -X POST \
-         -d "{ \"qrs\": [ { \"id\": 1, \"copies\": 2 }, { \"id\": 2, \"copies\": 6 } ] }"
-         localhost:3000/stock/mass_print_labels
+{"message":"Success!"}
 ```
 
-**Parámetros**
-* qrs (obligatorio) Lista de codigos QR y cantidad de copias que queremos imprimir.
-* printer\_name (opcional)
+### Cómo obtener items de la cola de impresion
+Para obtener la lista de las etiquetas que tenemos que imprimir tenemos que 
+utilizar el metodo **print/pending**.
 
-Si se omite el argumento **printer\_name** el servicio utiliza el valor
-configurado en la variable de entorno "PINTER\_NAME"; si esa variable no esta
-configurada, imprime en la impresora default. Si no hay impresora default,
-error.
+El resultado de este metodo nos permite generar e imprimir las etiquetas en la
+maquina que se encuentra conectada a la impresora.
 
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X GET \
+     "localhost:3000/print/pending"
+```
+
+Resultado:
+```
+{
+  jobs:[
+    { 
+      qr:{id:305,brand_id:1,style:"GRACE",color:"RED",size:"M",path":null}, 
+      copies:2,
+      job_id:53
+    }
+  ]
+}
+```
+
+### Cómo quitar items de la cola de impresion
+Si la impresion finaliza correctamente tenemos que eilimnar los items de la
+cola de impresion utilizando el metodo **print/dequeue** especificando la lista
+de trabajos de impresion que queremos remover.
+
+**Parámetros obligatorios**
+* jobs_ids
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{\"jobs_ids\": [ \"$JOB_ID\" ]}" \
+     "localhost:3000/print/dequeue"
+```
+
+_Los jobs_ids los obtenemos cuando ejecutamos el metodo **print/pending**._
+
+### Cómo quitar todos los items de la cola de impresion
+Si por algun motivo tenemos que eliminar todos los items de la cola de
+impresion, podemos hacerlo utilizando el metodo **print/dequeue_all**
+
+En este caso, no es necesario especificar ningun argumento.
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     "localhost:3000/print/dequeue_all"
+```
 
 ### Cómo obtener todas las marcas
 El método **brands/all** permite recuperar información de todas las marcas 
