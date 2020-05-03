@@ -4,15 +4,17 @@ require 'rqrcode'
 require 'fileutils'
 require_relative '../app/lib/qr.rb'
 
+class Service
 include ::Qr
 
 def init
     # Utilizamos un directorio propio del servicio para no tener conflictos con
     # los qrs que generamos en app/public.
-    set_root "./qrs"
+    root_path = "/Users/amiralles/dev/stash/5411-IM-API/services"
     url   = ENV['HOST']  || 'http://localhost:3000'
     token = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
 
+    set_root root_path
     @pending_jobs_url = "#{url}/print/pending"
     @dequeue_jobs_url = "#{url}/print/dequeue"
     @headers = {
@@ -47,6 +49,14 @@ rescue Exception => ex
   notify_error ex.message
 end
 
+def print_label path, copies
+  puts "copies: #{copies}"
+  puts "file:   #{File.join(@@root_path, path)}"
+  return true
+rescue Exception => ex
+  puts ex.message
+end
+
 def print_labels jobs
   # [
   #   {
@@ -58,6 +68,7 @@ def print_labels jobs
   puts
   puts jobs&.count > 0 ? "Printing labels..." : "No jobs on the queue."
 
+  printed_jobs_ids = []
   jobs&.each do |job|
     puts "----"
     qr = job["qr"]
@@ -65,23 +76,28 @@ def print_labels jobs
                           style:    qr["style"], 
                           color:    qr["color"], 
                           size:     qr["size"]
-    puts path
-    puts job["copies"]
-    puts job["job_id"]
+
+    ok = print_label path, job["copies"].to_i
+    if ok
+      printed_jobs_ids << job["job_id"]
+    end
+    # No borramos el archivo porque las chances de que quieran volver a
+    # imprimir la misma etiqueta son grandes. Actualmente, la libreria que
+    # armamos para los QR no hace nada si el arhivo ya existe, con lo cual
+    # mejoramos la performance de la impresion dejando los archivos previos
+    # ahi.
     puts "----"
-    # Una vez que logramos imprimir el archivo lo eliminamos.
-    # FileUtils.rm_rf path
   end
   success!
+  printed_jobs_ids
 rescue Exception => ex
   notify_error ex.message
 end
 
-def mark_as_printed jobs
+def mark_as_printed printed_jobs_ids
   puts
-  puts jobs&.count > 0 ? "Dequeuing jobs..." : "No jobs to dequeue."
-  jobs_ids = jobs.collect { |job| job["job_id"] }
-  body = { jobs_ids: jobs_ids }.to_json
+  puts printed_jobs_ids&.count > 0 ? "Dequeuing jobs..." : "No jobs to dequeue."
+  body = { jobs_ids: printed_jobs_ids }.to_json
 
   response = HTTParty.post(@dequeue_jobs_url,
     body: body,
@@ -98,10 +114,11 @@ end
 
 def do_work
   jobs = get_jobs
-  ok = print_labels jobs
-  if ok
-    mark_as_printed jobs
-  end
+  printed_jobs_ids = print_labels(jobs)
+
+  # Solo tenemos que marcar como impresos los que efectivamente logramos
+  # imprimir.
+  mark_as_printed(printed_jobs_ids)
 end
 
 def main
@@ -112,9 +129,16 @@ def main
       puts ex
     end
 
+    puts "sleeping..."
     sleep 5
   end
 end
+end
 
-init
-main
+service = Service.new
+service.init
+service.main
+
+
+
+

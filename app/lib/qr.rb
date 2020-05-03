@@ -69,7 +69,12 @@ module Qr
   end
 
   def qr_dir
-    path = @@root_path || Rails.root.join('public', 'qr')
+    path = ""
+    if @@root_path
+      path = File.join(@@root_path, "qr")
+    else
+      path = Rails.root.join('public', 'qr')
+    end
     FileUtils.mkdir(path) unless Dir.exists?(path)
     path
   end
