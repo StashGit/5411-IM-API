@@ -3,24 +3,25 @@ require 'json'
 
 loop do
   begin
-    url = ENV['HOST'] || 'http://localhost:3000'
+    url   = ENV['HOST']  || 'http://localhost:3000'
+    token = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
+
     uri = URI("#{url}/stock/labels_queue")
-    puts uri
 
     headers = {
-      "content-type": 'application/json',
-      "access-token": '',
+      "Content-Type": 'application/json',
+      "Access-Token": token
     }
 
-    response = HTTParty.get(url, headers: headers)
-    puts response.body
+    response = HTTParty.get(uri, headers: headers)
 
-    if response.status == 200
+    if response.code == 200
+      puts "SUCCESS"
       transactions = JSON.parse(response.body)["transactions"]
       transactions.each {|t| puts t }
     else
-      puts "error"
-      errors = JSON.parse(response.body)["errors"]
+      puts "ERROR"
+      puts JSON.parse(response.body)["errors"]
     end
   rescue Exception => ex
     puts ex

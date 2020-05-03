@@ -182,7 +182,7 @@ module Reason
 end
 ```
 
-### Cómo se registran las compra
+### Cómo se registran las compras
 Las tranascciones de compras se generan utilizando el método **stock/buy**.
 
 **Parámetros**
@@ -200,7 +200,7 @@ curl -H "Content-Type: application/json" \
      localhost:3000/stock/buy
 ```
 
-### Cómo se registran las venta
+### Cómo se registran las ventas
 Las tranascciones de ventas se generan utilizando el método **stock/sale**.
 
 **Parámetros**
@@ -279,6 +279,7 @@ curl -H "Content-Type: application/json" \
 
 ### Cómo visualizar los datos de una marca
 Las marcas se pueden visualizar utilziando el metodo **brands/show**.
+
 ```
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
@@ -405,10 +406,10 @@ corriendo en una maquina que tiene acceso a una impresora._
          -d "{ \"id\": 36, \"copies\" : 4 }" \
          localhost:3000/stock/print_label
 ```
+
 **Parámetros**
 * id     (obligatorio) ID del codigo QR.
 * copies (obligatorio) Cantidad de copias que queremos imprimir.
-```
 
 ### Cómo imprimir muchas etiquetas si contamos con un token de impresion
 El metodo **stock/print\_labels** permite imprimir un conjunto de etiquetas
