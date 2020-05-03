@@ -64,61 +64,53 @@ class StockController < ApplicationController
     end
   end
 
-  def labels_queue
-    qrs = QrQueue.pending
-    render :json => { qrs: qrs }, :status => 200
-  end
-
-  # Mecanismo original
   def print_labels
-    if heroku
-      render :json => { message: "Unavailable on heroku" }, :status => 403
-    else
-      token = Token.find_by_hashcode(params[:token]) 
-      if token
-        ids    = JSON.parse(token.value) 
-        qrcodes = Qrcode.create_from_transaction ids
-        Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
-        render :json => { message: "Success" }, :status => 200
-      else 
-        render :json => { errors: ["The given token doesn't exists."] }, :status => 404
-      end
-    end
-  end
+    token = Token.find_by_hashcode(params[:token]) 
+    if token
+      ids     = JSON.parse(token.value) 
+      qrcodes = Qrcode.create_from_transaction ids
 
-  def print_label
-    if heroku
-      render :json => { message: "Unavailable on heroku" }, :status => 403
-    else
-      qrcode = Qrcode.find_by_id(params[:id])
-      if qrcode
-        qrcode.print params[:copies].to_i, { printer_name: params[:printer_name] }
-        render :json => { message: "Success" }, :status => 200
+      jobs = create_printing_jobs(qrcodes);
+      ok, errors = QrQueue.enqueue jobs
+
+      if ok
+        render :json => { message: "Success!" }, :status => 200
       else
-        render :json => { message: "Not found" }, :status => 404
+        render :json => { errors: errors }, :status => 400
       end
+    else 
+      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
     end
   end
 
-  def mass_print_labels
-    # Estos ids los tienen que pasar como argumentos cuando hacen el request.
-    # Este metodo asume que los codigos QR ya fueron generados.
-    #
-    # params[:qrs] (obligatorio) => [{ id: 1, copies: 1 }, {id: 3, copies: 3 }]
-    # params[:printer_name] (opcional)
-    if heroku
-      render :json => { message: "Unavailable on heroku" }, :status => 403
-    else
-      qrcodes = Qrcode.mass_prepare params
-      Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
-      render :json => { message: "Success" }, :status => 200
-    end
-  end
+  # def print_label
+  #   if heroku
+  #     render :json => { message: "Unavailable on heroku" }, :status => 403
+  #   else
+  #     qrcode = Qrcode.find_by_id(params[:id])
+  #     if qrcode
+  #       qrcode.print params[:copies].to_i, { printer_name: params[:printer_name] }
+  #       render :json => { message: "Success" }, :status => 200
+  #     else
+  #       render :json => { message: "Not found" }, :status => 404
+  #     end
+  #   end
+  # end
 
-  # Genera una o varias etiquetas para *un* sku.
-  def labels
-    raise "Not implemented."
-  end
+  # def mass_print_labels
+  #   # Estos ids los tienen que pasar como argumentos cuando hacen el request.
+  #   # Este metodo asume que los codigos QR ya fueron generados.
+  #   #
+  #   # params[:qrs] (obligatorio) => [{ id: 1, copies: 1 }, {id: 3, copies: 3 }]
+  #   # params[:printer_name] (opcional)
+  #   if heroku
+  #     render :json => { message: "Unavailable on heroku" }, :status => 403
+  #   else
+  #     qrcodes = Qrcode.mass_prepare params
+  #     Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
+  #     render :json => { message: "Success" }, :status => 200
+  #   end
+  # end
 
   def create_label
     # Este metodo genera la metadata del QR, graba esos datos en la base de
@@ -242,6 +234,18 @@ class StockController < ApplicationController
     lbl[:color]    = params[:color]
     lbl[:size]     = params[:size]
     lbl
+  end
+
+  def create_printing_jobs qrcodes
+    # jobs: [{ qr_id: 1, copies: 2 }, { qr_id: 2, copies: 2 }]
+    jobs = []
+    qrcodes.each do |code|
+      job = {}
+      job["qr_id"]  = code.qr_id
+      job["copies"] = code.copies
+      jobs << job
+    end
+    jobs
   end
 
   def heroku

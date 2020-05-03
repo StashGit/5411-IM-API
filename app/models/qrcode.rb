@@ -32,6 +32,10 @@ class Qrcode < ApplicationRecord
     res
   end
 
+  def qr_id
+    self.id
+  end
+
   def self.print_all qrcodes, opts={}
     # Esta es la estructura que tiene *qrcodes*:
     # qrcodes = [{ qr: qr1, copies: 2 }, { qr: qr2, copies: 3 }]

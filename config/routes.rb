@@ -30,11 +30,14 @@ Rails.application.routes.draw do
   post 'stock/buy'
   post 'stock/sale'
   post 'stock/adjust'
-  post 'stock/labels'
   post 'stock/create_label'
-  post 'stock/print_label'
-  post 'stock/print_labels'      #<- Si tenemos un token de impresion.
-  post 'stock/mass_print_labels' #<- Si tenemos una lista de QRs' IDs.
+  # Dejamos este metodo que permite imprimir utilizando un token de impresion 
+  # para mantener la compatibilidad con el proceso import/print.
+  # Internamente, terminamos generando lo mismo que print/enqueue.
+  post 'stock/print_labels'
+  # post 'stock/labels'
+  # post 'stock/print_label'
+  # post 'stock/mass_print_labels' #<- Si tenemos una lista de QRs' IDs.
 	# Andrew me pidio si estos podian ser POST para que sea posible hacer
 	# el request utilizando la API fetch de ES6.
   post 'stock/by_brand'
