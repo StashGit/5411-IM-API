@@ -117,10 +117,13 @@ class Service
     jobs&.each do |job|
       puts "----"
       qr_hash = job["qr"]
-      path = create_qr_code brand_id: qr_hash["brand_id"]&.to_s, 
-        style:    qr_hash["style"], 
-        color:    qr_hash["color"], 
-        size:     qr_hash["size"]
+      # Full QR 
+      # path = create_qr_code brand_id: qr_hash["brand_id"]&.to_s, 
+      #   style:    qr_hash["style"], 
+      #   color:    qr_hash["color"], 
+      #   size:     qr_hash["size"]
+      #   ID-based QR
+      path = create_qr_code_for_id id: qr_hash["id"]
 
       ok = print_label qr_hash, path, job["copies"].to_i
       if ok
