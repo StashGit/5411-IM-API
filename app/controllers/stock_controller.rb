@@ -64,6 +64,49 @@ class StockController < ApplicationController
     end
   end
 
+  def enqueue_labels
+    token = Token.find_by_hashcode(params[:token]) 
+    if token
+      ids = JSON.parse(token.value) 
+      if PrintQueue.enqueue transactions_ids: ids
+        render :json => { message: "Success" }, :status => 200
+      else
+        render :json => { message: "Failed to enqueue transactions" }, :status => 400
+      end
+    else 
+      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
+    end
+  end
+
+  def dequeue_labels
+    token = Token.find_by_hashcode(params[:token]) 
+    if token
+      ids = JSON.parse(token.value) 
+      if PrintQueue.dequeue transactions_ids: ids
+        render :json => { message: "Success" }, :status => 200
+      else
+        render :json => { message: "Failed to dequeue transactions" }, :status => 400
+      end
+    else 
+      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
+    end
+  end
+
+  def labels_queue
+    token = Token.find_by_hashcode(params[:token]) 
+    if token
+      transactions = PrintQueue.queued_transactions
+      if transactions
+        render :json => { transactions: transactions }, :status => 200
+      else
+        render :json => { errors: ["Failed to get enqueued transactions."] }, :status => 400
+      end
+    else 
+      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
+    end
+  end
+
+  # Mecanismo original
   def print_labels
     if heroku
       render :json => { message: "Unavailable on heroku" }, :status => 403
