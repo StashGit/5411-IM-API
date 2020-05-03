@@ -4,6 +4,10 @@ module Qr
   STR_SIZE = 100
   IMG_SIZE = 180
 
+  def set_root path
+    @@root_path = path
+  end
+
   def create_qr_code_for_id(id:)
     content = id.to_s.rjust(10, '0')
     uid     = "#{content}.png"
@@ -50,10 +54,12 @@ module Qr
   end
 
   def ensure_args_present!(brand_id, style, color, size)
-    raise "brand_id is required" unless brand_id.present?
-    raise "style is required"    unless style.present?
-    raise "color is required"    unless color.present?
-    raise "size is required"     unless size.present?
+    # no utilizamos present? para que se posible consumir esta lib
+    # desde los servicios que tenemos fuera de rails.
+    raise "brand_id is required" unless brand_id
+    raise "style is required"    unless style
+    raise "color is required"    unless color
+    raise "size is required"     unless size
   end
 
   def save(png, path)
@@ -63,7 +69,7 @@ module Qr
   end
 
   def qr_dir
-    path = Rails.root.join('public', 'qr')
+    path = @@root_path || Rails.root.join('public', 'qr')
     FileUtils.mkdir(path) unless Dir.exists?(path)
     path
   end

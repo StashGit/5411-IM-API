@@ -1,7 +1,15 @@
 require 'httparty'
 require 'json'
+require 'rqrcode'
+require 'fileutils'
+require_relative '../app/lib/qr.rb'
+
+include ::Qr
 
 def init
+    # Utilizamos un directorio propio del servicio para no tener conflictos con
+    # los qrs que generamos en app/public.
+    set_root "./qrs"
     url   = ENV['HOST']  || 'http://localhost:3000'
     token = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
 
@@ -15,6 +23,7 @@ end
 
 def success!
   puts "SUCCESS"
+  true
 end
 
 def notify_error message
@@ -47,13 +56,21 @@ def print_labels jobs
   #   }
   # ]
   puts
-  puts "Printing labels..."
+  puts jobs&.count > 0 ? "Printing labels..." : "No jobs on the queue."
+
   jobs&.each do |job|
     puts "----"
-    puts job["qr"]
+    qr = job["qr"]
+    path = create_qr_code brand_id: qr["brand_id"]&.to_s, 
+                          style:    qr["style"], 
+                          color:    qr["color"], 
+                          size:     qr["size"]
+    puts path
     puts job["copies"]
     puts job["job_id"]
     puts "----"
+    # Una vez que logramos imprimir el archivo lo eliminamos.
+    # FileUtils.rm_rf path
   end
   success!
 rescue Exception => ex
@@ -62,7 +79,7 @@ end
 
 def mark_as_printed jobs
   puts
-  puts "marking as printed"
+  puts jobs&.count > 0 ? "Dequeuing jobs..." : "No jobs to dequeue."
   jobs_ids = jobs.collect { |job| job["job_id"] }
   body = { jobs_ids: jobs_ids }.to_json
 
@@ -81,8 +98,10 @@ end
 
 def do_work
   jobs = get_jobs
-  print_labels jobs
-  mark_as_printed jobs
+  ok = print_labels jobs
+  if ok
+    mark_as_printed jobs
+  end
 end
 
 def main
