@@ -241,8 +241,8 @@ class StockController < ApplicationController
     jobs = []
     qrcodes.each do |code|
       job = {}
-      job["qr_id"]  = code.qr_id
-      job["copies"] = code.copies
+      job["qr_id"]  = code[:qr].id
+      job["copies"] = code[:copies]
       jobs << job
     end
     jobs

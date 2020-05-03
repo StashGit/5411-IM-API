@@ -47,7 +47,7 @@ module Qr
       resize_gte_to: false,
       size: size || IMG_SIZE,
     )
-    save(png, qr_path(uid))
+    save_qr(png, qr_path(uid))
     uid
   end
 
@@ -64,7 +64,7 @@ module Qr
     raise "size is required"     unless size
   end
 
-  def save(png, path)
+  def save_qr(png, path)
     # Si el QR ya existe, no-op.
     IO.binwrite(path, png.to_s) unless File.exists?(path)
     path
