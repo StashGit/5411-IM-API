@@ -7,13 +7,8 @@ class QrQueueTest < ActiveSupport::TestCase
   end
 
   test "can enque QR codes" do
-    res = QrQueue.enqueue @qr.id
-    assert 1 == QrQueue.pending.count
   end
 
   test "can deque QR codes" do
-    QrQueue.enqueue @qr.id
-    QrQueue.dequeue @qr.id
-    assert 0 == QrQueue.pending.count
   end
 end

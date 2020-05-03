@@ -64,37 +64,9 @@ class StockController < ApplicationController
     end
   end
 
-  def enqueue_labels
-    token = Token.find_by_hashcode(params[:token]) 
-    if token
-      ids = JSON.parse(token.value) 
-      if PrintQueue.enqueue transactions_ids: ids
-        render :json => { message: "Success" }, :status => 200
-      else
-        render :json => { message: "Failed to enqueue transactions" }, :status => 400
-      end
-    else 
-      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
-    end
-  end
-
-  def dequeue_labels
-    token = Token.find_by_hashcode(params[:token]) 
-    if token
-      ids = JSON.parse(token.value) 
-      if PrintQueue.dequeue transactions_ids: ids
-        render :json => { message: "Success" }, :status => 200
-      else
-        render :json => { message: "Failed to dequeue transactions" }, :status => 400
-      end
-    else 
-      render :json => { errors: ["The given token doesn't exists."] }, :status => 404
-    end
-  end
-
   def labels_queue
-    transactions = PrintQueue.queued_transactions
-    render :json => { transactions: transactions }, :status => 200
+    qrs = QrQueue.pending
+    render :json => { qrs: qrs }, :status => 200
   end
 
   # Mecanismo original

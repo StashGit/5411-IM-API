@@ -3,6 +3,13 @@ Rails.application.routes.draw do
   root :to => "home#index"
   get 'home/index'
 
+  ## Print labels.
+  post 'print/enqueue' 
+  post 'print/dequeue' 
+  get  'print/pending'
+  ##
+
+
   # QR
   post 'qr/create'
   post 'qr/encode'
@@ -26,11 +33,6 @@ Rails.application.routes.draw do
   post 'stock/print_label'
   post 'stock/print_labels'      #<- Si tenemos un token de impresion.
   post 'stock/mass_print_labels' #<- Si tenemos una lista de QRs' IDs.
-
-  post 'stock/enqueue_labels' 
-  post 'stock/dequeue_labels' 
-  get  'stock/labels_queue'
-
 	# Andrew me pidio si estos podian ser POST para que sea posible hacer
 	# el request utilizando la API fetch de ES6.
   post 'stock/by_brand'
