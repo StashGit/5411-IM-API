@@ -36,10 +36,10 @@ class PrintController < ApplicationController
   end
 
   def pending
-    render :json => QrQueue.pending, :status => 200
+    render :json => { jobs: QrQueue.pending }, :status => 200
   end
 
   def pending_jobs_ids
-    render :json => QrQueue.pending_jobs_ids, :status => 200
+    render :json => { jobs_ids: QrQueue.pending_jobs_ids }, :status => 200
   end
 end
