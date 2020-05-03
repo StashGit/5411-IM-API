@@ -63,25 +63,34 @@ class Service
   end
 
   def print_pdf_label pdf_path, copies
+    puts "number of copies: #{copies}"
+    puts "file path: #{pdf_path}"
+
     if @virtual_printing
-      puts "copies: #{copies}"
-      puts "file:   #{pdf_path}"
-      return true
+      puts "VIRTUAL PRINTING IS ON"
+      puts "----------------------"
+      1.upto copies do |num|
+        puts "pringing #{num}"
+      end
+      puts "----------------------"
     else
       pdf_path = File.join(@lbls_path, pdf_path)
       # Para ver mas opciones sobre el comando print:
       # https://www.cups.org/doc/options.html
+      #
+      # para ver el estado de la impresora desde la terminal podemos ejecutar:
+      # lpstat -p -d
       1.upto copies do |num|
-        puts "pdf path: #{pdf_path}"
         if @printer
           `lp -d #{@printer} -o media=Custom.108x72 #{pdf_path}`
         else
           `lp -o media=Custom.108x72 #{pdf_path}`
         end
         puts "ERROR: #{$?.exitstatus} - copy number #{num}" unless $?.success?
-        return $?.success?
+        return false unless $?.success?
       end
     end
+    true
   end
 
   def print_label qr_hash, img_path, copies
