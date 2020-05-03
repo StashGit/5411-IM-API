@@ -3,23 +3,25 @@ class PrintController < ApplicationController
   before_action :set_access_token
 
   def enqueue
-    # Para saber como obtener el ID de los codigos QR ver qr/encode-decode
-    # labels: [{ qr_id: 1, copies: 2 }, { qr_id: 2, copies: 2 }]
-    ok = QrQueue.enqueue params[:labels]
+    # Para saber como obtener el ID de los codigos QR, ver qr/encode-decode.
+    # jobs: [{ qr_id: 1, copies: 2 }, { qr_id: 2, copies: 2 }]
+    ok, errors = QrQueue.enqueue params[:jobs]
     if ok
       render :json => { message: "Success!" }, :status => 200
     else
-      render :json => { errors: [ "Failed to enqueue QR codes."] }, :status => 400
+      render :json => { errors: errors }, :status => 400
     end
   end
 
   def dequeue 
-    # ID del codigo QR en el queue (No es el ID del QR en si.)
-    ok = QrQueue.dequeue params[:qrq_ids]
+    # Por medio de los jobs_ids podemos marcar todos los items que ya fueron
+    # impresos.
+    # Los jobs_ids los obtenemos consultando el metodo "pending"
+    ok, errors = QrQueue.dequeue params[:jobs_ids]
     if ok
       render :json => { message: "Success!" }, :status => 200
     else
-      render :json => { errors: [ "Failed to dequeue QR codes."] }, :status => 400
+      render :json => { errors: errors }, :status => 400
     end
   end
 
