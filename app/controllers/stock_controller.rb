@@ -4,11 +4,11 @@ class StockController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
   before_action :authorize, except: [:index]
-  before_action :set_sku,   only:   [:buy, :sale, :adjust, :labels, :units]
-  before_action :set_units, only:   [:buy, :sale, :adjust, :labels]
-  before_action :set_user,  only:   [:buy, :sale, :adjust, :labels]
-  before_action :set_brand, only:   [:buy, :sale, :adjust, :labels, :units, 
-                                     :import, :by_brand]
+  before_action :set_sku,   only:   [:buy, :sale, :adjust, :units]
+  before_action :set_units, only:   [:buy, :sale, :adjust]
+  before_action :set_user,  only:   [:buy, :sale, :adjust]
+  before_action :set_brand, only:   [:buy, :sale, :adjust, :units, :import, 
+                                     :by_brand]
 
   def index
   end
@@ -83,19 +83,21 @@ class StockController < ApplicationController
     end
   end
 
-  # def print_label
-  #   if heroku
-  #     render :json => { message: "Unavailable on heroku" }, :status => 403
-  #   else
-  #     qrcode = Qrcode.find_by_id(params[:id])
-  #     if qrcode
-  #       qrcode.print params[:copies].to_i, { printer_name: params[:printer_name] }
-  #       render :json => { message: "Success" }, :status => 200
-  #     else
-  #       render :json => { message: "Not found" }, :status => 404
-  #     end
-  #   end
-  # end
+  def print_label
+    qrcode = Qrcode.find_by_id(params[:id])
+
+    unless qrcode
+      render :json => { message: "Not found" }, :status => 404
+    else
+      job = create_printing_job(qrcode, params[:copies])
+      ok, errors = QrQueue.enqueue [job]
+      if ok
+        render :json => { message: "Success!" }, :status => 200
+      else
+        render :json => { errors: errors }, :status => 400
+      end
+    end
+  end
 
   # def mass_print_labels
   #   # Estos ids los tienen que pasar como argumentos cuando hacen el request.
@@ -247,6 +249,14 @@ class StockController < ApplicationController
     end
     jobs
   end
+
+  def create_printing_job qrcode, copies
+    job = {}
+    job["qr_id"]  = qrcode.id
+    job["copies"] = copies&.to_i || 1
+    job
+  end
+
 
   def heroku
     request.original_url =~ /heroku/
