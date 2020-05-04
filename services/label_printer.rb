@@ -13,9 +13,9 @@ class Service
   def init
     # Utilizamos un directorio propio del servicio para no tener conflictos con
     # los qrs que generamos en app/public.
-    root_path = "/Users/amiralles/dev/stash/5411-IM-API/services"
-    url   = ENV['HOST']  || 'http://localhost:3000'
-    token = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
+    root_path = ENV['PRINT_ROOT'] || "/Users/amiralles/dev/stash/5411-IM-API/services"
+    url       = ENV['HOST']  || 'http://localhost:3000'
+    token     = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
 
     # Este flag hace que el servicio se ejecute normalmente pero no manda el
     # trabajo la impresora. Solo imprime un mensaje en la terminal.

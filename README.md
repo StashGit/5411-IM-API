@@ -489,9 +489,59 @@ curl -H "Content-Type: application/json" \
 ```
 
 
+### Como se configura el servicio de impresion
+Para configurar el daemon que utilizamos para imprimir las etiquetas tenemos
+que configurar las variables de entorno:
 
+```
+* PRINT_ROOT (directorio donde se encuentra el servicio.)
+* HOST       (URL raiz de la API.)
+* TOKEN      (Token de autenticacion.)
+```
 
+De forma opcional podemos especificar el nombre de la impresora por medio de la
+variable "LBL_PRINTER".
 
+El servicio de impresion esta dividido en dos archivos. Uno contiene el codigo
+propio del servicio y otro que se utiliza para iniciar el servicio, detenerlo,
+consultar el estado, y demas.
 
+```
+$ 5411-IM-API/services/label_printer.rb
+$ 5411-IM-API/services/printer_control.rb
+```
+
+Tener en cuenta que antes de iniciar el servicio es necesario instalar todas
+las depenencias utilizando el comando `gem install`:
+
+* 'httparty'
+* 'json'
+* 'rqrcode'
+* 'prawn'
+* 'fileutils'
+
+Una vez que instalamos todas las dependencias en nuestro sistema, podemos
+probar el servicio ejecutando:
+
+```
+$ ruby printer_control.rb run
+```
+
+Una vez que verificamos que el servicio funciona correctamente, podemos
+ejecutarlo como un proceso daemon utlizando el comando:
+
+```
+$ ruby printer_control.rb start
+```
+
+Para detener el servicio:
+```
+$ ruby printer_control.rb stop
+```
+
+Y para consultar el estado del servicio:
+```
+$ ruby printer_control.rb stat
+```
 
 
