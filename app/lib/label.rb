@@ -27,9 +27,9 @@ module Label
       Prawn::Document.generate(
         pdf_path,
         page_size: [HEIGHT * 2, WIDTH * 2], 
-        page_layout: :landscape) do
-          image qr_path, width: 80, at: [LEFT - 48, 112]
-          current_line = 24
+        page_layout: :portrait) do
+          image qr_path, width: 80, at: [LEFT - 48, 180]
+          current_line = 94
           draw_text style, at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
 
           current_line += LINE_HEIGHT * 2
