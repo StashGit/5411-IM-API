@@ -26,19 +26,17 @@ module Label
 
       Prawn::Document.generate(
         pdf_path,
-        page_size: [HEIGHT, WIDTH], 
-        # page_layout: :landscape
-        page_layout: :portrait
-      ) do
-          image qr_path, width: 40, at: [0, 48]
-          current_line = TEXT_START
-          draw_text style, at: [LEFT, current_line], size: TEXT_SIZE
+        page_size: [HEIGHT * 2, WIDTH * 2], 
+        page_layout: :landscape) do
+          image qr_path, width: 80, at: [LEFT - 48, 112]
+          current_line = 24
+          draw_text style, at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
 
-          current_line += LINE_HEIGHT
-          draw_text color, at: [LEFT, current_line], size: TEXT_SIZE
+          current_line += LINE_HEIGHT * 2
+          draw_text color, at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
 
-          current_line += LINE_HEIGHT
-          draw_text size,  at: [LEFT, current_line], size: TEXT_SIZE
+          current_line += LINE_HEIGHT * 2
+          draw_text size,  at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
         end
       filename = File.basename(pdf_path)
       result.new(true, filename, [])
@@ -46,7 +44,6 @@ module Label
       result.new(false, nil, [ex.message])
     end
   end
-
 
   def self.create(qr_path:, style:, color:, size:) 
     result = Struct.new(:ok, :pdf_path, :errors)
