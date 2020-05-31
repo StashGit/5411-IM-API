@@ -46,29 +46,38 @@ module Label
   end
 
   def self.create(qr_path:, style:, color:, size:) 
-    result = Struct.new(:ok, :pdf_path, :errors)
-    begin
-      pdf_path = pdf_path_from(qr_path)
+    # En base a las pruebas que hicimos con Andrew, esta es la configuracion
+    # que va. (En el preview se ve medio bizarra, pero cuando se manda a
+    # imprimir, sale bien.)
+    return self.experimental_create(qr_path, style, color, size)
 
-      Prawn::Document.generate(
-        pdf_path,
-        page_size: [HEIGHT, WIDTH], 
-        page_layout: :landscape) do
-          image qr_path, width: 50, at: [LEFT - 7, 38]
-          current_line = TEXT_START
-          draw_text style, at: [LEFT, current_line], size: TEXT_SIZE
-
-          current_line += LINE_HEIGHT
-          draw_text color, at: [LEFT, current_line], size: TEXT_SIZE
-
-          current_line += LINE_HEIGHT
-          draw_text size,  at: [LEFT, current_line], size: TEXT_SIZE
-        end
-      filename = File.basename(pdf_path)
-      result.new(true, filename, [])
-    rescue Exception => ex
-      result.new(false, nil, [ex.message])
-    end
+    # create original
+    # Este metodo no genera las etiquetas correctamente cuando 
+    # la impresora esta conectada a la mac.
+    # 
+    # result = Struct.new(:ok, :pdf_path, :errors)
+    # begin
+    #   pdf_path = pdf_path_from(qr_path)
+    #
+    #   Prawn::Document.generate(
+    #     pdf_path,
+    #     page_size: [HEIGHT, WIDTH], 
+    #     page_layout: :landscape) do
+    #       image qr_path, width: 50, at: [LEFT - 7, 38]
+    #       current_line = TEXT_START
+    #       draw_text style, at: [LEFT, current_line], size: TEXT_SIZE
+    #
+    #       current_line += LINE_HEIGHT
+    #       draw_text color, at: [LEFT, current_line], size: TEXT_SIZE
+    #
+    #       current_line += LINE_HEIGHT
+    #       draw_text size,  at: [LEFT, current_line], size: TEXT_SIZE
+    #     end
+    #   filename = File.basename(pdf_path)
+    #   result.new(true, filename, [])
+    # rescue Exception => ex
+    #   result.new(false, nil, [ex.message])
+    # end
   end
 
   def self.pdf_path_from(qr_path)
