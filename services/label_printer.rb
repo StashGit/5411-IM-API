@@ -82,9 +82,11 @@ class Service
       # lpstat -p -d
       1.upto copies do |num|
         if @printer
-          `lp -d #{@printer} -o media=Custom.108x72 #{pdf_path}`
+          # `lp -d #{@printer} -o media=Custom.108x72 #{pdf_path}`
+          `./sumatra_pdf.exe -print-to-#{@printer} #{pdf_path}`
         else
-          `lp -o media=Custom.108x72 #{pdf_path}`
+          # `lp -o media=Custom.108x72 #{pdf_path}`
+          `./sumatra_pdf.exe -print-to-default #{pdf_path}`
         end
         puts "ERROR: #{$?.exitstatus} - copy number #{num}" unless $?.success?
         return false unless $?.success?

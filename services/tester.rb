@@ -3,6 +3,7 @@ require 'json'
 require 'rqrcode'
 require 'prawn'
 require 'fileutils'
+require 'optparse'
 require_relative '../app/lib/qr.rb'
 require_relative '../app/lib/label.rb'
 
@@ -27,9 +28,26 @@ class Tester
 end
 
 
+options = {}
+OptionParser.new do |opt|
+  opt.on('--printer-name PRINTER') { |o| options[:printer] = o }
+end.parse!
+
+
 tester = Tester.new
 
 label = tester.create_label "0000000317.png", "TEST", "L", "RED"
+
+if ARGV[0] == "p" && label.ok
+  puts "Printing..."
+  label_path = File.join("tests", "labels", label.pdf_path)
+  if options.key? :printer
+    `./sumatra_pdf.exe -print-to-#{options[:printer]} #{label_path}`
+  else
+    `./sumatra_pdf.exe -print-to-default #{label_path}`
+  end
+end
+
 puts label.ok
 puts label.pdf_path
 puts label.errors
