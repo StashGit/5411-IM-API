@@ -12,7 +12,7 @@ class Tester
   include ::Label
 
   def initialize()
-    root_path = ENV['PRINT_ROOT'] || "/Users/amiralles/dev/stash/5411-IM-API/services/tests"
+    root_path = ENV['PRINT_ROOT'] || "." #"/Users/amiralles/dev/stash/5411-IM-API/services/tests"
     @qrs_path  = File.join(root_path, "qr")
     set_qr_root root_path
     set_lbl_root root_path
