@@ -29,7 +29,12 @@ end
 
 tester = Tester.new
 
-label = tester.create_label "0000000317.png", "TEST", "L", "RED"
+qr_path = tester.create_qr_code brand_id: 1,
+  style: "Air",
+  color: "Black",
+  size:  "11 EU"
+
+label = tester.create_label qr_path, "Air", "11 EU", "Black"
 puts label.ok
 puts label.pdf_path
 puts label.errors

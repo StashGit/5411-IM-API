@@ -82,6 +82,7 @@ module Qr
   end
 
   def qr_path(uid)
-    "#{qr_dir}/#{uid}".gsub " ", "_"
+    path = File.join(qr_dir, uid.to_s)
+    path.gsub " ", "_"
   end
 end
