@@ -53,6 +53,7 @@ class Service
     response = HTTParty.get(@pending_jobs_url, headers: @headers)
     if response.code == 200
       jobs = JSON.parse(response.body)["jobs"]
+      puts jobs
       success!
       return jobs
     else
@@ -96,6 +97,7 @@ class Service
   end
 
   def print_label qr_hash, img_path, copies
+
     # Creamos la etiqueta.
     label = Label::create(
       qr_path:  File.join(@qrs_path, img_path),
@@ -103,6 +105,7 @@ class Service
       size:     qr_hash["size"],
       color:    qr_hash["color"])
     
+    puts "y ahora?"
     if label.ok
       print_pdf_label label.pdf_path, copies
     else
@@ -127,13 +130,9 @@ class Service
 
     printed_jobs_ids = []
     jobs&.each do |job|
+      puts job
       qr_hash = job["qr"]
-      # Full QR 
-      # path = create_qr_code brand_id: qr_hash["brand_id"]&.to_s, 
-      #   style:    qr_hash["style"], 
-      #   color:    qr_hash["color"], 
-      #   size:     qr_hash["size"]
-      #   ID-based QR
+      # ID-based QR
       qr_id = qr_hash["id"]
       puts "printing qr id: #{qr_id}"
       path = create_qr_code_for_id id: qr_id

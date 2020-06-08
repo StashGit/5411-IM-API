@@ -49,7 +49,11 @@ module Label
     # En base a las pruebas que hicimos con Andrew, esta es la configuracion
     # que va. (En el preview se ve medio bizarra, pero cuando se manda a
     # imprimir, sale bien.)
-    return self.experimental_create(qr_path, style, color, size)
+    return self.experimental_create(
+      qr_path: qr_path, 
+      style: style,
+      color: color,
+      size: size)
   end
 
   def self.pdf_path_from(qr_path)
