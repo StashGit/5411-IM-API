@@ -23,7 +23,7 @@ class Service
     @qrs_path  = File.join(root_path, "qr")
     @lbls_path = File.join(root_path, "labels")
     @printer   = ENV["LBL_PRINTER"]
-    @virtual_printing = true
+    @virtual_printing = false
 
     set_qr_root root_path
     set_lbl_root root_path
@@ -105,7 +105,6 @@ class Service
       size:     qr_hash["size"],
       color:    qr_hash["color"])
     
-    puts "y ahora?"
     if label.ok
       print_pdf_label label.pdf_path, copies
     else
