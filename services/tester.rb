@@ -35,7 +35,7 @@ end.parse!
 
 tester = Tester.new
 
-qr_path = tester.create_qr_code brand_id: 1,
+qr_path = tester.create_qr_code brand_id: 2,
   style: "Air",
   color: "Black",
   size:  "11 EU"

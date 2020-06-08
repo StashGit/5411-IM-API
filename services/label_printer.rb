@@ -13,7 +13,7 @@ class Service
   def init
     # Utilizamos un directorio propio del servicio para no tener conflictos con
     # los qrs que generamos en app/public.
-    root_path = ENV['PRINT_ROOT'] || "/Users/amiralles/dev/stash/5411-IM-API/services"
+    root_path = ENV['PRINT_ROOT'] || "."
     url       = ENV['HOST']  || 'http://localhost:3000'
     token     = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
 

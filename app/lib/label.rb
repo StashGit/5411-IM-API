@@ -7,7 +7,7 @@ module Label
 
   HEIGHT      =  72 #<- 1   Inch.
   WIDTH       = 108 #<- 1.5 Inches.
-  LEFT        =   6
+  LEFT        =   4
   TEXT_START  =   6
   TEXT_SIZE   =   6
   LINE_HEIGHT =  -7
@@ -29,14 +29,14 @@ module Label
         page_size: [HEIGHT * 2, WIDTH * 2], 
         page_layout: :portrait) do
           image qr_path, width: 80, at: [LEFT - 48, 180]
-          current_line = 94
-          draw_text style, at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
+          current_line = 102
+          draw_text style, at: [LEFT - 34, current_line], size: TEXT_SIZE * 2
 
-          current_line += LINE_HEIGHT * 2
-          draw_text color, at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
+          current_line += LINE_HEIGHT * 1.6
+          draw_text color, at: [LEFT - 34, current_line], size: TEXT_SIZE * 2
 
-          current_line += LINE_HEIGHT * 2
-          draw_text size,  at: [LEFT - 36, current_line], size: TEXT_SIZE * 2
+          current_line += LINE_HEIGHT * 1.6
+          draw_text size,  at: [LEFT - 34, current_line], size: TEXT_SIZE * 2
         end
       filename = File.basename(pdf_path)
       result.new(true, filename, [])
