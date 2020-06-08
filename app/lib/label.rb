@@ -23,7 +23,7 @@ module Label
     result = Struct.new(:ok, :pdf_path, :errors)
     begin
       pdf_path = pdf_path_from(qr_path)
-
+      puts pdf_path
       Prawn::Document.generate(
         pdf_path,
         page_size: [HEIGHT * 2, WIDTH * 2], 
