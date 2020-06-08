@@ -14,7 +14,7 @@ class Service
     # Utilizamos un directorio propio del servicio para no tener conflictos con
     # los qrs que generamos en app/public.
     root_path = ENV['PRINT_ROOT'] || "."
-    url       = ENV['HOST']  || 'http://localhost:3000'
+    url       = ENV['HOST']  || 'https://stock-api-5411.herokuapp.com/'# 'http://localhost:3000'
     token     = ENV['TOKEN'] || '99310f56f95becb1d9b339151a22c621'
 
     # Este flag hace que el servicio se ejecute normalmente pero no manda el
@@ -23,7 +23,7 @@ class Service
     @qrs_path  = File.join(root_path, "qr")
     @lbls_path = File.join(root_path, "labels")
     @printer   = ENV["LBL_PRINTER"]
-    @virtual_printing = false
+    @virtual_printing = true
 
     set_qr_root root_path
     set_lbl_root root_path
@@ -123,7 +123,7 @@ class Service
     #   }
     # ]
     puts
-    puts jobs&.count > 0 ? "Printing labels..." : "No jobs on the queue."
+    puts jobs ? "Printing labels..." : "No jobs on the queue."
 
     printed_jobs_ids = []
     jobs&.each do |job|
@@ -156,7 +156,7 @@ class Service
 
   def mark_as_printed printed_jobs_ids
     puts
-    puts printed_jobs_ids&.count > 0 ? "Dequeuing jobs..." : "No jobs to dequeue."
+    puts printed_jobs_ids.count > 0 ? "Dequeuing jobs..." : "No jobs to dequeue."
     body = { jobs_ids: printed_jobs_ids }.to_json
 
     response = HTTParty.post(@dequeue_jobs_url,
