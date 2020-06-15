@@ -22,6 +22,27 @@ User.create_with(first_name: "Andres", last_name: "Alonso",
   password: "Password1!",
   password_confirmation: "Password1!").find_or_create_by(email: ANDREWS_EMAIL)
 
+# --- New users
+
+User.create_with(first_name: "Manuel", last_name: "Manuel",
+  email: "manuel@the5411.com",
+  password: "Manuel2020!",
+  password_confirmation: "Manuel2020!").
+    find_or_create_by(email: "manuel@the5411.com")
+
+User.create_with(first_name: "Agostina", last_name: "Agostina",
+  email: "agostina@the5411.com",
+  password: "Agostina2020!",
+  password_confirmation: "Agostina2020!").
+    find_or_create_by(email: "agostina@the5411.com")
+
+User.create_with(first_name: "Agustina", last_name: "Agustina",
+  email: "a.caminos@the5411.com",
+  password: "Agustina2020!",
+  password_confirmation: "Agustina2020!").
+    find_or_create_by(email: "a.caminos@the5411.com")
+
+# ---
 
 Brand.create_with(
   name: "Nike",
