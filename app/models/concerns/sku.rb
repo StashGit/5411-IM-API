@@ -5,10 +5,10 @@ class Sku
   def initialize(style:, color:, size:, code: nil)
     validate_sku_args(style, color, size)
 
-    @style = style.upcase
-    @color = color.upcase
-    @size  = size.upcase
-    @code  = code&.upcase
+    @style = style&.to_s&.upcase
+    @color = color&.to_s&.upcase
+    @size  =  size&.to_s&.upcase
+    @code  =  code&.to_s&.upcase
   end
 
   def to_s
