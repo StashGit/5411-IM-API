@@ -140,6 +140,7 @@ class Stock
       PackingListParserT4,
       PackingListParserT5,
       PackingListParserT6,
+      PackingListParserTemplate,
     ]
   end
 

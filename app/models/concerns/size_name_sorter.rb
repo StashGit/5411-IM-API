@@ -9,6 +9,8 @@ module SizeNameSorter
     return size_to_number(size_name)     if is_number?(size_name)
     return std_size_order_for(size_name) if std_size_name?(size_name)
 
+    return 0 if valid_tu_name?(size_name)
+
     if valid_us_size_name?(size_name) || valid_au_size_name?(size_name)
       return extract_order_from(size_name)
     end

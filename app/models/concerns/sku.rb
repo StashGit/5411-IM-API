@@ -1,16 +1,19 @@
 class Sku
-  attr_reader :style, :color, :size
+  attr_reader :style, :color, :size, :code
 
-  def initialize(style:, color:, size:)
+  # code: se utiliza solo para listas internas.
+  def initialize(style:, color:, size:, code: nil)
     validate_sku_args(style, color, size)
 
     @style = style.upcase
     @color = color.upcase
     @size  = size.upcase
+    @code  = code&.upcase
   end
 
   def to_s
-    "#{self.style}-#{self.color}-#{self.size}"
+    str = "#{self.style}-#{self.color}-#{self.size}"
+    code ?  "#{str}-#{code}" : str
   end
 
   private

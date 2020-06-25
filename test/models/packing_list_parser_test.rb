@@ -8,7 +8,7 @@ require 'test_helper'
 # * Encontrar los headers (style, color, size, etc....)
 # * Recolectar el nombre de los talles.
 # * Detectar el rango y capturar el set de datos que contiene los SKU y las
-#   unidade que tenemos que ingresar en cada caso.
+#   unidades que tenemos que ingresar en cada caso.
 # * Generar las transacciones de stock.
 
 class PackingListParserTest < ActiveSupport::TestCase
@@ -49,6 +49,8 @@ class PackingListParserTest < ActiveSupport::TestCase
       "AU6 US2", "AU8 US4", "AU10 US6", "AU12 US8", "AU14 US10",
       "au6 us2", "au8 us4", "au10 us6", "au12 us8", "au14 us10",
       "au6", "us4", "au10", "us8", "us10",
+      "tu", "TU",
+      "t:u", "T:U",
     ]
 
     size_names.each do |size|
@@ -248,6 +250,27 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
+  test "parse Template format" do 
+    parser = PackingListParserTemplate.new(brand, tpl_path)
+
+    entries = parser.parse
+    assert entries.count > 0
+    first = entries.first
+
+    sku   = Sku.new(style: "AAA", color: "RED", size: "T:U")
+    assert first.brand == Brand.first
+    assert first.sku.style == "AAA" 
+    assert first.sku.size == "T:U"
+    assert first.units == 10
+    assert first.size_order == 0
+
+    # Idem formato T2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
+  end
+
   test "default parser can parse check formats" do
     assert PackingListParser.can_parse?(plt2_path)
     assert PackingListParser.can_parse?(plt3_path)
@@ -299,6 +322,17 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParserT6.can_parse?(plt5_path)
   end
 
+  test "Template parser can parse check formats" do
+    assert PackingListParserTemplate.can_parse?(tpl_path)
+
+    assert !PackingListParserTemplate.can_parse?(plt1_path)
+    assert !PackingListParserTemplate.can_parse?(plt2_path)
+    assert !PackingListParserTemplate.can_parse?(plt3_path)
+    assert !PackingListParserTemplate.can_parse?(plt4_path)
+    assert !PackingListParserTemplate.can_parse?(plt5_path)
+    assert !PackingListParserTemplate.can_parse?(plt6_path)
+  end
+
   test "parser headers" do
     parser = PackingListParserT1.new(brand, plt1_path)
     assert parser.headers.include?("STYLE NUMBER")
@@ -311,6 +345,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert PackingListParserT4 == Stock.select_parser_class(plt4_path)
     assert PackingListParserT5 == Stock.select_parser_class(plt5_path)
     assert PackingListParserT6 == Stock.select_parser_class(plt6_path)
+    assert PackingListParserTemplate == Stock.select_parser_class(tpl_path)
   end
   
   private
@@ -332,6 +367,8 @@ class PackingListParserTest < ActiveSupport::TestCase
   def plt5_path; file_fixture('plt5.xlsx').to_s; end
 
   def plt6_path; file_fixture('plt6.xlsx').to_s; end
+
+  def tpl_path; file_fixture('tpl.xlsx').to_s; end
 
   def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 
