@@ -271,6 +271,40 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
+  test "parse multiple data ranges" do 
+    parser = PackingListParserMulti.new(brand, multipl_path)
+    data_ranges = parser.fetch_all_data_ranges
+    first_range = data_ranges.first
+    last_range  = data_ranges.last
+
+    # Tenemos 7 rangos de datos en la primera hoja,
+    # que van desde la fila 4 a la 285.
+    assert 7   == data_ranges.count
+    assert 4   == first_range.first
+    assert 285 == last_range.last
+  end
+
+  test "parse multi packing list format" do 
+    parser = PackingListParserMulti.new(brand, multipl_path)
+
+    # entries = parser.parse
+    # assert entries.count > 0
+    # first = entries.first
+    #
+    # sku   = Sku.new(style: "AAA", color: "RED", size: "T:U")
+    # assert first.brand == Brand.first
+    # assert first.sku.style == "AAA" 
+    # assert first.sku.size == "T:U"
+    # assert first.units == 10
+    # assert first.size_order == 0
+    #
+    # # Idem formato T2
+    # e = entries.sample
+    # assert e.brand
+    # assert e.sku
+    # assert e.size_order
+  end
+
   test "default parser can parse check formats" do
     assert PackingListParser.can_parse?(plt2_path)
     assert PackingListParser.can_parse?(plt3_path)
@@ -333,19 +367,33 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert !PackingListParserTemplate.can_parse?(plt6_path)
   end
 
+  test "Multi packing parser can parse check formats" do
+    assert PackingListParserMulti.can_parse?(multipl_path)
+
+    assert !PackingListParserMulti.can_parse?(tpl_path)
+    assert !PackingListParserMulti.can_parse?(plt1_path)
+    assert !PackingListParserMulti.can_parse?(plt2_path)
+    assert !PackingListParserMulti.can_parse?(plt3_path)
+    assert !PackingListParserMulti.can_parse?(plt4_path)
+    assert !PackingListParserMulti.can_parse?(plt5_path)
+    assert !PackingListParserMulti.can_parse?(plt6_path)
+  end
+
+
   test "parser headers" do
     parser = PackingListParserT1.new(brand, plt1_path)
     assert parser.headers.include?("STYLE NUMBER")
   end
 
   test "select parser class" do
-    assert PackingListParserT1 == Stock.select_parser_class(plt1_path)
-    assert PackingListParser   == Stock.select_parser_class(plt2_path)
-    assert PackingListParser   == Stock.select_parser_class(plt3_path)
-    assert PackingListParserT4 == Stock.select_parser_class(plt4_path)
-    assert PackingListParserT5 == Stock.select_parser_class(plt5_path)
-    assert PackingListParserT6 == Stock.select_parser_class(plt6_path)
+    assert PackingListParserT1       == Stock.select_parser_class(plt1_path)
+    assert PackingListParser         == Stock.select_parser_class(plt2_path)
+    assert PackingListParser         == Stock.select_parser_class(plt3_path)
+    assert PackingListParserT4       == Stock.select_parser_class(plt4_path)
+    assert PackingListParserT5       == Stock.select_parser_class(plt5_path)
+    assert PackingListParserT6       == Stock.select_parser_class(plt6_path)
     assert PackingListParserTemplate == Stock.select_parser_class(tpl_path)
+    assert PackingListParserMulti    == Stock.select_parser_class(multipl_path)
   end
   
   private
@@ -369,6 +417,8 @@ class PackingListParserTest < ActiveSupport::TestCase
   def plt6_path; file_fixture('plt6.xlsx').to_s; end
 
   def tpl_path; file_fixture('tpl.xlsx').to_s; end
+
+  def multipl_path; file_fixture('multi.xlsx').to_s; end
 
   def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 

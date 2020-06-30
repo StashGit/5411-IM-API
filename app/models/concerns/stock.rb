@@ -141,6 +141,7 @@ class Stock
       PackingListParserT5,
       PackingListParserT6,
       PackingListParserTemplate,
+      PackingListParserMulti,
     ]
   end
 
