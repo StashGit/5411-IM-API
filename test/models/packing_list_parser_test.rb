@@ -2,8 +2,8 @@ require 'test_helper'
 #
 # La estrategia para detectar el rango de datos es mas o menos asi:
 # * Encontrar la hoja que tiene la informacion del pedido que necesitamos
-#   para generar las transacciones de stock.(Generalente, PL, packing list, 
-#   etc...); Si el libro tiene una sola hoja, asumimos que esa hoja es la 
+#   para generar las transacciones de stock.(Generalente, PL, packing list,
+#   etc...); Si el libro tiene una sola hoja, asumimos que esa hoja es la
 #   packing list.
 # * Encontrar los headers (style, color, size, etc....)
 # * Recolectar el nombre de los talles.
@@ -71,7 +71,7 @@ class PackingListParserTest < ActiveSupport::TestCase
 
   # Consultando la propiedad *data_range* podemos obtener las filas
   # desde/hasta y eliminamos dos metodos de la interface publica del
-  # parser. 
+  # parser.
   # test "can detect data range first row" do
   #   parser = PackingListParser.new(brand, pl_path)
   #   assert_equal 16, parser.first_row
@@ -81,7 +81,7 @@ class PackingListParserTest < ActiveSupport::TestCase
   #   parser = PackingListParser.new(brand, pl_path)
   #   assert_equal 57, parser.last_row
   # end
-  
+
   test "can detect the data range" do
     parser = PackingListParser.new(brand, pl_path)
     assert_equal (16..57), parser.data_range
@@ -110,7 +110,7 @@ class PackingListParserTest < ActiveSupport::TestCase
   end
 
   test "get size order from AU/US size names" do
-    # Si tenemos dos nombres para el mismo talle (e.g., 'US6 AU2'), 
+    # Si tenemos dos nombres para el mismo talle (e.g., 'US6 AU2'),
     # para todo_ lo referent al **orden**, tomamos el primer talle y ya.
     sizes_order = [["US6 US2", 6], ["us1", 1], ["AU10", 10]]
 
@@ -120,7 +120,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
-  test "parse T2 format" do 
+  test "parse T2 format" do
     parser = PackingListParser.new(brand, plt2_path)
     entries = parser.parse
     assert entries.count > 0
@@ -140,7 +140,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse T3 format" do 
+  test "parse T3 format" do
     parser = PackingListParser.new(brand, plt3_path)
     entries = parser.parse
 
@@ -160,7 +160,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse T5 format" do 
+  test "parse T5 format" do
     parser = PackingListParserT5.new(brand, plt5_path)
     entries = parser.parse
 
@@ -180,7 +180,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse T6 format" do 
+  test "parse T6 format" do
     parser = PackingListParserT6.new(brand, plt6_path)
     entries = parser.parse
 
@@ -189,11 +189,11 @@ class PackingListParserTest < ActiveSupport::TestCase
     first = entries.first
     sku   = Sku.new(style: "AW2001204D", color: "Nude 肉", size: "6")
     assert first.brand == Brand.first
-    assert first.sku.style == "AW2001204D" 
+    assert first.sku.style == "AW2001204D"
 
     # Con este string puede haber un tema de ecoding. El assert falla,
     # pero si imprimimos el valor en la consola vemos el valor correcto.
-    # assert first.sku.color == "Nude 肉" 
+    # assert first.sku.color == "Nude 肉"
     assert first.sku.size == "6"
     assert first.units == 10
     assert first.size_order == 6
@@ -205,7 +205,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse T1 format" do 
+  test "parse T1 format" do
     parser = PackingListParserT1.new(brand, plt1_path)
     entries = parser.parse
 
@@ -215,7 +215,7 @@ class PackingListParserTest < ActiveSupport::TestCase
 
     sku   = Sku.new(style: "LTT199C", color: "VIOLET", size: "XS")
     assert first.brand == Brand.first
-    assert first.sku.style == "LTT199C" 
+    assert first.sku.style == "LTT199C"
     assert first.sku.size == "XS"
     assert first.units == 8
     assert first.size_order == 2
@@ -227,7 +227,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse T4 format" do 
+  test "parse T4 format" do
     parser = PackingListParserT4.new(brand, plt4_path)
 
     entries = parser.parse
@@ -238,7 +238,7 @@ class PackingListParserTest < ActiveSupport::TestCase
 
     sku   = Sku.new(style: "SH2001100S", color: "BLACK", size: "6")
     assert first.brand == Brand.first
-    assert first.sku.style == "SH2001100S" 
+    assert first.sku.style == "SH2001100S"
     assert first.sku.size == "6"
     assert first.units == 9
     assert first.size_order == 6
@@ -250,7 +250,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse Template format" do 
+  test "parse Template format" do
     parser = PackingListParserTemplate.new(brand, tpl_path)
 
     entries = parser.parse
@@ -259,7 +259,7 @@ class PackingListParserTest < ActiveSupport::TestCase
 
     sku   = Sku.new(style: "AAA", color: "RED", size: "T:U")
     assert first.brand == Brand.first
-    assert first.sku.style == "AAA" 
+    assert first.sku.style == "AAA"
     assert first.sku.size == "T:U"
     assert first.units == 10
     assert first.size_order == 0
@@ -271,7 +271,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert e.size_order
   end
 
-  test "parse multiple data ranges" do 
+  test "parse multiple data ranges" do
     parser = PackingListParserMulti.new(brand, multipl_path)
     data_ranges = parser.fetch_all_data_ranges
     first_range = data_ranges.first
@@ -284,25 +284,25 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert 285 == last_range.last
   end
 
-  test "parse multi packing list format" do 
+  test "parse multi packing list format" do
     parser = PackingListParserMulti.new(brand, multipl_path)
 
-    # entries = parser.parse
-    # assert entries.count > 0
-    # first = entries.first
-    #
-    # sku   = Sku.new(style: "AAA", color: "RED", size: "T:U")
-    # assert first.brand == Brand.first
-    # assert first.sku.style == "AAA" 
-    # assert first.sku.size == "T:U"
-    # assert first.units == 10
-    # assert first.size_order == 0
-    #
-    # # Idem formato T2
-    # e = entries.sample
-    # assert e.brand
-    # assert e.sku
-    # assert e.size_order
+    entries = parser.parse
+    assert entries.count > 0
+    first = entries.first
+
+    sku   = Sku.new(style: "Acro Unitard Square B/W", color: "GREEN", size: "XXS")
+    assert first.brand == Brand.first
+    assert first.sku.style == "ACRO UNITARD SQUARE B/W"
+    assert first.sku.size == "XXS"
+    assert first.units == 10
+    assert first.size_order == 1
+
+    # Idem formato T2
+    e = entries.sample
+    assert e.brand
+    assert e.sku
+    assert e.size_order
   end
 
   test "default parser can parse check formats" do
@@ -395,14 +395,14 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert PackingListParserTemplate == Stock.select_parser_class(tpl_path)
     assert PackingListParserMulti    == Stock.select_parser_class(multipl_path)
   end
-  
+
   private
 
   # Packing List generica. Es la primera que soportamos.
   def pl_path;   file_fixture('pl1.xlsx').to_s; end
 
   # Packing lists para validar testear can_parse?
-  # Basicamente, tenemos un ejemplo de cada formato que 
+  # Basicamente, tenemos un ejemplo de cada formato que
   # vamos a soportar.
   def plt1_path; file_fixture('plt1.xlsx').to_s; end
 

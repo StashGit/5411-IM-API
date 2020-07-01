@@ -41,13 +41,13 @@ class PackingListParserMulti < PackingListParser
 
       next_data_range.each do |row|
         style = current_sheet.cell('A', row)
-        color = current_sheet.cell('B', row)
+        color = current_sheet.cell('B', row) || "UNKNOWN"
 
         size_columns.each do |col|
           size  = size_name(col)
           size_order  = size_order_for(size)
           units = current_sheet.cell(col, row)
-          sku   = Sku.new(style: style, color: color, size: size, code: code)
+          sku   = Sku.new(style: style, color: color, size: size)
           result << StockEntry.new(brand, sku, units, size_order)
         end
       end
@@ -102,7 +102,7 @@ class PackingListParserMulti < PackingListParser
     # puts "#{@lo}..#{@hi}"
     @lo..@hi
   end
-  
+
   def fetch_next_data_range
     data_range = []
     next_hilo.each do |row_num|
@@ -113,7 +113,7 @@ class PackingListParserMulti < PackingListParser
     end
     data_range
   end
-  
+
   def fetch_all_data_ranges
     result = []
     loop do
