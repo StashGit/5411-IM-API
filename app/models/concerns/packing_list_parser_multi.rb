@@ -14,6 +14,7 @@ class PackingListParserMulti < PackingListParser
     # Esto atributos son propios de este parser.
     @lo = 0
     @hi = 0
+    @sheet_index = 0
   end
 
   def match_headers
@@ -26,6 +27,21 @@ class PackingListParserMulti < PackingListParser
     super && match_headers
   end
 
+  def parse_transactions row
+    style = current_sheet.cell('A', row)
+    color = current_sheet.cell('B', row) || "UNKNOWN"
+
+    result = []
+    size_columns.each do |col|
+      size  = size_name(col)
+      size_order  = size_order_for(size)
+      units = current_sheet.cell(col, row)
+      sku   = Sku.new(style: style, color: color, size: size)
+      result << StockEntry.new(brand, sku, units, size_order)
+    end
+    result
+  end
+
   def parse
     return nil unless can_parse_packing_list?
 
@@ -35,29 +51,27 @@ class PackingListParserMulti < PackingListParser
     result = []
     parse_size_names
 
-    loop do
-      next_data_range = fetch_next_data_range
-      return result unless next_data_range.any?
+    begin
+      loop do
+        next_data_range = fetch_next_data_range
+        break unless next_data_range.any?
 
-      next_data_range.each do |row|
-        style = current_sheet.cell('A', row)
-        color = current_sheet.cell('B', row) || "UNKNOWN"
-
-        size_columns.each do |col|
-          size  = size_name(col)
-          size_order  = size_order_for(size)
-          units = current_sheet.cell(col, row)
-          sku   = Sku.new(style: style, color: color, size: size)
-          result << StockEntry.new(brand, sku, units, size_order)
+        next_data_range.each do |row|
+          result += parse_transactions(row)
         end
       end
-    end
+    end while next_sheet
     result
   end
 
+  def next_sheet
+    @sheet_index += 1
+    current_sheet
+  end
+
   def current_sheet
-    name = workbook.sheets[0]
-    workbook.sheet(name)
+    name = workbook.sheets[@sheet_index]
+    name ? workbook.sheet(name) : nil
   end
 
   def find_high
