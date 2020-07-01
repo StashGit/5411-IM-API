@@ -65,6 +65,8 @@ class PackingListParserMulti < PackingListParser
   end
 
   def next_sheet
+    @lo = 0
+    @hi = 0
     @sheet_index += 1
     current_sheet
   end
