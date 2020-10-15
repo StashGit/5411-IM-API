@@ -99,21 +99,6 @@ class StockController < ApplicationController
     end
   end
 
-  # def mass_print_labels
-  #   # Estos ids los tienen que pasar como argumentos cuando hacen el request.
-  #   # Este metodo asume que los codigos QR ya fueron generados.
-  #   #
-  #   # params[:qrs] (obligatorio) => [{ id: 1, copies: 1 }, {id: 3, copies: 3 }]
-  #   # params[:printer_name] (opcional)
-  #   if heroku
-  #     render :json => { message: "Unavailable on heroku" }, :status => 403
-  #   else
-  #     qrcodes = Qrcode.mass_prepare params
-  #     Qrcode.print_all qrcodes, { printer_name: params[:printer_name] }
-  #     render :json => { message: "Success" }, :status => 200
-  #   end
-  # end
-
   def create_label
     # Este metodo genera la metadata del QR, graba esos datos en la base de
     # datos, y arma un QR con el *id* de ese registro.

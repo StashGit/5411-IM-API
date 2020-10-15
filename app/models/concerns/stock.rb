@@ -63,9 +63,14 @@ class Stock
   def self.buy(brand, sku, units, user, comments="")
     t = StockTransaction.new(
       brand: brand,
-      style: sku.style, color: sku.color, size: sku.size,
+      style: sku.style,
+      color: sku.color,
+      size: sku.size,
+      code: sku.code,
       size_order: size_order_for(sku.size),
-      kind: KIND_IN, units: units.abs, reason: Reason::BUY, 
+      kind: KIND_IN,
+      units: units.abs,
+      reason: Reason::BUY, 
       comments: comments)
 
     save_transaction(t, user)
@@ -74,10 +79,16 @@ class Stock
   def self.sale(brand, sku, units, user, comments="")
     t = StockTransaction.new(
       brand: brand,
-      style: sku.style, color: sku.color, size: sku.size, 
+      style: sku.style,
+      color: sku.color,
+      size:  sku.size, 
+      code:  sku.code,
       size_order: size_order_for(sku.size),
-      kind: KIND_OUT, units: units.abs, reason: Reason::SALE, 
-      comments: comments)
+      kind: KIND_OUT,
+      units: units.abs,
+      reason: Reason::SALE, 
+      comments: comments
+      )
 
     save_transaction(t, user)
   end
@@ -88,6 +99,7 @@ class Stock
       style: sku.style, 
       color: sku.color, 
       size: sku.size, 
+      code:  sku.code,      
       size_order: size_order || size_order_for(sku.size),
       units: units.abs, 
       reason: reason, 
@@ -152,7 +164,7 @@ class Stock
 
   def self.collect_transactions_by(brand, sku)
     StockTransaction.where(
-      brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size)
+      brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size, code: sku.code)
   end
 
   # TODO: En lugar de hacer esto tenemos que tener una vista materializada
@@ -176,7 +188,7 @@ class Stock
   def self.collect_skus_by(brand)
     sts = StockTransaction.where(brand_id: brand.id)
     tmp = sts.collect { |t| 
-      [{ style: t.style, color: t.color, size: t.size }, t.size_order] 
+      [{ style: t.style, color: t.color, size: t.size, code: t.code }, t.size_order] 
     }.uniq
 
     tmp.collect { |entry| 

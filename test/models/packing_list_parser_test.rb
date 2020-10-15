@@ -396,10 +396,21 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert PackingListParserMulti    == Stock.select_parser_class(multipl_path)
   end
 
+  test "can parse code" do
+    parser = PackingListParserTemplate.new(brand, pl_with_code_path)
+    entries = parser.parse
+
+    assert entries[0].sku.code == "1165"
+  end
+
+
   private
 
   # Packing List generica. Es la primera que soportamos.
   def pl_path;   file_fixture('pl1.xlsx').to_s; end
+
+  # Packing list con campo codigo.
+  def pl_with_code_path; file_fixture('pl_code.xlsx').to_s; end
 
   # Packing lists para validar testear can_parse?
   # Basicamente, tenemos un ejemplo de cada formato que
