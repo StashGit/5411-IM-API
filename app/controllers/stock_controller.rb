@@ -7,8 +7,7 @@ class StockController < ApplicationController
   before_action :set_sku,   only:   [:buy, :sale, :adjust, :units]
   before_action :set_units, only:   [:buy, :sale, :adjust]
   before_action :set_user,  only:   [:buy, :sale, :adjust]
-  before_action :set_brand, only:   [:buy, :sale, :adjust, :units, :import, 
-                                     :by_brand]
+  before_action :set_brand, only:   [:buy, :sale, :adjust, :units, :import, :by_brand ]
 
   def index
   end
@@ -157,6 +156,7 @@ class StockController < ApplicationController
     result[:style]    = @sku.style
     result[:color]    = @sku.color
     result[:size]     = @sku.size
+    result[:code]     = @sku.code
     result[:brand_id] = @brand.id
     result
   end
@@ -211,6 +211,7 @@ class StockController < ApplicationController
     sku[:style] = params[:style]
     sku[:color] = params[:color]
     sku[:size]  = params[:size]
+    sku[:code]  = params[:code]
     sku
   end
 
@@ -241,7 +242,6 @@ class StockController < ApplicationController
     job["copies"] = copies&.to_i || 1
     job
   end
-
 
   def heroku
     request.original_url =~ /heroku/
