@@ -238,25 +238,18 @@ Este metodo permite lograr el efecto de archivar packing lists marcando las tran
 Parametros requeridos:
 
 * brand_id
-* style
-* color
-* size
-
-Parametros opcionales:
-
-* code
+* style (array)
+* color (array)
 
 ```
-curl -H "Content-Type: multipart/mixed" \
+curl -H "Content-Type: application/json" \
      -H "Accepts: application/json" \
-     -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
+     -H "Access-Token: $TOKEN" \
      -X POST \
      -d "{
-          \"brand_id\": \"1\",
-          \"style\": \"ST0003\",
-          \"color\": \"MIDNIGHT-BLUE\",
-          \"size\": \"L\",
-          \"code\": \"INTERNL-CODE\",
+          \"brand_id\": \"$BRAND_ID\",
+          \"style\":    [ \"$STYLE\" ],
+          \"color\":    [ \"$COLOR\" ]
         }" \
      localhost:3000/stock/hide
 ```
@@ -264,7 +257,7 @@ curl -H "Content-Type: multipart/mixed" \
 Resultado
 
 ```
-{ affected_transactions_count: 1 }
+{ affected_transactions_count: 4 }
 ```
 
 ### Cómo se agrega una marca

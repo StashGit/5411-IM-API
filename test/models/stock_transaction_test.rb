@@ -6,21 +6,28 @@ class StockTransactionTest < ActiveSupport::TestCase
   end
 
   test "hide stock transactions" do
-    sku    = Sku.new(style: "ST0003", color: "Midnight", size: "L")
-    brand  = brands(:nike)
-    user   = users(:joe)
+    sku   = Sku.new(style: "ST0003", color: "Midnight", size: "L")
+    brand = brands(:nike)
+    user  = users(:joe)
     Stock.buy(brand, sku, 10, user)
 
-    # Esta es la transacccion que vamos a ocultar.
-    sku    = Sku.new(style: "will-be-hidden", color: "Midnight", size: "L")
+    # ======================================================================
+    # Estas son las transacciones que vamos a ocultar.
+    # ======================================================================
+    sku = Sku.new(style: "will-be-hidden", color: "Midnight", size: "L")
     Stock.buy(brand, sku, 10, user)
+
+    sku = Sku.new(style: "will-be-hidden", color: "Midnight", size: "M")
+    Stock.buy(brand, sku, 10, user)
+
+    sku = Sku.new(style: "will-be-hidden", color: "Midnight", size: "S")
+    Stock.buy(brand, sku, 10, user)
+    # ======================================================================
 
     StockTransaction.hide \
       brand_id: brand.id,
-      style: "will-be-hidden",
-      color: "Midnight",
-      size: "L",
-      code: nil
+      styles: ["will-be-hidden"],
+      colors: ["Midnight"]
 
     assert StockTransaction.active.count == 1
   end
