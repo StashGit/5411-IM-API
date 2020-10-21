@@ -14,9 +14,14 @@ class StockTransaction < ApplicationRecord
      style:    style.to_s.upcase,
      color:    color.to_s.upcase,
      size:     size.to_s.upcase,
-     code:     code.present? ? code.to_s.upcase : nil
+     code:     parse(code)
 
     transactions.update_all status: HIDDEN
+  end
+
+  def self.parse code
+    return nil unless code.present? && code.upcase != "NULL"
+    code
   end
 
   def reason=(value)

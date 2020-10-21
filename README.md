@@ -261,6 +261,12 @@ curl -H "Content-Type: multipart/mixed" \
      localhost:3000/stock/hide
 ```
 
+Resultado
+
+```
+{ affected_transactions_count: 1 }
+```
+
 ### Cómo se agrega una marca
 Las marcas se pueden registrar utilziando el metodo **brands/create**.
 

@@ -150,14 +150,14 @@ class StockController < ApplicationController
   end
 
   def hide
-    StockTransaction.hide \
+    affected_transactions_count = StockTransaction.hide \
       brand_id: params[:brand_id],
       style:    params[:style],
       color:    params[:color],
       size:     params[:size],
       code:     params[:code]
-      
-    render :json => { message: "Success" }, status: 500
+
+    render :json => {affected_transactions_count: affected_transactions_count }, status: 200
   rescue Exception => ex
     render :json => { errors: [ ex.message ] }, status: 500
   end
