@@ -12,6 +12,15 @@ class StockController < ApplicationController
   def index
   end
 
+  def hide_transactions
+    StockTransaction.hide \
+      params[:brand_id],
+      params[:style],
+      params[:color],
+      params[:size],
+      params[:code]
+  end
+
   # Vista de prueba para seleccionar el archivo excel a manopla. Desde
   # el punto de vista de la API, no tiene ningun efecto.
   def prepare_import
@@ -138,6 +147,19 @@ class StockController < ApplicationController
     # el stock actual del producto (que surge de computar todos los movimientos
     # para cada sku.)
     render :json => Stock.compute_transactions_by(@brand)
+  end
+
+  def hide
+    StockTransaction.hide \
+      brand_id: params[:brand_id],
+      style:    params[:style],
+      color:    params[:color],
+      size:     params[:size],
+      code:     params[:code]
+      
+    render :json => { message: "Success" }, status: 500
+  rescue Exception => ex
+    render :json => { errors: [ ex.message ] }, status: 500
   end
 
   private

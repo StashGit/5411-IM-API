@@ -231,6 +231,36 @@ curl -H "Content-Type: multipart/mixed"   \
      localhost:3000/stock/log
 ```
 
+### Cómo se ocualtan las transacciones de stock
+Este metodo permite lograr el efecto de archivar packing lists marcando las transacciones como "ocultas."
+(Las transascciones que fueron marcadas con este flag no forman parte del stock por marca.)
+
+Parametros requeridos:
+
+* brand_id
+* style
+* color
+* size
+
+Parametros opcionales:
+
+* code
+
+```
+curl -H "Content-Type: multipart/mixed" \
+     -H "Accepts: application/json" \
+     -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
+     -X POST \
+     -d "{
+          \"brand_id\": \"1\",
+          \"style\": \"ST0003\",
+          \"color\": \"MIDNIGHT-BLUE\",
+          \"size\": \"L\",
+          \"code\": \"INTERNL-CODE\",
+        }" \
+     localhost:3000/stock/hide
+```
+
 ### Cómo se agrega una marca
 Las marcas se pueden registrar utilziando el metodo **brands/create**.
 

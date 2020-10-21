@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class StockTransactionTest < ActiveSupport::TestCase
+class StockTest < ActiveSupport::TestCase
 
   test "generate stock transactions from packing list" do
     parser = PackingListParser.new(brand, pl_path)

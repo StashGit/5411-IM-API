@@ -1,8 +1,23 @@
 class StockTransaction < ApplicationRecord
+  HIDDEN = 'hidden'
+
   belongs_to :user
   belongs_to :brand
   validates_presence_of :size_order
   validates :reason, numericality: true
+
+  scope :active, -> { where("status IS NULL OR NOT status IN (?)", HIDDEN) }
+
+  def self.hide(brand_id:, style:, color:, size:, code: nil)
+    transactions = StockTransaction.where \
+     brand_id: brand_id,
+     style:    style.to_s.upcase,
+     color:    color.to_s.upcase,
+     size:     size.to_s.upcase,
+     code:     code.present? ? code.to_s.upcase : nil
+
+    transactions.update_all status: HIDDEN
+  end
 
   def reason=(value)
     # Si especifican un valor fuera de rango, utilizamos OTHER.

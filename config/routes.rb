@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 	# el request utilizando la API fetch de ES6.
   post 'stock/by_brand'
   post 'stock/units'
+  post 'stock/hide'
   # ===
 
   # Brands.
