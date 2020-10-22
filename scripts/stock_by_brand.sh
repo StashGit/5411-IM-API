@@ -14,3 +14,6 @@ else
     echo "Must provide a valid access token and a brand id."
 fi
 
+echo
+echo
+

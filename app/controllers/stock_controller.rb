@@ -154,6 +154,20 @@ class StockController < ApplicationController
     render :json => { errors: [ ex.message ] }, status: 500
   end
 
+  def restore
+    styles = params[:style].is_a?(Array) ? params[:style] : [params[:style]]
+    colors = params[:color].is_a?(Array) ? params[:color] : [params[:color]]
+
+    affected_transactions_count = StockTransaction.restore \
+      brand_id: params[:brand_id],
+      styles: styles, 
+      colors: colors
+
+    render :json => {affected_transactions_count: affected_transactions_count }, status: 200
+  rescue Exception => ex
+    render :json => { errors: [ ex.message ] }, status: 500
+  end
+
   private
 
   def create_qr_img(id)

@@ -8,6 +8,16 @@ class StockTransaction < ApplicationRecord
 
   scope :active, -> { where("status IS NULL OR NOT status IN (?)", HIDDEN) }
 
+  def self.restore(brand_id:, styles:, colors:)
+    # Restaura todos los sizes para las combinaciones -> brand + [style/color]
+    transactions = StockTransaction.where \
+      brand_id: brand_id,
+      style:    styles.map { |style| style.to_s.upcase },
+      color:    colors.map { |color| color.to_s.upcase }
+
+    transactions.update_all status: nil
+  end
+
   def self.hide(brand_id:, styles:, colors:)
   	# Ocultamos todos los sizes para las combinaciones -> brand + [style/color]
     transactions = StockTransaction.where \

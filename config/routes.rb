@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   post 'stock/by_brand'
   post 'stock/units'
   post 'stock/hide'
+  post 'stock/restore'
   # ===
 
   # Brands.

@@ -5,6 +5,25 @@ class StockTransactionTest < ActiveSupport::TestCase
     StockTransaction.destroy_all
   end
 
+  test "restore stock transactions" do
+    sku = Sku.new(style: "will-be-hidden", color: "Midnight", size: "L")
+    brand = brands(:nike)
+    user  = users(:joe)
+
+    Stock.buy(brand, sku, 10, user)
+    StockTransaction.hide \
+      brand_id: brand.id,
+      styles: ["will-be-hidden"],
+      colors: ["Midnight"]
+
+    StockTransaction.restore \
+      brand_id: brand.id,
+      styles: ["will-be-hidden"],
+      colors: ["Midnight"]
+      
+    assert StockTransaction.active.count == 1
+  end
+
   test "hide stock transactions" do
     sku   = Sku.new(style: "ST0003", color: "Midnight", size: "L")
     brand = brands(:nike)

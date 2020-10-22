@@ -233,7 +233,6 @@ curl -H "Content-Type: multipart/mixed"   \
 
 ### Cómo se ocualtan las transacciones de stock
 Este metodo permite lograr el efecto de archivar packing lists marcando las transacciones como "ocultas."
-(Las transascciones que fueron marcadas con este flag no forman parte del stock por marca.)
 
 Parametros requeridos:
 
@@ -258,6 +257,28 @@ Resultado
 
 ```
 { affected_transactions_count: 4 }
+```
+
+### Restaurar transacciones de Stock
+Este metodo permite restaurar packing lists archivadas. 
+
+Parametros requeridos:
+
+* brand_id
+* style (array)
+* color (array)
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Accepts: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{
+          \"brand_id\": \"$BRAND_ID\",
+          \"style\":    [ \"$STYLE\" ],
+          \"color\":    [ \"$COLOR\" ]
+        }" \
+     localhost:3000/stock/restore
 ```
 
 ### Cómo se agrega una marca

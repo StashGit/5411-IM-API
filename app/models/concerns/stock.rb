@@ -174,27 +174,31 @@ class Stock
   def self.compute_transactions_by(brand)
     res = []
     collect_skus_by(brand).each do |entry|
-      sku, order, user_id = entry
+      sku, order, status = entry
       res << { 
         sku: sku, 
         units: units(brand, sku), 
         size_order: order,
-        # user_email: User.find(user_id).email
+        status: status
       }
     end
     res
   end
 
   def self.collect_skus_by(brand)
-    # Solo tenemos en cuenta las transacciones "activas."
-    sts = StockTransaction.active.where(brand_id: brand.id)
+    # Como agregamos el campo "status" volvimos a listar todas las transacciones.
+    sts = StockTransaction.where(brand_id: brand.id)
     tmp = sts.collect { |t| 
-      [{ style: t.style, color: t.color, size: t.size, code: t.code }, t.size_order] 
+      [
+        { style: t.style, color: t.color, size: t.size, code: t.code },
+        t.size_order,
+        t.status
+      ] 
     }.uniq
 
     tmp.collect { |entry| 
-      sku, order, user_id = entry
-      [Sku.new(**sku), order, user_id]
+      sku, order, status = entry
+      [Sku.new(**sku), order, status]
     }
   end
 end
