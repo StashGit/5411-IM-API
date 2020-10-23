@@ -1,17 +1,18 @@
 #!/bin/bash
 
-TOKEN=$1
-BRAND_ID=$2
+HOST=$1
+TOKEN=$2
+BRAND_ID=$3
 
-if [[ $TOKEN && $BRAND_ID ]];
+if [[ $HOST && $TOKEN && $BRAND_ID ]];
 then
     curl -H "Content-Type: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
          -d "{ \"brand_id\": \"$BRAND_ID\" }" \
-         localhost:3000/stock/by_brand
+         $HOST/stock/by_brand
 else
-    echo "Must provide a valid access token and a brand id."
+    echo "Must provide host, access token, and a brand id."
 fi
 
 echo

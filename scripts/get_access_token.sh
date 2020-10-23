@@ -1,14 +1,15 @@
 #!/bin/bash
-USR=$1
-PWD=$2
+HOST=$1
+USR=$2
+PWD=$3
 
-if [[ $USR && $PWD ]];
+if [[ $HOST && $USR && $PWD ]];
 then
 # Gets or creates an access tocken.
 curl -H "Content-Type: application/json"   \
 	 -H "Accepts: application/json" -X POST \
 	 -d "{ \"email\":\"$USR\", \"password\":\"$PWD\"}" \
-   	 localhost:3000/session/new
+   	 $HOST/session/new
 else
-    echo "Must provide a user email and password."
+    echo "Must provide host, user email and password."
 fi
