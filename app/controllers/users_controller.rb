@@ -52,6 +52,7 @@ class UsersController < ApplicationController
       :first_name,
       :last_name,
       :pic_url,
+      :is_admin,
       :password,
       :password_confirmation
   end
@@ -62,6 +63,7 @@ class UsersController < ApplicationController
       :first_name,
       :last_name,
       :pic_url,
+      :is_admin,
       :password,
       :password_confirmation
   end

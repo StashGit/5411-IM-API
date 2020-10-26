@@ -1,5 +1,5 @@
 # API Control de Stock
-A continuación de describe como instalar y cuales son las operaciones que 
+A continuación de describe como instalar y cuales son las operaciones que
 expone la API para el control de stock.
 
 ### Instalación
@@ -8,12 +8,12 @@ Los componentes de base que necesitamos para instalar la API, son:
 * Rails
 * Postgres
 
-Si bien la mayoría de los sistemas cuentan con alguna version de Ruby, 
+Si bien la mayoría de los sistemas cuentan con alguna version de Ruby,
 suele ser la version incorrecta. Por lo tanto, el primer paso es instalar
 Ruby.
 
 En OSX, la forma mas sencilla de hacerlo es utilizando **rbenv**.
-Esta herramienta se puede instalar via **homebrew** siguiendo las instrucciones 
+Esta herramienta se puede instalar via **homebrew** siguiendo las instrucciones
 detalladas en su pagina de github: https://github.com/rbenv/rbenv#homebrew-on-macos
 
 Luego de instalar y configurar **rbenv**, tenemos que ejecutar:
@@ -28,7 +28,7 @@ $ ruby --version
 Si la salida del ultimo comando es `2.6.3[algo...]` podemos continuar.
 
 Antes de pasar a la instalacion de Rails, vamos a instalar y configurar **postgres**.
-El mecanismo mas rápido para instalar y configurar esta base de datos, es 
+El mecanismo mas rápido para instalar y configurar esta base de datos, es
 utilizando **homebrew**.
 
 ```
@@ -36,7 +36,7 @@ $ brew install postgresql
 $ brew services start postgresql
 ```
 
-Una vez que contamos con la base de datos, pasamos a instalar Rails y 
+Una vez que contamos con la base de datos, pasamos a instalar Rails y
 todas las librerias que utiliza la API.
 
 ```
@@ -46,7 +46,7 @@ $ bundle install
 
 En este punto contamos con Ruby, Rails y todas las gems requeridas por la API.
 
-El ultimo paso de la instalacion, es crear la base de datos y correr las 
+El ultimo paso de la instalacion, es crear la base de datos y correr las
 migraciones. Para completar este paso, vamos a utilzar **rake**.
 
 ```
@@ -100,20 +100,20 @@ curl -H "Content-Type: multipart/mixed"   \
      localhost:3000/stock/import
 ```
 
-Si la operacion finaliza correctamente, la respuesta de la llamada contiene 
-un "token de impresion." 
+Si la operacion finaliza correctamente, la respuesta de la llamada contiene
+un "token de impresion."
 
-Utilizando ese token, podemos invocar el metodo **stock/print\_labels** e 
-imprimir todas las etiquetas con los codigos QR para el lote que acabamos de 
-importar. 
+Utilizando ese token, podemos invocar el metodo **stock/print\_labels** e
+imprimir todas las etiquetas con los codigos QR para el lote que acabamos de
+importar.
 
 ```
 { "ok": true, "errors": [], "token": "8a5ca2e830f7b381ede318b871a4253e" }
 ```
 
 ### Cómo se consulta el stock de un producto
-El stock de un producto se calcula en base a la diferencia entre las 
-transacciones de entrada y salida para la combinación **marca-sku** 
+El stock de un producto se calcula en base a la diferencia entre las
+transacciones de entrada y salida para la combinación **marca-sku**
 especificada.
 
 **Párametros**
@@ -147,7 +147,7 @@ curl -H "Content-Type: application/json" \
 
 ### Cómo se realizan los ajustes de stock
 Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
-La *dirección* del movimiento (entrada/salida) se infiere en base a la 
+La *dirección* del movimiento (entrada/salida) se infiere en base a la
 cantidad de unidades especificadas en el movimiento. Si la cantidad es
 negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso.
 
@@ -260,7 +260,7 @@ Resultado
 ```
 
 ### Restaurar transacciones de Stock
-Este metodo permite restaurar packing lists archivadas. 
+Este metodo permite restaurar packing lists archivadas.
 
 Parametros requeridos:
 
@@ -281,6 +281,133 @@ curl -H "Content-Type: application/json" \
      localhost:3000/stock/restore
 ```
 
+## Usuarios
+
+### Como crear un usuario
+La API permite crear usuario emitiendo comandos de tipo POST contra el endoint **users**.
+
+**Parametros Requeridos**
+* email
+* password
+* password_confirmation
+
+**Parametros Opcionales**
+* first_name
+* last_name
+* pic_url
+* is_admin
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{
+        user: {
+            email: $EMAIL,
+            first_name: $FIRST,
+            last_name: $LAST ,
+            password: $PWD ,
+            password_confirmation: $PWD_CONFIRM
+        }
+    }" \
+     $HOST/users
+```
+
+### Como ver los detalles de un usuaio
+El metodo **users/by_email** permite recuperar todos los datos de un usuario en
+base al email especificado.
+
+**Parametros Requeridos**
+* email
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     $HOST/users/by_email?email=$EMAIL
+```
+
+Resultado:
+
+```
+{
+    id:2
+    email:"jane@example.com",
+    first_name:"jane",
+    last_name:"doe",
+    pic_url:null,
+    is_admin:null,
+    created_at:"2020-10-25T23:27:06.762Z",
+    updated_at:"2020-10-25T23:27:06.762Z",
+    deleted:false
+}
+```
+
+### Como Elminar un usuario
+Es posible realizar bajas "logicas" emitiendo un comando de tipo **delete**
+contra el endpoint **users** especificando el ID del usuario que queremos eliminar.
+
+**Parametros Requeridos**
+* email
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X DELETE \
+     $HOST/users/$ID
+```
+
+Resultado:
+
+```
+{"message":"Success"}
+```
+
+
+### Como actualizar los datos de un usuario
+A excepcion del **email**  todos los atributos de los usuarios puden ser modificando
+emitiendo un commando **put** contra el endpoint **users**.
+
+**Parametros Requeridos**
+* id
+
+**Parametros Opcionales**
+* first_name
+* last_name
+* pic_url
+* is_admin
+* password
+* password_confirmation
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X PUT \
+     -d "{
+        \"user\": {
+            \"first_name\": \"$FIRST\",
+            # etc ...
+        }
+    }" \
+     $HOST/users/$ID
+```
+
+Resultado:
+
+```
+{
+    "first_name":"jane",
+    "id":1,
+    "password_digest":"$2a$12$948mUOUMhfnL.DBYEi1tseox.55FktuezDqOQAmlMAEZPDRTkMBYS",
+    "email":"john@example.com",
+    "last_name":"Doe",
+    "pic_url":null,
+    "is_admin":null,
+    "created_at":"2020-03-11T18:31:36.767Z",
+    "updated_at":"2020-10-26T00:57:11.519Z",
+    "deleted":false
+}
+```
+
 ### Cómo se agrega una marca
 Las marcas se pueden registrar utilziando el metodo **brands/create**.
 
@@ -294,7 +421,6 @@ curl -H "Content-Type: application/json" \
      -d "{ \"name\": \"Nike\" }" \
      localhost:3000/brands/create
 ```
-
 
 ### Cómo se modifica una marca
 Las marcas se pueden modificar utilziando el metodo **brands/update**.
@@ -313,7 +439,7 @@ curl -H "Content-Type: application/json" \
 
 ### Cómo se elimina una marca
 Las marcas se pueden eliminar utilziando el metodo **brands/delete**.
-Tener en cuenta que no es un delete efectivo. Lo unico que hace este 
+Tener en cuenta que no es un delete efectivo. Lo unico que hace este
 metodo es marcar la marca como borrada.
 
 **Parametros**
@@ -343,7 +469,7 @@ _**Si bien este metodo sigue funcionando se recomienda utilizar QRs basados en
 
 Para generar el código QR de un producto tenemos que ejecutar el método **qr/create**.
 
-Al decodificar este código, se obtiene un string que contiene 
+Al decodificar este código, se obtiene un string que contiene
 los campos **brand_id**, **style**, **color**, y **size** separados
 por un tilde (**~**).
 
@@ -457,8 +583,8 @@ que queremos imprimir y la cantidad de copias que queremos para ese elemento.
 curl -H "Content-Type: application/json" \
      -H "Access-Token: $TOKEN" \
      -X POST \
-     -d "{\"jobs\": [{ 
-         \"qr_id\": \"$QR_ID\", 
+     -d "{\"jobs\": [{
+         \"qr_id\": \"$QR_ID\",
          \"copies\": \"$COPIES\" }]}" \
      "localhost:3000/print/enqueue"
 ```
@@ -470,7 +596,7 @@ Resultado:
 ```
 
 ### Cómo obtener items de la cola de impresion
-Para obtener la lista de las etiquetas que tenemos que imprimir tenemos que 
+Para obtener la lista de las etiquetas que tenemos que imprimir tenemos que
 utilizar el metodo **print/pending**.
 
 El resultado de este metodo nos permite generar e imprimir las etiquetas en la
@@ -487,8 +613,8 @@ Resultado:
 ```
 {
   jobs:[
-    { 
-      qr:{id:305,brand_id:1,style:"GRACE",color:"RED",size:"M",path":null}, 
+    {
+      qr:{id:305,brand_id:1,style:"GRACE",color:"RED",size:"M",path":null},
       copies:2,
       job_id:53
     }
@@ -528,7 +654,7 @@ curl -H "Content-Type: application/json" \
 ```
 
 ### Cómo obtener todas las marcas
-El método **brands/all** permite recuperar información de todas las marcas 
+El método **brands/all** permite recuperar información de todas las marcas
 que maneja el sistema.
 
 ```
