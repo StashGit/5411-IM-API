@@ -4,9 +4,9 @@ Rails.application.routes.draw do
   get 'home/index'
 
   ## Print labels.
-  post 'print/enqueue' 
-  post 'print/dequeue' 
-  post 'print/dequeue_all' 
+  post 'print/enqueue'
+  post 'print/dequeue'
+  post 'print/dequeue_all'
   get  'print/pending'
   get  'print/pending_jobs_ids'
   ##
@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   post 'stock/sale'
   post 'stock/adjust'
   post 'stock/create_label'
-  # Dejamos este metodo que permite imprimir utilizando un token de impresion 
+  # Dejamos este metodo que permite imprimir utilizando un token de impresion
   # para mantener la compatibilidad con el proceso import/print.
   # Internamente, terminamos generando lo mismo que print/enqueue.
   post 'stock/print_labels'
@@ -45,6 +45,11 @@ Rails.application.routes.draw do
   post 'stock/hide'
   post 'stock/restore'
   # ===
+
+  # CRUD users
+  get 'users/by_email' => "users#show"
+  resources :users, only: [:create, :update, :destroy] do
+  end
 
   # Brands.
   get 'brands/all'
