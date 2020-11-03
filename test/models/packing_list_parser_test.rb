@@ -121,13 +121,13 @@ class PackingListParserTest < ActiveSupport::TestCase
   end
 
   test "can parse mixed sizes" do
-    parser = PackingListParser.new(brand, pl_mixed_sizes_path)
-    puts parser.class
+    parser_class = Stock.select_parser_class(pl_mixed_sizes_path)
+    parser = parser_class.new(brand, pl_mixed_sizes_path)
 
     entries = parser.parse
 
-    assert entries.first.size == 34
-    assert entries.second.size == 30
+    assert entries[14].sku.size == "30"
+    assert entries[17].sku.size == "34"
   end
 
   test "parse T2 format" do

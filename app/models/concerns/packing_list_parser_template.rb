@@ -37,7 +37,10 @@ class PackingListParserTemplate < PackingListParser
   end
 
   def possible_size_column_names
-    ['D', 'E', 'F', 'G', 'H', 'I']
+    [
+      'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'
+    ]
   end
 
   def find_head_row

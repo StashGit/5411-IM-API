@@ -2,7 +2,7 @@ class PackingListParser
   include SizeNameValidator
   include SizeNameSorter
 
-  attr_reader :brand, :size_columns, :size_names, :xls_path, 
+  attr_reader :brand, :size_columns, :size_names, :xls_path,
     :packing_list_name
 
   # Estos atributos nos sirven como referencia para poder establecer
@@ -68,7 +68,7 @@ class PackingListParser
     ['E', 'F', 'G', 'H', 'I', 'J', 'K']
   end
 
-  def packing_list 
+  def packing_list
     @packing_list ||= open_packing_list
   end
 
