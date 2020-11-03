@@ -120,6 +120,16 @@ class PackingListParserTest < ActiveSupport::TestCase
     end
   end
 
+  test "can parse mixed sizes" do
+    parser = PackingListParser.new(brand, pl_mixed_sizes_path)
+    puts parser.class
+
+    entries = parser.parse
+
+    assert entries.first.size == 34
+    assert entries.second.size == 30
+  end
+
   test "parse T2 format" do
     parser = PackingListParser.new(brand, plt2_path)
     entries = parser.parse
@@ -403,7 +413,6 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert entries[0].sku.code == "1165"
   end
 
-
   private
 
   # Packing List generica. Es la primera que soportamos.
@@ -411,6 +420,8 @@ class PackingListParserTest < ActiveSupport::TestCase
 
   # Packing list con campo codigo.
   def pl_with_code_path; file_fixture('pl_code.xlsx').to_s; end
+
+  def pl_mixed_sizes_path; file_fixture('mixed-sizes.xlsx').to_s; end
 
   # Packing lists para validar testear can_parse?
   # Basicamente, tenemos un ejemplo de cada formato que
