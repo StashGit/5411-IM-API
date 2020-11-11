@@ -404,8 +404,7 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert PackingListParserT6       == Stock.select_parser_class(plt6_path)
     assert PackingListParserTemplate == Stock.select_parser_class(tpl_path)
     assert PackingListParserMulti    == Stock.select_parser_class(multipl_path)
-
-    assert PackingListParserTemplate    == Stock.select_parser_class(pl_beaumont_organic_path)
+    assert PackingListParserTemplate == Stock.select_parser_class(pl_beaumont_organic_path)
 
   end
 
@@ -414,6 +413,14 @@ class PackingListParserTest < ActiveSupport::TestCase
     entries = parser.parse
 
     assert entries[0].sku.code == "1165"
+  end
+
+  test "can parse beaumont organic lists" do
+    parser_class  = Stock.select_parser_class(pl_beaumont_organic_path)
+    parser = parser_class.new(brand, pl_beaumont_organic_path)
+    entries = parser.parse
+
+    assert entries[0].sku.size == "XS/34"
   end
 
   private

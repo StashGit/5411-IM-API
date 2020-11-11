@@ -8,7 +8,6 @@ module SizeNameValidator
     valid_tu_name?(name)
   end
 
-
   def valid_beaumont_size?(name)
     !!(/^XS\/34$|^S\/36$|^M\/38$|^L\/40$|^XS\/S$|^S\/M$|^M\/L$/ =~ name)
   end
