@@ -404,6 +404,9 @@ class PackingListParserTest < ActiveSupport::TestCase
     assert PackingListParserT6       == Stock.select_parser_class(plt6_path)
     assert PackingListParserTemplate == Stock.select_parser_class(tpl_path)
     assert PackingListParserMulti    == Stock.select_parser_class(multipl_path)
+
+    assert PackingListParserTemplate    == Stock.select_parser_class(pl_beaumont_organic_path)
+
   end
 
   test "can parse code" do
@@ -441,6 +444,8 @@ class PackingListParserTest < ActiveSupport::TestCase
   def tpl_path; file_fixture('tpl.xlsx').to_s; end
 
   def multipl_path; file_fixture('multi.xlsx').to_s; end
+
+  def pl_beaumont_organic_path; file_fixture('pl_beaumont_organic.xlsx').to_s; end
 
   def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 
