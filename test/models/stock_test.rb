@@ -17,7 +17,7 @@ class StockTest < ActiveSupport::TestCase
 
   test "import packing list and create stock transactions" do
     # Este es el metodo que usa la API para importar los archivos.
-    result = Stock.import(brand, pl_path, user) 
+    result = Stock.import(brand, pl_path, user)
 
     # Verifico un par de transacciones.
     sku = Sku.new(style: "SS200105S", color: "MIDNIGHT", size: "AU6 US2")
@@ -29,12 +29,12 @@ class StockTest < ActiveSupport::TestCase
 
   test "import packing list creates import token" do
     # Este es el metodo que usa la API para importar los archivos.
-    result = Stock.import(brand, pl_path, user) 
+    result = Stock.import(brand, pl_path, user)
     assert result[:token].present?
   end
 
   test "can use import tokens to get import transaction IDs" do
-    result = Stock.import(brand, pl_path, user) 
+    result = Stock.import(brand, pl_path, user)
     data   = Token.find_by_hashcode result[:token]
 
     assert data
@@ -52,7 +52,7 @@ class StockTest < ActiveSupport::TestCase
 
     assert_equal ids.count, qrcodes.count
   end
-  
+
   private
 
   def pl_path

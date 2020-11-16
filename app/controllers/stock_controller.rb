@@ -52,7 +52,7 @@ class StockController < ApplicationController
   end
 
   def adjust
-    result = Stock.adjust(@brand, @sku, @units, @user, 
+    result = Stock.adjust(@brand, @sku, @units, @user,
                           params[:comments],
                           nil, # <- size_order
                           params[:reason])
@@ -64,9 +64,9 @@ class StockController < ApplicationController
   end
 
   def print_labels
-    token = Token.find_by_hashcode(params[:token]) 
+    token = Token.find_by_hashcode(params[:token])
     if token
-      ids     = JSON.parse(token.value) 
+      ids     = JSON.parse(token.value)
       qrcodes = Qrcode.create_from_transaction ids
 
       jobs = create_printing_jobs(qrcodes);
@@ -77,7 +77,7 @@ class StockController < ApplicationController
       else
         render :json => { errors: errors }, :status => 400
       end
-    else 
+    else
       render :json => { errors: ["The given token doesn't exists."] }, :status => 404
     end
   end
@@ -102,7 +102,7 @@ class StockController < ApplicationController
     # Este metodo genera la metadata del QR, graba esos datos en la base de
     # datos, y arma un QR con el *id* de ese registro.
     # Para recuperar los datos del producto hay que escanear el QR para obtener
-    # el id y con ese id hacer una consulta adicional al metodo qr/decode. El 
+    # el id y con ese id hacer una consulta adicional al metodo qr/decode. El
     # metodo decode nos devuelve la marca, el estilo, etc...
     qr = Qrcode.new(**lbl_params)
 
@@ -113,7 +113,7 @@ class StockController < ApplicationController
     qr.update! path: "public/qr/#{File.basename(path)}"
 
     result  = Label::create(
-      qr_path: qr.path, 
+      qr_path: qr.path,
       style:   lbl_params[:style],
       color:   lbl_params[:color],
       size:    lbl_params[:size])
@@ -146,7 +146,7 @@ class StockController < ApplicationController
 
     affected_transactions_count = StockTransaction.hide \
       brand_id: params[:brand_id],
-      styles: styles, 
+      styles: styles,
       colors: colors
 
     render :json => {affected_transactions_count: affected_transactions_count }, status: 200
@@ -160,7 +160,7 @@ class StockController < ApplicationController
 
     affected_transactions_count = StockTransaction.restore \
       brand_id: params[:brand_id],
-      styles: styles, 
+      styles: styles,
       colors: colors
 
     render :json => {affected_transactions_count: affected_transactions_count }, status: 200
