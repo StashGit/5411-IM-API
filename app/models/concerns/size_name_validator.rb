@@ -1,11 +1,17 @@
 module SizeNameValidator
   def valid_size_name?(name)
-    is_number?(name)           ||
-    valid_us_size_name?(name)  ||
-    valid_au_size_name?(name)  ||
-    valid_std_size_name?(name) ||
-    valid_beaumont_size?(name) ||
-    valid_tu_name?(name)
+    str_name = name.to_s
+    is_number?(str_name)           ||
+    valid_us_size_name?(str_name)  ||
+    valid_au_size_name?(str_name)  ||
+    valid_std_size_name?(str_name) ||
+    valid_beaumont_size?(str_name) ||
+    valid_shoe_size?(str_name)     ||
+    valid_tu_name?(str_name)
+  end
+
+  def valid_shoe_size?(name)
+    /^(\d(.\d)?)+$/ =~ name
   end
 
   def valid_beaumont_size?(name)

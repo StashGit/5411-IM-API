@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SizeNameValidator < ActiveSupport::TestCase
+class SizeNameValidatorTest < ActiveSupport::TestCase
   include SizeNameValidator
 
   test "supports shoes sizes" do
