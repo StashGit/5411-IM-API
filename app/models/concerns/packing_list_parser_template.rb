@@ -30,15 +30,17 @@ class PackingListParserTemplate < PackingListParser
       # [Esto]
       # Una estrategia que podemos probar, es dejar todo como esta, y agregar
       # las nuevas columnas antes de los talles.
+
       style = packing_list.cell('A', row)
       code  = packing_list.cell('B', row)
       color = packing_list.cell('C', row)
+      ref   = packing_list.cell('D', row)
 
       size_columns.each do |col|
         size  = size_name(col)
         size_order  = size_order_for(size)
         units = packing_list.cell(col, row)
-        sku   = Sku.new(style: style, color: color, size: size, code: code)
+        sku   = Sku.new(style: style, color: color, size: size, code: code, reference_id: ref)
         result << StockEntry.new(brand, sku, units, size_order)
       end
     end
@@ -47,8 +49,8 @@ class PackingListParserTemplate < PackingListParser
 
   def possible_size_column_names
     [
-      'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'
+      'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'
     ]
   end
 

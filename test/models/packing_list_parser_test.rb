@@ -408,8 +408,8 @@ class PackingListParserTest < ActiveSupport::TestCase
 
   end
 
-  test "can parse reference_id" do
-    parser = PackingListParserTemplate.new(brand, pl_with_reference_id_path)
+  test "can parse reference_id only" do
+    parser = PackingListParserTemplate.new(brand, pl_with_reference_id_only_path)
     entries = parser.parse
     assert entries[0].sku.reference_id == "PO123"
   end
@@ -460,7 +460,7 @@ class PackingListParserTest < ActiveSupport::TestCase
 
   def pl_beaumont_organic_path; file_fixture('pl_beaumont_organic.xlsx').to_s; end
 
-  def pl_with_reference_id_path; file_fixture('pl_reference_id.xlsx').to_s; end
+  def pl_with_reference_id_only_path; file_fixture('pl_reference_id_only.xlsx').to_s; end
 
   def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 
