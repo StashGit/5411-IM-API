@@ -21,6 +21,15 @@ class PackingListParserTemplate < PackingListParser
     parse_size_names
     data_range.each do |row|
 
+      # TODO: Mover columnas
+      # Ya tenemos la columna "reference_id", acutalizamos los sku, los helper
+      # methods, los parametros de los controlers, etc... etc...
+      # Estamos teniendo un problema cuando movemos el campo "style" a la columna
+      # "C" para que sea posible agregar reference_id (y mas adelante, box_id)
+      # en las columnas "A" y "B".
+      # [Esto]
+      # Una estrategia que podemos probar, es dejar todo como esta, y agregar
+      # las nuevas columnas antes de los talles.
       style = packing_list.cell('A', row)
       code  = packing_list.cell('B', row)
       color = packing_list.cell('C', row)
