@@ -200,22 +200,6 @@ class StockController < ApplicationController
     render :json => @result, :status => :bad_request
   end
 
-  def upload_file file
-    return unless file&.original_filename
-
-    path = uploads_dir.join(file.original_filename)
-    File.open(path, 'wb') do |f|
-      f.write(file.read)
-    end
-    path.to_s
-  end
-
-  def uploads_dir
-    dir = Rails.root.join('public', 'uploads_dir')
-    Dir.mkdir(dir) unless Dir.exist?(dir)
-    dir
-  end
-
   def authorize
     raise "Unathorized Request" unless @token
   end

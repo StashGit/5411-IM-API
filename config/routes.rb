@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get  'print/pending_jobs_ids'
   ##
 
+  # Utils
+  post 'utils/upload_image'
 
   # QR
   post 'qr/create'
