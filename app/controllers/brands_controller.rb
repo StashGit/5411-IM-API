@@ -13,12 +13,12 @@ class BrandsController < ApplicationController
   end
 
   def update
-    @brand.update!(name: params[:name], user_id: @user.id)
+    @brand.update!(name: params[:name], logo_url: params[:logo_url], user_id: @user.id)
     render json: @brand
   end
 
   def create
-    render json: Brand.create!(name: params[:name], user_id: @user.id)
+    render json: Brand.create!(name: params[:name], logo_url: params[:logo_url], user_id: @user.id)
   end
 
   def delete
