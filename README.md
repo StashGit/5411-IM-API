@@ -414,11 +414,17 @@ Las marcas se pueden registrar utilziando el metodo **brands/create**.
 **Parametros**
 * name
 
+**Parametros Opcionales**
+* logo_url
+
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X POST \
-     -d "{ \"name\": \"Nike\" }" \
+     -d "{
+        \"name\": \"Nike\",
+        \"logo_url\": \"host/logo.png\"
+    }" \
      localhost:3000/brands/create
 ```
 
@@ -428,6 +434,9 @@ Las marcas se pueden modificar utilziando el metodo **brands/update**.
 **Parametros**
 * id
 * name
+
+**Parametros Opcionales**
+* logo_url
 
 ```
 curl -H "Content-Type: application/json" \
@@ -664,6 +673,23 @@ curl -H "Content-Type: application/json" \
      stock-api-5411.herokuapp.com/brands/all
 ```
 
+### Como subir images
+El metodo **utils/upload_image** permite subir imagenes al servidor. (Por ejemplo,
+el logo de una marca.)
+
+```
+curl -H "Content-Type: multipart/mixed"   \
+     -H "Accepts: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -F "image=@$FILE" \
+     localhost:3000/utils/upload_image
+```
+
+Resultado:
+```
+{ img_id: 4, img: "http://localhost:3000/logo.png" }
+```
 
 ### Como se configura el servicio de impresion
 Para configurar el daemon que utilizamos para imprimir las etiquetas tenemos
