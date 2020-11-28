@@ -201,7 +201,10 @@ class Stock
     sts = StockTransaction.where(brand_id: brand.id)
     tmp = sts.collect { |t|
       [
-        { style: t.style, color: t.color, size: t.size, code: t.code },
+        {
+          style: t.style, color: t.color, size: t.size, code: t.code,
+          reference_id: t.reference_id, box_id: t.box_id
+         },
         t.size_order,
         t.status
       ]

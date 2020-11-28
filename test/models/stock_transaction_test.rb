@@ -20,7 +20,7 @@ class StockTransactionTest < ActiveSupport::TestCase
       brand_id: brand.id,
       styles: ["will-be-hidden"],
       colors: ["Midnight"]
-      
+
     assert StockTransaction.active.count == 1
   end
 
@@ -82,7 +82,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     result = Stock.buy(brand, sku, 10, user)
     result = Stock.adjust(brand, sku, 5, user, "no comments", nil, 8)
     tnx    = StockTransaction.find(result.id)
-    
+
     # Como 8 no es una razon valida para realizar la transaccion, el setter de
     # esa propiedad utiliza el numero 7 (Other.)
     assert ::Reason::OTHER == tnx.reason.to_i
@@ -133,5 +133,25 @@ class StockTransactionTest < ActiveSupport::TestCase
 
     t = StockTransaction.find(result.id)
     assert comments == t.comments
+  end
+
+  test "can save reference_id and box_id" do
+    sku  = Sku.new \
+      style: "ST0005",
+      color: "Midnight",
+      size: "L",
+      reference_id: "ref-123",
+      box_id: "box-123"
+
+    brand = brands(:nike)
+    user = users(:joe)
+
+    result = Stock.buy(brand, sku, 10, user)
+
+
+    st = StockTransaction.find(result.id)
+
+    assert st.reference_id.present?
+    assert st.box_id.present?
   end
 end

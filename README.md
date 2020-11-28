@@ -145,6 +145,25 @@ curl -H "Content-Type: application/json" \
      localhost:3000/stock/by_brand
 ```
 
+Resultado:
+```
+[{
+  sku: {
+     style: "FRANKE",
+     color: 280,
+     size: "L",
+     code: 1376,
+     reference_id: "PO123",
+     box_id: "BOX 3"
+    },
+    units: 1,
+    size_order: 5,
+    status: null
+  }
+},
+{...}]
+```
+
 ### Cómo se realizan los ajustes de stock
 Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
 La *dirección* del movimiento (entrada/salida) se infiere en base a la
