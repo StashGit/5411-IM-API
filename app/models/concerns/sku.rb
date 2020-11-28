@@ -1,19 +1,24 @@
 class Sku
-  attr_reader :style, :color, :size, :code
+  attr_reader :style, :color, :size, :code, :reference_id, :box_id
 
   # code: se utiliza solo para listas internas.
-  def initialize(style:, color:, size:, code: nil)
+  def initialize(style:, color:, size:, code: nil, reference_id: nil, box_id: nil)
     validate_sku_args(style, color, size)
 
-    @style = style&.to_s&.upcase
-    @color = color&.to_s&.upcase
-    @size  =  size&.to_s&.upcase
-    @code  =  code&.to_s&.upcase
+    @style         = style&.to_s&.upcase
+    @color         = color&.to_s&.upcase
+    @size          = size&.to_s&.upcase
+    @code          = code&.to_s&.upcase
+    @reference_id  = reference_id&.to_s&.upcase
+    @box_id        = box_id&.to_s&.upcase
   end
 
   def to_s
+    # TODO: Refactor. Ver si podemos volar estos if.
     str = "#{self.style}-#{self.color}-#{self.size}"
-    code ?  "#{str}-#{code}" : str
+    str = code ? "#{str}-#{code}" : str
+    str = reference_id ? "#{str}-#{reference_id}" : str
+    str = box_id ? "#{str}-#{box_id}" : str
   end
 
   private

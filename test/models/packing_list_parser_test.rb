@@ -408,6 +408,13 @@ class PackingListParserTest < ActiveSupport::TestCase
 
   end
 
+  test "can parse reference_id and box_id" do
+    parser = PackingListParserTemplate.new(brand, pl_with_reference_id_and_box_id_path)
+    entries = parser.parse
+    assert entries[0].sku.reference_id == "PO123"
+    assert entries[0].sku.box_id == "BOX 1"
+  end
+
   test "can parse code" do
     parser = PackingListParserTemplate.new(brand, pl_with_code_path)
     entries = parser.parse
@@ -453,6 +460,8 @@ class PackingListParserTest < ActiveSupport::TestCase
   def multipl_path; file_fixture('multi.xlsx').to_s; end
 
   def pl_beaumont_organic_path; file_fixture('pl_beaumont_organic.xlsx').to_s; end
+
+  def pl_with_reference_id_and_box_id_path; file_fixture('pl_reference_id_and_box_id.xlsx').to_s; end
 
   def not_a_valid_pl_path; file_fixture('not_a_valid_pl.xlsx').to_s; end
 

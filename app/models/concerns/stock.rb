@@ -8,16 +8,16 @@ class Stock
   def self.import(brand, file_path, user)
     entries = parse_packing_list(brand, file_path)
 
-    # Seguir desde aca. Verificar que las validaciones funciones y que el 
+    # Seguir desde aca. Verificar que las validaciones funciones y que el
     # token se genere correctamente.
     # Cuando hayamos completado el punto anterior, utilizar el token para
     # recuperar los IDs e imprimir todas las etiquetas para el lote.
     if StockEntry.all_valid? entries
       ok, ids, errors = Stock.create(entries, user)
-      
-      # Dado que validamos los registros antes de generar la transaccion, 
-      # no deberiamos tener ningun error. De todas formas, en el caso de que se 
-      # produzca algun error, lo que hacemos es loguearlo en el server y 
+
+      # Dado que validamos los registros antes de generar la transaccion,
+      # no deberiamos tener ningun error. De todas formas, en el caso de que se
+      # produzca algun error, lo que hacemos es loguearlo en el server y
       # retornar la lista de errores al codigo cliente para que la manejen
       # desde el front.
       puts errors unless ok
@@ -48,7 +48,7 @@ class Stock
     entries.each do |entry|
       next unless entry.units
 
-      res = adjust(entry.brand, entry.sku, entry.units.abs, 
+      res = adjust(entry.brand, entry.sku, entry.units.abs,
                    user, "Mass Import", entry.size_order)
 
       if res.ok
@@ -67,10 +67,12 @@ class Stock
       color: sku.color,
       size: sku.size,
       code: sku.code,
+      box_id: sku.box_id,
+      reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_IN,
       units: units.abs,
-      reason: Reason::BUY, 
+      reason: Reason::BUY,
       comments: comments)
 
     save_transaction(t, user)
@@ -81,12 +83,14 @@ class Stock
       brand: brand,
       style: sku.style,
       color: sku.color,
-      size:  sku.size, 
+      size:  sku.size,
       code:  sku.code,
+      box_id: sku.box_id,
+      reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_OUT,
       units: units.abs,
-      reason: Reason::SALE, 
+      reason: Reason::SALE,
       comments: comments
       )
 
@@ -95,15 +99,17 @@ class Stock
 
   def self.adjust(brand, sku, units, user, comments="", size_order=nil, reason=nil)
     t = StockTransaction.new \
-      brand:      brand,
-      style:      sku.style, 
-      color:      sku.color, 
-      size:       sku.size, 
-      code:       sku.code,      
-      size_order: size_order || size_order_for(sku.size),
-      units:      units.abs, 
-      reason:     reason, 
-      comments:   comments
+      brand:        brand,
+      style:        sku.style,
+      color:        sku.color,
+      size:         sku.size,
+      code:         sku.code,
+      box_id: sku.box_id,
+      reference_id: sku.reference_id,
+      size_order:   size_order || size_order_for(sku.size),
+      units:        units.abs,
+      reason:       reason,
+      comments:     comments
 
     t.kind  = units > 0 ? KIND_IN : KIND_OUT
     save_transaction(t, user)
@@ -163,8 +169,13 @@ class Stock
   end
 
   def self.collect_transactions_by(brand, sku)
-    StockTransaction.where(
-      brand_id: brand.id, style: sku.style, color: sku.color, size: sku.size, code: sku.code)
+    StockTransaction.where \
+      brand_id: brand.id,
+      style: sku.style,
+      color: sku.color,
+      size: sku.size,
+      code: sku.code,
+      reference_id: sku.reference_id
   end
 
   # TODO: En lugar de hacer esto tenemos que tener una vista materializada
@@ -175,9 +186,9 @@ class Stock
     res = []
     collect_skus_by(brand).each do |entry|
       sku, order, status = entry
-      res << { 
-        sku: sku, 
-        units: units(brand, sku), 
+      res << {
+        sku: sku,
+        units: units(brand, sku),
         size_order: order,
         status: status
       }
@@ -188,15 +199,15 @@ class Stock
   def self.collect_skus_by(brand)
     # Como agregamos el campo "status" volvimos a listar todas las transacciones.
     sts = StockTransaction.where(brand_id: brand.id)
-    tmp = sts.collect { |t| 
+    tmp = sts.collect { |t|
       [
         { style: t.style, color: t.color, size: t.size, code: t.code },
         t.size_order,
         t.status
-      ] 
+      ]
     }.uniq
 
-    tmp.collect { |entry| 
+    tmp.collect { |entry|
       sku, order, status = entry
       [Sku.new(**sku), order, status]
     }

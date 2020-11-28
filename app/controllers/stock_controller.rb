@@ -180,12 +180,14 @@ class StockController < ApplicationController
 
   def units_in_stock
     result = {}
-    result[:units]    = Stock.units(@brand, @sku)
-    result[:style]    = @sku.style
-    result[:color]    = @sku.color
-    result[:size]     = @sku.size
-    result[:code]     = @sku.code
-    result[:brand_id] = @brand.id
+    result[:units]        = Stock.units(@brand, @sku)
+    result[:style]        = @sku.style
+    result[:color]        = @sku.color
+    result[:size]         = @sku.size
+    result[:code]         = @sku.code
+    result[:reference_id] = @sku.reference_id
+    result[:box_id]       = @sku.box_id
+    result[:brand_id]     = @brand.id
     result
   end
 

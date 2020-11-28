@@ -20,16 +20,24 @@ class PackingListParserTemplate < PackingListParser
     result = []
     parse_size_names
     data_range.each do |row|
+      
+      # Se agregaron los campos reference_id y box_id pero el orden de las
+      # columnas fue alterado.
+      # TODO:
+      # Ver si podemos refactorizar el codigo para que el orden que 
+      # utilizamos coincida con el ejemplo que nos paso Andrew.       
 
       style = packing_list.cell('A', row)
       code  = packing_list.cell('B', row)
       color = packing_list.cell('C', row)
+      ref   = packing_list.cell('D', row)
+      box   = packing_list.cell('E', row)
 
       size_columns.each do |col|
         size  = size_name(col)
         size_order  = size_order_for(size)
         units = packing_list.cell(col, row)
-        sku   = Sku.new(style: style, color: color, size: size, code: code)
+        sku   = Sku.new(style: style, color: color, size: size, code: code, reference_id: ref, box_id: box)
         result << StockEntry.new(brand, sku, units, size_order)
       end
     end
@@ -38,8 +46,8 @@ class PackingListParserTemplate < PackingListParser
 
   def possible_size_column_names
     [
-      'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U'
+      'F', 'G', 'H', 'I', 'J', 'K', 'L',
+      'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'
     ]
   end
 

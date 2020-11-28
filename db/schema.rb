@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_25_230440) do
+ActiveRecord::Schema.define(version: 2020_11_26_202826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,8 @@ ActiveRecord::Schema.define(version: 2020_10_25_230440) do
     t.integer "size_order"
     t.string "code"
     t.string "status"
+    t.string "reference_id"
+    t.string "box_id"
   end
 
   create_table "tokens", force: :cascade do |t|
