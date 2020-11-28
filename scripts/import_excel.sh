@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Uploads an excel file an creates the stock transactions.
-# It's important to use a *valid* access tocken. If this token
+# It's important to use a *valid* access token. If this token
 # doesn't works, create a brand new one by running the create_session script.
 TOKEN=$1
 BRAND_ID=$2
