@@ -1,8 +1,8 @@
 class Sku
-  attr_reader :style, :color, :size, :code, :reference_id
+  attr_reader :style, :color, :size, :code, :reference_id, :box_id
 
   # code: se utiliza solo para listas internas.
-  def initialize(style:, color:, size:, code: nil, reference_id: nil)
+  def initialize(style:, color:, size:, code: nil, reference_id: nil, box_id: nil)
     validate_sku_args(style, color, size)
 
     @style         = style&.to_s&.upcase
@@ -10,6 +10,7 @@ class Sku
     @size          = size&.to_s&.upcase
     @code          = code&.to_s&.upcase
     @reference_id  = reference_id&.to_s&.upcase
+    @box_id        = box_id&.to_s&.upcase
   end
 
   def to_s
@@ -17,6 +18,7 @@ class Sku
     str = "#{self.style}-#{self.color}-#{self.size}"
     str = code ? "#{str}-#{code}" : str
     str = reference_id ? "#{str}-#{reference_id}" : str
+    str = box_id ? "#{str}-#{box_id}" : str
   end
 
   private

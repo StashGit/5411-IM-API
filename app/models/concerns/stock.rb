@@ -67,7 +67,7 @@ class Stock
       color: sku.color,
       size: sku.size,
       code: sku.code,
-      # TODO: Add box_id
+      box_id: sku.box_id,
       reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_IN,
@@ -85,7 +85,7 @@ class Stock
       color: sku.color,
       size:  sku.size,
       code:  sku.code,
-      # TODO: Add box_id
+      box_id: sku.box_id,
       reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_OUT,
@@ -104,7 +104,7 @@ class Stock
       color:        sku.color,
       size:         sku.size,
       code:         sku.code,
-      # TODO: Add box_id
+      box_id: sku.box_id,
       reference_id: sku.reference_id,
       size_order:   size_order || size_order_for(sku.size),
       units:        units.abs,
