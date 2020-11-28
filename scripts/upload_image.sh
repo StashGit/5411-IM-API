@@ -11,7 +11,7 @@ then
          -H "Accepts: application/json" \
          -H "Access-Token: $TOKEN" \
          -X POST \
-         -F "logo=@$FILE" \
+         -F "image=@$FILE" \
          localhost:3000/utils/upload_image
 else
     echo "Must provide a valid access token and a brand id."

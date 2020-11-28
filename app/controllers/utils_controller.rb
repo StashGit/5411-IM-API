@@ -3,7 +3,7 @@ class UtilsController < ApplicationController
   before_action :set_access_token
 
   def upload_image
-    server_path = upload_logo(params[:logo])
+    server_path = upload_logo(params[:image])
     url = "#{request.base_url}/logos/#{File.basename(server_path)}"
     img = Image.create! url: url
     render json: { img_id: img.id, img: url }, status: 200
