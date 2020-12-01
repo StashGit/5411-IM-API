@@ -3,9 +3,10 @@
 # Uploads an excel file an creates the stock transactions.
 # It's important to use a *valid* access token. If this token
 # doesn't works, create a brand new one by running the create_session script.
-TOKEN=$1
-BRAND_ID=$2
-FILE=$3
+HOST=$1
+TOKEN=$2
+BRAND_ID=$3
+FILE=$4
 
 if [[ $TOKEN && $BRAND_ID ]];
 then
@@ -15,8 +16,8 @@ then
          -X POST \
          -F "file=@$FILE" \
          -F "brand_id=$BRAND_ID" \
-         localhost:3000/stock/import
+		 $HOST/stock/import
 else
-    echo "Must provide a valid access token and a brand id."
+    echo "Must provide host, a valid access token and a brand id."
 fi
 
