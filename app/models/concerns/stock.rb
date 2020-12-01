@@ -175,6 +175,7 @@ class Stock
       color: sku.color,
       size: sku.size,
       code: sku.code,
+      box_id: sku.box_id,
       reference_id: sku.reference_id
   end
 
