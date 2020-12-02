@@ -146,22 +146,34 @@ curl -H "Content-Type: application/json" \
 ```
 
 Resultado:
+
 ```
 [{
-  sku: {
-     style: "FRANKE",
-     color: 280,
-     size: "L",
-     code: 1376,
-     reference_id: "PO123",
-     box_id: "BOX 3"
-    },
-    units: 1,
+  style: "LYNETTE DRESS",
+  code: 1201,
+  color: "245",
+  status: null,
+  kind: 1,
+  sizes: [{
+    size: "L",
     size_order: 5,
-    status: null
-  }
+    total_units: 12,
+    boxes: [{
+        box_id: "BOX 1",
+        units: 2
+      },{
+        box_id: "BOX 4",
+        units: 10
+      }
+    ]
+    }, {
+      size: "M",
+      size_order: 4,
+      total_units: 8,
+      boxes: [...]
+   }]
 },
-{...}]
+{ ... }]
 ```
 
 ### Cómo se realizan los ajustes de stock

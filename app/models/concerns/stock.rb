@@ -137,6 +137,64 @@ class Stock
     end
   end
 
+  def self.stock_entry
+    @@stock_entry ||= Struct.new(:style, :code, :color, :status, :kind, :sizes)
+  end
+
+  def self.size_entry
+    @@size_entry ||= Struct.new(:size, :size_order, :units, :box_id)
+  end
+
+  def self.compute_transactions_grouping_by_box_id(brand_id)
+    sql = %{
+      SELECT id, style, code, color, size, size_order, box_id, units, kind, status
+      FROM stock_transactions
+      WHERE brand_id=#{brand_id}
+      GROUP BY id, style, color, size
+      ORDER BY size
+    }
+    rows = StockTransaction.connection.execute sql
+
+    result = []
+    last_sku  = {}
+    rows.each do |row|
+      sku = { style: row["style"], code: row["code"], color: row["color"] }
+      if sku != last_sku
+        last_sku = sku
+        result << stock_entry.new(*sku.values, row["status"], row["kind"], [])
+      end
+      result.last.sizes << size_entry.new(row["size"], row["size_order"], row["units"], row["box_id"])
+    end
+
+    merge_boxes(result)
+  end
+
+  def self.merge_boxes entries
+    result = []
+    box    = Struct.new(:box_id, :units)
+    size_details = Struct.new(:size, :size_order, :total_units, :boxes)
+
+    entries.each do |entry|
+      result << stock_entry.new(entry.style, entry.code, entry.color, entry.status, entry.kind, [])
+      merged_sizes = {}
+      entry.sizes.each do |size_entry|
+        size = size_entry.size
+        unless merged_sizes.key?(size)
+          merged_sizes[size] = size_details.new(size, size_entry.size_order, 0, [])
+        end
+        merged_sizes[size].boxes << box.new(size_entry.box_id, size_entry.units)
+        if entry.kind == KIND_IN
+          merged_sizes[size].total_units += size_entry.units || 0
+        else
+          merged_sizes[size].total_units -= size_entry.units || 0
+        end
+      end
+      result.last.sizes = merged_sizes.values
+    end
+
+    result
+  end
+
   private
 
   def self.parse_packing_list(brand, file_path)

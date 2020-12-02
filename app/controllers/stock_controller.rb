@@ -132,12 +132,9 @@ class StockController < ApplicationController
     render :json => StockTransaction.log
   end
 
-  # Esto seria stock por marca.
   def by_brand
-    # En lugar de mostrar todos los movimientos tenemos que mostrar
-    # el stock actual del producto (que surge de computar todos los movimientos
-    # para cada sku.)
-    render :json => Stock.compute_transactions_by(@brand)
+    transactions = Stock.compute_transactions_grouping_by_box_id(@brand.id)
+    render :json => transactions
   end
 
   def hide
