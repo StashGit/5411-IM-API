@@ -2,23 +2,27 @@ class PackingList < ApplicationRecord
   ACTIVE  = 1
   DELETED = 2
 
-  validates :path, presence: true
-  has_many  :stock_transactions
-  scope     :active, -> { where(status: [ACTIVE]) }
+  validates  :path, presence: true
+
+  belongs_to :brand, optional: true
+  has_many   :stock_transactions
+
+  scope      :active, -> { where(status: [ACTIVE]) }
   before_validation :set_default_status
 
-  def self.describe_active_lists
-    PackingList.active.map &:describe
+  def self.describe_active_lists brand
+    return PackingList.active.map &:describe unless brand.present?
+    PackingList.active.where(brand: brand).map &:describe
   end
 
   def describe
-    pl_description.new(id, File.basename(path))
+    pl_description.new(id, brand&.describe, File.basename(path))
   end
 
   private
 
   def pl_description
-    @pl_description ||= Struct.new(:id, :path)
+    @pl_description ||= Struct.new(:id, :brand, :path)
   end
 
   def set_default_status

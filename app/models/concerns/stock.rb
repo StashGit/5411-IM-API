@@ -9,7 +9,7 @@ class Stock
     entries = parse_packing_list(brand, file_path)
 
     if StockEntry.all_valid? entries
-      ok, ids, errors = Stock.create(file_path, entries, user)
+      ok, ids, errors = Stock.create(brand, file_path, entries, user)
 
       # Dado que validamos los registros antes de generar la transaccion,
       # no deberiamos tener ningun error. De todas formas, en el caso de que se
@@ -30,11 +30,11 @@ class Stock
     { ok: false, errors: [ex.message] }
   end
 
-  def self.create(pl_path, entries, user)
+  def self.create(brand, pl_path, entries, user)
     ids = []
     errors = []
 
-    pl = PackingList.create! path: pl_path
+    pl = PackingList.create! path: pl_path, brand: brand
     entries.each do |entry|
       next unless entry.units
 

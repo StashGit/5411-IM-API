@@ -7,11 +7,13 @@ class StockController < ApplicationController
   before_action :set_sku,          only:   [:buy, :sale, :adjust, :units]
   before_action :set_units,        only:   [:buy, :sale, :adjust]
   before_action :set_user,         only:   [:buy, :sale, :adjust]
-  before_action :set_brand,        only:   [:buy, :sale, :adjust, :units, :import, :by_brand ]
   before_action :set_packing_list, only:   [:delete_packing_list]
+  before_action :set_brand,        only:   [
+    :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists
+  ]
 
   def packing_lists
-    render json: PackingList.describe_active_lists
+    render json: PackingList.describe_active_lists(@brand)
   end
 
   def delete_packing_list
