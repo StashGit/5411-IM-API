@@ -5,7 +5,7 @@ class StockTest < ActiveSupport::TestCase
   test "generate stock transactions from packing list" do
     parser = PackingListParser.new(brand, pl_path)
     entries = parser.parse
-    Stock.create(entries, User.new(email: "john@example.com"))
+    Stock.create("packing.xlsx", entries, User.new(email: "john@example.com"))
 
     # Verifico un par de transacciones.
     sku = Sku.new(style: "SS200105S", color: "MIDNIGHT", size: "AU6 US2")

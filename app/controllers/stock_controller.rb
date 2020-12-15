@@ -3,11 +3,29 @@ class StockController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :set_access_token
-  before_action :authorize, except: [:index]
-  before_action :set_sku,   only:   [:buy, :sale, :adjust, :units]
-  before_action :set_units, only:   [:buy, :sale, :adjust]
-  before_action :set_user,  only:   [:buy, :sale, :adjust]
-  before_action :set_brand, only:   [:buy, :sale, :adjust, :units, :import, :by_brand ]
+  before_action :authorize,        except: [:index]
+  before_action :set_sku,          only:   [:buy, :sale, :adjust, :units]
+  before_action :set_units,        only:   [:buy, :sale, :adjust]
+  before_action :set_user,         only:   [:buy, :sale, :adjust]
+  before_action :set_brand,        only:   [:buy, :sale, :adjust, :units, :import, :by_brand ]
+  before_action :set_packing_list, only:   [:delete_packing_list]
+
+  def packing_lists
+    render json: PackingList.describe_active_lists
+  end
+
+  def delete_packing_list
+    if @packing_list
+      ok, error = StockTransaction.delete_packing_list(@packing_list)
+      if ok
+        render json: { message: "OK" }, status: :ok
+      else
+        render json: { message: error }, status: :internal_server_error
+      end
+    else
+      render json: { message: "Failed to find the packing list" }, status: :not_found
+    end
+  end
 
   def index
   end
@@ -52,10 +70,14 @@ class StockController < ApplicationController
   end
 
   def adjust
-    result = Stock.adjust(@brand, @sku, @units, @user,
-                          params[:comments],
-                          nil, # <- size_order
-                          params[:reason])
+    result = Stock.adjust \
+      @brand,
+      @sku,
+      @units,
+      @user,
+      params[:comments],
+      reason: params[:reason]
+
     if result.ok
       render :json => units_in_stock, :status => 200
     else
@@ -211,6 +233,10 @@ class StockController < ApplicationController
 
   def set_user
     @user = @token.user
+  end
+
+  def set_packing_list
+    @packing_list = PackingList.find_by(id: params[:packing_list_id])
   end
 
   def set_brand

@@ -111,6 +111,54 @@ importar.
 { "ok": true, "errors": [], "token": "8a5ca2e830f7b381ede318b871a4253e" }
 ```
 
+### Cómo se eliminan todas las transacciones generadas por una Packing List
+Si luego de importar una lista el usuario quiere eliminar todas las transacciones
+que acaba de generar, podemos ofrecerles esa posibilidad utilizando el metodo
+**stock/delete_packing_list** especificando el **id** de la lista que
+queremos eliminar.
+(El id de la lista se puede recuperar utilizando el metodo **stock/packing_lists**.)
+
+**Párametros**
+* packing_list_id
+
+```
+curl -H "Content-Type: multipart/mixed"   \
+     -H "Accepts: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -F "packing_list_id=$PLID" \
+     $HOST/stock/delete_packing_list
+```
+
+**Resultado**
+
+```
+{ "message": "OK" }
+```
+
+### Cómo recuperar todas las packing lists
+El metodo **stock/packing_lists** permite recuperar todas las packing lists
+"activas" que tenemos en el sistema.
+Este metodo puede ser util en los casos donde queremos mostrar el nomrbe de la
+lista y utilizar su ID para realizar alguna operacion con la API.
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X GET \
+     $HOST/stock/packing_lists
+```
+
+**Resultado**
+
+```
+[
+  { id: 1, path: "pl1.xlsx },
+  { id: 2, path: "pl2.xlsx },
+  { id: 3, path: "pl3.xlsx }
+]
+```
+
 ### Cómo se consulta el stock de un producto
 El stock de un producto se calcula en base a la diferencia entre las
 transacciones de entrada y salida para la combinación **marca-sku**

@@ -8,12 +8,8 @@ class Stock
   def self.import(brand, file_path, user)
     entries = parse_packing_list(brand, file_path)
 
-    # Seguir desde aca. Verificar que las validaciones funciones y que el
-    # token se genere correctamente.
-    # Cuando hayamos completado el punto anterior, utilizar el token para
-    # recuperar los IDs e imprimir todas las etiquetas para el lote.
     if StockEntry.all_valid? entries
-      ok, ids, errors = Stock.create(entries, user)
+      ok, ids, errors = Stock.create(file_path, entries, user)
 
       # Dado que validamos los registros antes de generar la transaccion,
       # no deberiamos tener ningun error. De todas formas, en el caso de que se
@@ -34,22 +30,16 @@ class Stock
     { ok: false, errors: [ex.message] }
   end
 
-  def self.create_token(ids)
-    hs = nil
-    begin
-      hs = SecureRandom.hex
-    end while Token.find_by_hashcode hs
-    Token.create! hashcode: hs, value: ids.to_json
-  end
-
-  def self.create(entries, user)
+  def self.create(pl_path, entries, user)
     ids = []
     errors = []
+
+    pl = PackingList.create! path: pl_path
     entries.each do |entry|
       next unless entry.units
 
-      res = adjust(entry.brand, entry.sku, entry.units.abs,
-                   user, "Mass Import", entry.size_order)
+      res = adjust(entry.brand, entry.sku, entry.units.abs, user,
+        reason: "Mass Import", size_order: entry.size_order, pl: pl)
 
       if res.ok
         ids << res.id
@@ -58,6 +48,14 @@ class Stock
       end
     end
     [errors.count == 0, ids, errors]
+  end
+
+  def self.create_token(ids)
+    hs = nil
+    begin
+      hs = SecureRandom.hex
+    end while Token.find_by_hashcode hs
+    Token.create! hashcode: hs, value: ids.to_json
   end
 
   def self.buy(brand, sku, units, user, comments="")
@@ -97,19 +95,20 @@ class Stock
     save_transaction(t, user)
   end
 
-  def self.adjust(brand, sku, units, user, comments="", size_order=nil, reason=nil)
+  def self.adjust(brand, sku, units, user, comments="", size_order: nil, reason: nil, pl: nil)
     t = StockTransaction.new \
-      brand:        brand,
-      style:        sku.style,
-      color:        sku.color,
-      size:         sku.size,
-      code:         sku.code,
-      box_id: sku.box_id,
-      reference_id: sku.reference_id,
-      size_order:   size_order || size_order_for(sku.size),
-      units:        units.abs,
-      reason:       reason,
-      comments:     comments
+      brand:           brand,
+      style:           sku.style,
+      color:           sku.color,
+      size:            sku.size,
+      code:            sku.code,
+      box_id:          sku.box_id,
+      reference_id:    sku.reference_id,
+      packing_list_id: pl&.id,
+      size_order:      size_order || size_order_for(sku.size),
+      units:           units.abs,
+      reason:          reason,
+      comments:        comments
 
     t.kind  = units > 0 ? KIND_IN : KIND_OUT
     save_transaction(t, user)
@@ -152,6 +151,8 @@ class Stock
              reference_id, box_id, units, kind, status
       FROM stock_transactions
       WHERE brand_id=#{brand_id}
+      /* We only want active transactions*/
+      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
       GROUP BY id, style, color, size
       ORDER BY size, reference_id
     }

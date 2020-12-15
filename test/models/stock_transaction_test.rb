@@ -5,6 +5,28 @@ class StockTransactionTest < ActiveSupport::TestCase
     StockTransaction.destroy_all
   end
 
+  test "delete packing list" do
+    sku   = Sku.new(style: "will-be-deleted", color: "Midnight", size: "L")
+    brand = brands(:nike)
+    user  = users(:joe)
+
+    # De esta forma simulamos el import de 2 packing lists.
+
+    pl1 = PackingList.create! path: "foo.txt"
+    Stock.adjust(brand, sku, 10, user, "Testing Delete", pl: pl1)
+
+    pl2 = PackingList.create! path: "bar.txt"
+    Stock.adjust(brand, sku, 10, user, "We don't delete this one.", pl: pl2)
+
+    assert StockTransaction.count == 2
+
+    StockTransaction.delete_packing_list pl1
+
+    # Solo tenemos que tener las transacciones de pl2.
+    assert StockTransaction.active.count == 1
+    assert pl1.status == PackingList::DELETED
+  end
+
   test "restore stock transactions" do
     sku = Sku.new(style: "will-be-hidden", color: "Midnight", size: "L")
     brand = brands(:nike)
@@ -80,7 +102,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     brand  = brands(:nike)
     user   = users(:joe)
     result = Stock.buy(brand, sku, 10, user)
-    result = Stock.adjust(brand, sku, 5, user, "no comments", nil, 8)
+    result = Stock.adjust(brand, sku, 5, user, "no comments", reason: 8)
     tnx    = StockTransaction.find(result.id)
 
     # Como 8 no es una razon valida para realizar la transaccion, el setter de

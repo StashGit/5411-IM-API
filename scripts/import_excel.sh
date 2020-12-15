@@ -21,3 +21,4 @@ else
     echo "Must provide host, a valid access token and a brand id."
 fi
 
+echo ""

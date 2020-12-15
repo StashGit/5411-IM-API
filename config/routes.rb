@@ -46,6 +46,8 @@ Rails.application.routes.draw do
   post 'stock/units'
   post 'stock/hide'
   post 'stock/restore'
+  post 'stock/delete_packing_list'
+  get  'stock/packing_lists'
   # ===
 
   # CRUD users

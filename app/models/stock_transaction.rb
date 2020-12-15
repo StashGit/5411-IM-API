@@ -1,12 +1,25 @@
 class StockTransaction < ApplicationRecord
-  HIDDEN = 'hidden'
+  HIDDEN  = 'hidden'
+  DELETED = 'deleted'
 
   belongs_to :user
   belongs_to :brand
+  belongs_to :packing_list, optional: true
   validates_presence_of :size_order
   validates :reason, numericality: true
 
-  scope :active, -> { where("status IS NULL OR NOT status IN (?)", HIDDEN) }
+  scope :active, -> {
+    where("status IS NULL OR NOT status IN (?)", [HIDDEN, DELETED])
+  }
+
+  # Baja "logica" de todas las transacciones generadas por la packing list.
+  def self.delete_packing_list packing_list
+    return [false, "packing list is required"] unless packing_list
+
+    packing_list.stock_transactions.update_all status: DELETED
+    packing_list.update status: PackingList::DELETED
+    [true, ""]
+  end
 
   def self.restore(brand_id:, styles:, colors:)
     # Restaura todos los sizes para las combinaciones -> brand + [style/color]
@@ -46,7 +59,7 @@ class StockTransaction < ApplicationRecord
 
   def self.log
     sql = %(
-      SELECT s.*, u.email 
+      SELECT s.*, u.email
       FROM stock_transactions s, users u
       WHERE s.user_id = u.id
       ORDER BY created_at DESC
