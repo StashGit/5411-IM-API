@@ -142,20 +142,22 @@ El metodo **stock/packing_lists** permite recuperar todas las packing lists
 Este metodo puede ser util en los casos donde queremos mostrar el nomrbe de la
 lista y utilizar su ID para realizar alguna operacion con la API.
 
+**Párametros**
+* brand_id
+
 ```
 curl -H "Content-Type: application/json" \
      -H "Access-Token: $TOKEN" \
      -X GET \
-     $HOST/stock/packing_lists
+     $HOST/stock/packing_lists?brand_id=$BRAND_ID
 ```
 
 **Resultado**
-
 ```
 [
-  { id: 1, path: "pl1.xlsx },
-  { id: 2, path: "pl2.xlsx },
-  { id: 3, path: "pl3.xlsx }
+  { id: 1, brand: { id: 1, name: "Nike" }, path: "pl1.xlsx },
+  { id: 2, brand: { id: 1, name: "Nike" }, path: "pl2.xlsx },
+  { id: 3, brand: { id: 1, name: "Nike" }, path: "pl3.xlsx }
 ]
 ```
 
