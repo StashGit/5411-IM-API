@@ -16,13 +16,13 @@ class PackingList < ApplicationRecord
   end
 
   def describe
-    pl_description.new(id, brand&.describe, File.basename(path))
+    pl_description.new(id, brand&.describe, File.basename(path), created_at)
   end
 
   private
 
   def pl_description
-    @pl_description ||= Struct.new(:id, :brand, :path)
+    @pl_description ||= Struct.new(:id, :brand, :path, :created_at)
   end
 
   def set_default_status

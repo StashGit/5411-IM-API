@@ -247,10 +247,12 @@ class StockController < ApplicationController
 
   def sku_params
     sku = {}
-    sku[:style] = params[:style]
-    sku[:color] = params[:color]
-    sku[:size]  = params[:size]
-    sku[:code]  = params[:code]
+    sku[:style]         = params[:style]
+    sku[:color]         = params[:color]
+    sku[:size]          = params[:size]
+    sku[:code]          = params[:code]
+    sku[:box_id]        = params[:box_id]
+    sku[:reference_id]  = params[:reference_id]
     sku
   end
 

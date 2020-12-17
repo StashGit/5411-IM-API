@@ -237,16 +237,30 @@ negativa, se asume egreso de mercadería; si es positiva, se registra un ingreso
 * style
 * color
 * size
+* code
+* box_id
+* reference_id
 * units
 * comments
 * reason
 
 ```
 curl -H "Content-Type: application/json" \
-     -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
+     -H "Access-Token: $TOKEN" \
      -X POST \
-     -d "{ \"brand_id\": \"1\", \"style\": \"SS200105S\", \"color\": \"MIDNIGHT\", \"size\": \"AU6 US2\" , \"units\":"10", \"comments\":\"This is a comment.\", "reason" : \"4\" }" \
-     localhost:3000/stock/adjust
+     -d "{
+        \"brand_id\":     \"$BRAND_ID\",
+        \"style\":        \"SS200105S\",
+        \"color\":        \"MIDNIGHT\",
+        \"size\":         \"AU6 US2\",
+        \"code\":         \"test-code\",
+        \"box_id\":       \"random_box_id\",
+        \"reference_id\": \"random_reference_id\",
+        \"units\":        "$UNITS",
+        \"comments\":     \"This is a comment.\",
+        \"reason\":       \"$REASON\"
+     }" \
+     $HOST/stock/adjust
 ```
 
 Las razones posibles para realizar ajustes de stock, son:
