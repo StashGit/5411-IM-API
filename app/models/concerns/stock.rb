@@ -153,8 +153,8 @@ class Stock
       WHERE brand_id=#{brand_id}
       /* We only want active transactions*/
       AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
-      GROUP BY id, style, color, size
-      ORDER BY size, reference_id
+      GROUP BY id, style, color, size, reference_id, box_id
+      ORDER BY size, reference_id, box_id
     }
     rows = StockTransaction.connection.execute sql
 
@@ -205,10 +205,50 @@ class Stock
       result.last.sizes = merged_sizes.values
     end
 
-    result
+    sum_boxes_by_ref_id result
   end
 
   private
+
+  # TODO: Revisar este metodo. Ver con Andrew si esta es la estructura definitiva
+  #       y si funciona para todos los casos que tenemos que soportar.
+  #       Para la demo, parece que va.
+  def self.sum_boxes_by_ref_id entries
+    entries.each do |entry|
+      entry.sizes.each do |size|
+        size.boxes.sort_by! &:reference_id
+      end
+
+      # boxes are sorted by ref_id
+      entry.sizes.each do |size|
+        size.boxes = size.boxes.group_by &:box_id
+      end
+
+      box = Struct.new :reference_id, :box_id, :units
+      entry.sizes.each do |size|
+        boxes = []
+        size.boxes.each do |box_id, grouped_boxes|
+          next unless grouped_boxes
+          ref_id = grouped_boxes.first.reference_id
+          sum = grouped_boxes.inject(0) { |acc, box| acc += box.units }
+          boxes << box.new(ref_id, box_id, sum)
+        end
+        size.boxes = boxes
+      end
+    end
+
+    # boxes: [
+    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
+    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
+    #   {"reference_id":"PO222","box_id":"BOX 1","units":10},
+    # ]
+    # out:
+    # [PO123][BOX1] =  4
+    # [PO222][BOX1] = 10
+    # return sorted_by_ref_id
+    # raise "hell"
+    entries
+  end
 
   def self.parse_packing_list(brand, file_path)
     parser_class = select_parser_class(file_path)
