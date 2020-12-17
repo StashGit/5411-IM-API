@@ -153,8 +153,8 @@ class Stock
       WHERE brand_id=#{brand_id}
       /* We only want active transactions*/
       AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
-      GROUP BY id, style, color, size, reference_id, box_id
-      ORDER BY size, reference_id, box_id
+      GROUP BY id, style, code, color, size, reference_id, box_id
+      ORDER BY code, size, reference_id, box_id
     }
     rows = StockTransaction.connection.execute sql
 
@@ -229,6 +229,7 @@ class Stock
         boxes = []
         size.boxes.each do |box_id, grouped_boxes|
           next unless grouped_boxes
+
           ref_id = grouped_boxes.first.reference_id
           sum = grouped_boxes.inject(0) { |acc, box| acc += box.units }
           boxes << box.new(ref_id, box_id, sum)
