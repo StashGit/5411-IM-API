@@ -154,7 +154,7 @@ class Stock
       /* We only want active transactions*/
       AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
       GROUP BY id, style, code, color, size, reference_id, box_id
-      ORDER BY code, size, reference_id, box_id
+      ORDER BY style, code, color, size, reference_id, box_id
     }
     rows = StockTransaction.connection.execute sql
 
