@@ -27,7 +27,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     Stock.adjust(brand, sku1,  10, user, "Testing Delete")
     Stock.adjust(brand, sku1, -15, user, "Testing Delete")
 
-    result = Stock.compute_transactions_grouping_by_box_id(brand.id)
+    result = Stock.compute_transactions(brand.id)
     assert -15 == result.last.sizes.last.total_units
   end
 

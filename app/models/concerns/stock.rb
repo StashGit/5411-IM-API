@@ -90,7 +90,7 @@ class Stock
       units: units.abs,
       reason: Reason::SALE,
       comments: comments
-      )
+    )
 
     save_transaction(t, user)
   end
@@ -145,19 +145,8 @@ class Stock
       :size, :size_order, :units, :reference_id, :box_id, :status, :kind
   end
 
-  def self.compute_transactions_grouping_by_box_id(brand_id)
-    sql = %{
-      SELECT id, style, code, color, size, size_order,
-             units, kind, status,
-             COALESCE(reference_id, 'NO REF') reference_id,
-             COALESCE(box_id,'NO BOX') box_id
-      FROM stock_transactions
-      WHERE brand_id=#{brand_id}
-      /* We only want active transactions*/
-      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
-      ORDER BY style, code, color, size, reference_id, box_id
-    }
-    # GROUP BY id, style, code, color, size, reference_id, box_id
+  def self.compute_transactions(brand_id, damaged_only: false)
+    sql = prepare_compute_transactions_query(brand_id, damaged_only)
 
     rows = StockTransaction.connection.execute sql
 
@@ -220,6 +209,32 @@ class Stock
   end
 
   private
+
+  def self.prepare_compute_transactions_query(brand_id, damaged_only)
+    reason_clause =
+      if damaged_only
+        "reason =  '#{Reason::DAMAGED}'"
+      else
+        "reason <> '#{Reason::DAMAGED}'"
+      end
+
+    # La consulta original tenia este group by, pero aparentemente
+    # no agrega nada al resultado...
+    # GROUP BY id, style, code, color, size, reference_id, box_id
+    %{
+      SELECT id, style, code, color, size, size_order,
+             units, kind, status,
+             COALESCE(reference_id, 'NO REF') reference_id,
+             COALESCE(box_id,'NO BOX') box_id,
+             reason
+      FROM stock_transactions
+      WHERE brand_id=#{brand_id}
+      /* We only want active transactions*/
+      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
+      AND #{reason_clause}
+      ORDER BY style, code, color, size, reference_id, box_id
+    }
+  end
 
   # TODO: Revisar este metodo. Ver con Andrew si esta es la estructura definitiva
   #       y si funciona para todos los casos que tenemos que soportar.
