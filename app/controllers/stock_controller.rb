@@ -154,7 +154,14 @@ class StockController < ApplicationController
   end
 
   def log
-    render :json => StockTransaction.log
+    transactions =
+      if params[:brand_id]
+        StockTransaction.log brand_id: params[:brand_id]
+      else
+        StockTransaction.log
+      end
+
+    render :json => transactions
   end
 
   def by_brand

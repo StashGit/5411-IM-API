@@ -354,15 +354,17 @@ curl -H "Content-Type: application/json" \
 
 ### Cómo se consulta el log de transacciones
 Para obtener un listado con todas las transacciones de stock tenemos que utilizar el método **stock/log**.
-(Tener en cuenta que este metodo retorna **todas** las transacciones, no filtra por fecha, ni marca, ni usuario,
-ni nada por el estilo.
+
+Parametros Opcionales:
+
+* brand_id
 
 ```
 curl -H "Content-Type: multipart/mixed"   \
      -H "Accepts: application/json" \
      -H "Access-Token: e2aeb1977588a26b878a7b9d44b25caf" \
      -X GET \
-     localhost:3000/stock/log
+      $HOST/stock/log?brand_id=$BRAND_ID
 ```
 
 ### Cómo se ocualtan las transacciones de stock

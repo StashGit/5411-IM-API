@@ -1,16 +1,17 @@
 #!/bin/bash
 
-TOKEN=$1
+HOST=$1
+TOKEN=$2
+BRAND_ID=$3
 
-if [[ $TOKEN ]];
+if [[ $HOST && $TOKEN && $BRAND_ID ]];
 then
     curl -H "Content-Type: multipart/mixed"   \
          -H "Accepts: application/json" \
          -H "Access-Token: $TOKEN" \
          -X GET \
-         localhost:3000/stock/log
+         $HOST/stock/log?brand_id=$BRAND_ID
 else
-    echo "Must provide a valid access token."
-    echo "See create_session.sh"
+    echo "Must provide host, a valid access token, and a brand_id."
 fi
 

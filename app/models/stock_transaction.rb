@@ -57,11 +57,18 @@ class StockTransaction < ApplicationRecord
   # de transacciones.
   LOG_SIZE = 50
 
-  def self.log
+  def self.log brand_id: nil
+    where_clause =
+      if brand_id
+        "WHERE s.user_id = u.id AND s.brand_id = #{brand_id}"
+      else
+        "WHERE s.user_id = u.id"
+      end
+
     sql = %(
       SELECT s.*, u.email
       FROM stock_transactions s, users u
-      WHERE s.user_id = u.id
+      #{where_clause}
       ORDER BY created_at DESC
       LIMIT #{LOG_SIZE}
     )
