@@ -128,7 +128,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     brand  = brands(:nike)
     user   = users(:joe)
     result = Stock.buy(brand, sku, 10, user)
-    result = Stock.adjust(brand, sku, 5, user, "no comments", reason: 8)
+    result = Stock.adjust(brand, sku, 5, user, "no comments", reason: 8000)
     tnx    = StockTransaction.find(result.id)
 
     # Como 8 no es una razon valida para realizar la transaccion, el setter de
