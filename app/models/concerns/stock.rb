@@ -249,16 +249,6 @@ class Stock
       end
     end
 
-    # boxes: [
-    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
-    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
-    #   {"reference_id":"PO222","box_id":"BOX 1","units":10},
-    # ]
-    # out:
-    # [PO123][BOX1] =  4
-    # [PO222][BOX1] = 10
-    # return sorted_by_ref_id
-    # raise "hell"
     entries
   end
 
