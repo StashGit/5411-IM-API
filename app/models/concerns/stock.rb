@@ -90,7 +90,7 @@ class Stock
       units: units.abs,
       reason: Reason::SALE,
       comments: comments
-      )
+    )
 
     save_transaction(t, user)
   end
@@ -145,19 +145,8 @@ class Stock
       :size, :size_order, :units, :reference_id, :box_id, :status, :kind
   end
 
-  def self.compute_transactions_grouping_by_box_id(brand_id)
-    sql = %{
-      SELECT id, style, code, color, size, size_order,
-             units, kind, status,
-             COALESCE(reference_id, 'NO REF') reference_id,
-             COALESCE(box_id,'NO BOX') box_id
-      FROM stock_transactions
-      WHERE brand_id=#{brand_id}
-      /* We only want active transactions*/
-      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
-      ORDER BY style, code, color, size, reference_id, box_id
-    }
-    # GROUP BY id, style, code, color, size, reference_id, box_id
+  def self.compute_transactions(brand_id, damaged_only: false)
+    sql = prepare_compute_transactions_query(brand_id, damaged_only)
 
     rows = StockTransaction.connection.execute sql
 
@@ -221,6 +210,32 @@ class Stock
 
   private
 
+  def self.prepare_compute_transactions_query(brand_id, damaged_only)
+    reason_clause =
+      if damaged_only
+        "reason =  '#{Reason::DAMAGED}'"
+      else
+        "reason <> '#{Reason::DAMAGED}'"
+      end
+
+    # La consulta original tenia este group by, pero aparentemente
+    # no agrega nada al resultado...
+    # GROUP BY id, style, code, color, size, reference_id, box_id
+    %{
+      SELECT id, style, code, color, size, size_order,
+             units, kind, status,
+             COALESCE(reference_id, 'NO REF') reference_id,
+             COALESCE(box_id,'NO BOX') box_id,
+             reason
+      FROM stock_transactions
+      WHERE brand_id=#{brand_id}
+      /* We only want active transactions*/
+      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
+      AND #{reason_clause}
+      ORDER BY style, code, color, size, reference_id, box_id
+    }
+  end
+
   # TODO: Revisar este metodo. Ver con Andrew si esta es la estructura definitiva
   #       y si funciona para todos los casos que tenemos que soportar.
   #       Para la demo, parece que va.
@@ -249,16 +264,6 @@ class Stock
       end
     end
 
-    # boxes: [
-    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
-    #   {"reference_id":"PO123","box_id":"BOX 1","units": 2},
-    #   {"reference_id":"PO222","box_id":"BOX 1","units":10},
-    # ]
-    # out:
-    # [PO123][BOX1] =  4
-    # [PO222][BOX1] = 10
-    # return sorted_by_ref_id
-    # raise "hell"
     entries
   end
 
@@ -300,43 +305,5 @@ class Stock
       code: sku.code,
       box_id: sku.box_id,
       reference_id: sku.reference_id
-  end
-
-  # TODO: En lugar de hacer esto tenemos que tener una vista materializada
-  #       que nos permita hacer un select * y a otra cosa mariposa.
-  #       Con muchas transacciones de stock esto se puede llegar a clavar.
-  #       Si podemos cocinar la vista a medida que vamos grabando mejor.
-  def self.compute_transactions_by(brand)
-    res = []
-    collect_skus_by(brand).each do |entry|
-      sku, order, status = entry
-      res << {
-        sku: sku,
-        units: units(brand, sku),
-        size_order: order,
-        status: status
-      }
-    end
-    res
-  end
-
-  def self.collect_skus_by(brand)
-    # Como agregamos el campo "status" volvimos a listar todas las transacciones.
-    sts = StockTransaction.where(brand_id: brand.id)
-    tmp = sts.collect { |t|
-      [
-        {
-          style: t.style, color: t.color, size: t.size, code: t.code,
-          reference_id: t.reference_id, box_id: t.box_id
-         },
-        t.size_order,
-        t.status
-      ]
-    }.uniq
-
-    tmp.collect { |entry|
-      sku, order, status = entry
-      [Sku.new(**sku), order, status]
-    }
   end
 end

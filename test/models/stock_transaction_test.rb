@@ -27,7 +27,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     Stock.adjust(brand, sku1,  10, user, "Testing Delete")
     Stock.adjust(brand, sku1, -15, user, "Testing Delete")
 
-    result = Stock.compute_transactions_grouping_by_box_id(brand.id)
+    result = Stock.compute_transactions(brand.id)
     assert -15 == result.last.sizes.last.total_units
   end
 
@@ -128,11 +128,9 @@ class StockTransactionTest < ActiveSupport::TestCase
     brand  = brands(:nike)
     user   = users(:joe)
     result = Stock.buy(brand, sku, 10, user)
-    result = Stock.adjust(brand, sku, 5, user, "no comments", reason: 8)
+    result = Stock.adjust(brand, sku, 5, user, "no comments", reason: 8000)
     tnx    = StockTransaction.find(result.id)
 
-    # Como 8 no es una razon valida para realizar la transaccion, el setter de
-    # esa propiedad utiliza el numero 7 (Other.)
     assert ::Reason::OTHER == tnx.reason.to_i
   end
 
