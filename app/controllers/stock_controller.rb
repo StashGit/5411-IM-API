@@ -9,7 +9,8 @@ class StockController < ApplicationController
   before_action :set_user,         only:   [:buy, :sale, :adjust]
   before_action :set_packing_list, only:   [:delete_packing_list]
   before_action :set_brand,        only:   [
-    :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists
+    :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists,
+    :damaged_by_brand
   ]
 
   def packing_lists
@@ -157,7 +158,12 @@ class StockController < ApplicationController
   end
 
   def by_brand
-    transactions = Stock.compute_transactions_grouping_by_box_id(@brand.id)
+    transactions = Stock.compute_transactions(@brand.id)
+    render :json => transactions
+  end
+
+  def damaged_by_brand
+    transactions = Stock.compute_transactions(@brand.id, damaged_only: true)
     render :json => transactions
   end
 
