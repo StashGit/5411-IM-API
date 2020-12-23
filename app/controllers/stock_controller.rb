@@ -5,6 +5,7 @@ class StockController < ApplicationController
   before_action :set_access_token
   before_action :authorize,        except: [:index]
   before_action :set_sku,          only:   [:buy, :sale, :adjust, :units]
+  before_action :set_move_sku,     only:   [:move]
   before_action :set_units,        only:   [:buy, :sale, :adjust]
   before_action :set_user,         only:   [:buy, :sale, :adjust]
   before_action :set_packing_list, only:   [:delete_packing_list]
@@ -81,6 +82,22 @@ class StockController < ApplicationController
       reason: params[:reason]
 
     if result.ok
+      render :json => units_in_stock, :status => 200
+    else
+      render :json => { errors: result.errors }, :status => 500
+    end
+  end
+  
+  def move
+    result = Stock.move \
+      @brand, 
+      @sku_from, 
+      @sku_to, 
+      @units, 
+      @user,
+      params[:comments]
+
+    if result.ok 
       render :json => units_in_stock, :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
@@ -229,6 +246,11 @@ class StockController < ApplicationController
     @sku = Sku.new(**sku_params)
   end
 
+  def set_move_sku
+    @sku_from = Sku.new(**sku_move_params)
+    @sku_to = Sku.new(**sku_move_params)
+  end
+
   def set_units
     @units = params[:units].to_i
   end
@@ -251,6 +273,17 @@ class StockController < ApplicationController
     sku[:color] = params[:color]
     sku[:size]  = params[:size]
     sku[:code]  = params[:code]
+    sku
+  end
+
+  def sku_move_params
+    sku = {}
+    sku[:style]         = params[:style]
+    sku[:color]         = params[:color]
+    sku[:size]          = params[:size]
+    sku[:code]          = params[:code]
+    sku[:reference_id]  = params[:reference_id]
+    sku[:box_id]        = params[:box_id]
     sku
   end
 

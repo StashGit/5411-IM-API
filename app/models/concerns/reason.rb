@@ -6,4 +6,5 @@ module Reason
   OUT        = 5
   RETURN     = 6
   OTHER      = 7
+  MOVE       = 8
 end
