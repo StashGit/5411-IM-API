@@ -226,6 +226,44 @@ Resultado:
 { ... }]
 ```
 
+### Cómo consultar el stock de productos dañados
+El método **stock/damaged_by_brand** retorna únicamente los productos que fueron
+descontados del stock por medio de una ajuste por mercaderia dañada.
+
+**Párametros**
+* brand_id
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{ \"brand_id\": \"$BRAND_ID\" }" \
+     localhost:3000/stock/damaged_by_brand
+```
+
+Resultado:
+
+```
+[{
+  style: "TROUSERS",
+  code: 1012,
+  color: 250,
+  sizes: [{
+    size: "XS",
+    size_order: 2,
+    total_units: 2,
+    boxes: [{
+      reference_id: "PO123",
+      box_id: "BOX 4",
+      units: 2
+    }]
+  }]
+},
+...
+]
+```
+
+
 ### Cómo se realizan los ajustes de stock
 Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
 La *dirección* del movimiento (entrada/salida) se infiere en base a la
@@ -274,6 +312,7 @@ module Reason
   OUT        = 5
   RETURN     = 6
   OTHER      = 7
+  DAMAGED    = 8
 end
 ```
 
