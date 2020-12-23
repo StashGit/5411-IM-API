@@ -5,6 +5,32 @@ class StockTransactionTest < ActiveSupport::TestCase
     StockTransaction.destroy_all
   end
 
+  test "compute transactions supports negative units" do
+    sku1 = Sku.new \
+      style: "will-be-deleted",
+      color: "Midnight",
+      size: "L",
+      box_id: "BOX 1",
+      reference_id: "PO123"
+
+    sku2 = Sku.new \
+      style: "will-be-deleted",
+      color: "Midnight",
+      size: "L",
+      box_id: "BOX 4",
+      reference_id: "PO123"
+
+    brand = brands(:nike)
+    user  = users(:joe)
+
+    Stock.adjust(brand, sku2, -10, user, "Testing Delete")
+    Stock.adjust(brand, sku1,  10, user, "Testing Delete")
+    Stock.adjust(brand, sku1, -15, user, "Testing Delete")
+
+    result = Stock.compute_transactions_grouping_by_box_id(brand.id)
+    assert -15 == result.last.sizes.last.total_units
+  end
+
   test "delete packing list" do
     sku   = Sku.new(style: "will-be-deleted", color: "Midnight", size: "L")
     brand = brands(:nike)

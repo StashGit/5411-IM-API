@@ -15,12 +15,12 @@ then
          -X POST \
          -d "{
             \"brand_id\":     \"$BRAND_ID\",
-            \"style\":        \"SS200105S\",
-            \"color\":        \"MIDNIGHT\",
-            \"size\":         \"AU6 US2\",
-            \"code\":         \"test-code\",
-            \"box_id\":       \"random_box_id\",
-            \"reference_id\": \"random_reference_id\",
+            \"style\":        \"TROUSERS\",
+            \"color\":        \"250\",
+            \"size\":         \"XS\",
+            \"code\":         \"1012\",
+            \"box_id\":       \"BOX 4\",
+            \"reference_id\": \"PO123\",
             \"units\":        "$UNITS",
             \"comments\":     \"This is a comment.\",
             \"reason\":       \"$REASON\"
