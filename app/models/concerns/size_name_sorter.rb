@@ -30,7 +30,7 @@ module SizeNameSorter
   end
 
   def size_to_number(size_number)
-    size_number.to_i
+    size_number.to_f
   end
 
   def std_size_order_for(size_name)

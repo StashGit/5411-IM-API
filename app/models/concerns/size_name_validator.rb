@@ -19,7 +19,7 @@ module SizeNameValidator
   end
 
   def is_number?(name)
-    !!(/^(\d)+$/ =~ name)
+    !!(/^[\+\-]?\d+(\.\d*)?$/ =~ name)
   end
 
   def valid_std_size_name?(name)
