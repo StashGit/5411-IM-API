@@ -225,6 +225,45 @@ Resultado:
 },
 { ... }]
 ```
+### Cómo se realizan los movimientos de stock
+Para genera una transacción de ajuste de stock es necesario invocar el método **stock/move**.
+Esto genera dos transacciones de stock. Una para quitar las unidades especificadas en el sku_from y otra para aumentar el stock en el sku_to.
+
+**Párametros**
+* brand_id
+* sku_from
+* sku_to
+* units
+* user
+* commenmts
+
+```
+curl -H "Content-Type: application/json" \
+         -H "Access-Token: $TOKEN" \
+         -X POST \
+         -d "{ \"brand_id\": \"$BRAND_ID\", 
+                \"sku_from\": {
+                    \"style\": \"SS200105S\",
+                    \"color\": \"MIDNIGHT\",
+                    \"size\": \"AU6 US2\",
+                    \"code\":\"test-code\",
+                    \"reference_id\":\"ref-1\",
+                    \"box_id\":\"box-1\"
+                },
+                \"sku_to\": {
+                    \"style\": \"SS200105S\",
+                    \"color\": \"MIDNIGHT\",
+                    \"size\": \"AU6 US2\",
+                    \"code\":\"test-code\",
+                    \"reference_id\":\"ref-2\",
+                    \"box_id\":\"box-2\"
+                },  
+                \"units\":"$UNITS", 
+                \"comments\":\"This is a comment.\" }" \
+                localhost:3000/stock/move
+
+```
+
 
 ### Cómo se realizan los ajustes de stock
 Para genera una transacción de ajuste de stock es necesario invocar el método **stock/adjust**.
