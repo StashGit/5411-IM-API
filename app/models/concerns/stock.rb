@@ -301,42 +301,4 @@ class Stock
       box_id: sku.box_id,
       reference_id: sku.reference_id
   end
-
-  # TODO: En lugar de hacer esto tenemos que tener una vista materializada
-  #       que nos permita hacer un select * y a otra cosa mariposa.
-  #       Con muchas transacciones de stock esto se puede llegar a clavar.
-  #       Si podemos cocinar la vista a medida que vamos grabando mejor.
-  def self.compute_transactions_by(brand)
-    res = []
-    collect_skus_by(brand).each do |entry|
-      sku, order, status = entry
-      res << {
-        sku: sku,
-        units: units(brand, sku),
-        size_order: order,
-        status: status
-      }
-    end
-    res
-  end
-
-  def self.collect_skus_by(brand)
-    # Como agregamos el campo "status" volvimos a listar todas las transacciones.
-    sts = StockTransaction.where(brand_id: brand.id)
-    tmp = sts.collect { |t|
-      [
-        {
-          style: t.style, color: t.color, size: t.size, code: t.code,
-          reference_id: t.reference_id, box_id: t.box_id
-         },
-        t.size_order,
-        t.status
-      ]
-    }.uniq
-
-    tmp.collect { |entry|
-      sku, order, status = entry
-      [Sku.new(**sku), order, status]
-    }
-  end
 end
