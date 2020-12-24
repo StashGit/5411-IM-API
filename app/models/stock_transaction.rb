@@ -12,6 +12,14 @@ class StockTransaction < ApplicationRecord
     where("status IS NULL OR NOT status IN (?)", [HIDDEN, DELETED])
   }
 
+  # Deshace una transaccion de stock.
+  def undo!
+    # Dado que el stock se computa de forma dinamica cada vez que realizan una
+    # consulta, marcando la transaccion como eliminada, logramos el efecto de
+    # **undo**.
+    self.update! status: DELETED
+  end
+
   # Baja "logica" de todas las transacciones generadas por la packing list.
   def self.delete_packing_list packing_list
     return [false, "packing list is required"] unless packing_list

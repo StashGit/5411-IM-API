@@ -13,6 +13,15 @@ class StockController < ApplicationController
     :damaged_by_brand
   ]
 
+  def undo_transaction
+    transaction = StockTransaction.find_by(id: params[:transaction_id])
+    if transaction&.undo!
+      render json: { message: "Success" }, status: 200
+    else
+      render json: { error: "Failed to undo the transaction" }, status: 500
+    end
+  end
+
   def packing_lists
     render json: PackingList.describe_active_lists(@brand)
   end

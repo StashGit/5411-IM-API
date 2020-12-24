@@ -316,6 +316,17 @@ module Reason
 end
 ```
 
+### Cómo deshacer una transaccion de stock
+Si contamos con el ID de una transaccion, podemos deshacer los cambios utilizando
+el metodo **stock/undo_transaction**
+
+**Parámetros**
+id
+
+```
+{ "message": "Success" }
+```
+
 ### Cómo se registran las compras
 Las tranascciones de compras se generan utilizando el método **stock/buy**.
 
