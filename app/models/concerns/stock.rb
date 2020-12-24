@@ -215,7 +215,10 @@ class Stock
       if damaged_only
         "reason =  '#{Reason::DAMAGED}'"
       else
-        "reason <> '#{Reason::DAMAGED}'"
+        # En este caso queremos todos los tipos de transaccion para que
+        # descuente correctamente los productos danados.
+        # "reason <> '#{Reason::DAMAGED}'"
+        "1 = 1"
       end
 
     # La consulta original tenia este group by, pero aparentemente
