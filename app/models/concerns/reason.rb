@@ -1,4 +1,6 @@
 module Reason
+  # Si agregamos estados en esta seccion, tenemos que actualizar el
+  # el metodo "reason" en stock_transaction.
   BUY        = 1
   SALE       = 2
   ADJUSTMENT = 3
