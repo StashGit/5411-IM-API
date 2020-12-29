@@ -17,7 +17,7 @@ class StockTransaction < ApplicationRecord
     # Dado que el stock se computa de forma dinamica cada vez que realizan una
     # consulta, marcando la transaccion como eliminada, logramos el efecto de
     # **undo**.
-    self.update! status: DELETED
+    self.update! status: DELETED, reason: Reason::UNDONE
   end
 
   # Baja "logica" de todas las transacciones generadas por la packing list.

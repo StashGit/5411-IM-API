@@ -7,4 +7,5 @@ module Reason
   RETURN     = 6
   OTHER      = 7
   DAMAGED    = 8
+  UNDONE     = 9
 end
