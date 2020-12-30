@@ -200,4 +200,35 @@ class StockTransactionTest < ActiveSupport::TestCase
     assert st.reference_id.present?
     assert st.box_id.present?
   end
+
+  test "generate move stock transaction" do
+    sku_from  = Sku.new \
+      style: "ST0005",
+      color: "Midnight",
+      size: "L",
+      reference_id: "ref-1",
+      box_id: "box-1"
+
+    sku_to  = Sku.new \
+      style: "ST0005",
+      color: "Midnight",
+      size: "L",
+      reference_id: "ref-2",
+      box_id: "box-2"
+
+    brand = brands(:nike)
+    user = users(:joe)
+
+    # hacemos una transaccion de compra
+    result_buy = Stock.buy(brand, sku_from, 10, user)
+
+    # hacemos el movimiento de stock de un lugar a otro
+    result = Stock.move(brand, sku_from, sku_to, 3, user)
+
+    assert result.ok
+    units_from = Stock.units(brand, sku_from)
+    units_to = Stock.units(brand, sku_to)
+    assert 7 == units_from
+    assert 3 == units_to
+  end
 end

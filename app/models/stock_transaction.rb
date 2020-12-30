@@ -57,7 +57,7 @@ class StockTransaction < ApplicationRecord
   def reason=(value)
     # Si especifican un valor fuera de rango, utilizamos OTHER.
     reason = value&.to_i
-    reason = Reason::OTHER unless (1..9).include?(reason)
+    reason = Reason::OTHER unless (1..10)include?(reason)
     super reason.to_s
   end
 

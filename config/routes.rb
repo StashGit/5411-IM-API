@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   post 'stock/sale'
   post 'stock/adjust'
   post 'stock/create_label'
+  post 'stock/move'
   # Dejamos este metodo que permite imprimir utilizando un token de impresion
   # para mantener la compatibilidad con el proceso import/print.
   # Internamente, terminamos generando lo mismo que print/enqueue.

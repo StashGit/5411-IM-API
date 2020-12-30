@@ -114,6 +114,44 @@ class Stock
     save_transaction(t, user)
   end
 
+  def self.move(brand, sku_from, sku_to, units, user, comments="", size_order=nil)
+    StockTransaction.transaction do
+      StockTransaction.create! \
+        brand:        brand,
+        style:        sku_from.style,
+        color:        sku_from.color,
+        size:         sku_from.size,
+        code:         sku_from.code,
+        box_id:       sku_from.box_id,
+        reference_id: sku_from.reference_id,
+        size_order:   size_order || size_order_for(sku_from.size),
+        units:        units.abs,
+        reason:       Reason::MOVE,
+        comments:     comments,
+        kind:         KIND_OUT,
+        user: user
+
+      StockTransaction.create! \
+        brand:        brand,
+        style:        sku_to.style,
+        color:        sku_to.color,
+        size:         sku_to.size,
+        code:         sku_to.code,
+        box_id:       sku_to.box_id,
+        reference_id: sku_to.reference_id,
+        size_order:   size_order || size_order_for(sku_to.size),
+        units:        units.abs,
+        reason:       Reason::MOVE,
+        comments:     comments,
+        kind:         KIND_IN,
+        user: user
+    end
+    return Result.new(true, StockTransaction.last.id, nil)
+
+    rescue ActiveRecord::Rollback => e
+      return Result.new(false, -1, e.message)      
+  end
+
   # Computa todas las transacciones de stock para el SKU especificado.
   def self.units(brand, sku)
     # TODO: Bound by date o algo por el estilo.
