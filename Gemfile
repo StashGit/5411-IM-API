@@ -3,6 +3,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+# AWS
+gem 'aws-sdk-s3'
+
+# ENV stuff
+gem 'dotenv-rails', groups: [:development, :test]
+
 # CORS
 gem 'rack-cors'
 

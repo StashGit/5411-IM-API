@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_15_180352) do
+ActiveRecord::Schema.define(version: 2020_12_30_021145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2020_12_15_180352) do
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "s3_key"
   end
 
   create_table "packing_lists", force: :cascade do |t|
@@ -44,6 +45,13 @@ ActiveRecord::Schema.define(version: 2020_12_15_180352) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "status"
     t.integer "brand_id"
+  end
+
+  create_table "print_queues", force: :cascade do |t|
+    t.integer "stock_transaction_id"
+    t.boolean "printed", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "qr_queues", force: :cascade do |t|
