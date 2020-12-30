@@ -1,6 +1,12 @@
 module SizeNameSorter
   include SizeNameValidator
 
+  def sort_by_size_order merged_sizes
+    raise ArgumentError.new "merged_sizes is required" unless merged_sizes
+
+    merged_sizes.sort_by {|_, value| value["size_order"] }.to_h
+  end
+
   # Si no logramos extraer el orden numerico para el talle especificado,
   # lo que hacemos es retornar -1.
   # La logica detras de esto es que preferimos que las columnas queden

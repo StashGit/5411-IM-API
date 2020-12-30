@@ -177,16 +177,23 @@ class Stock
     merge_boxes(result)
   end
 
-  def self.merge_boxes entries
+  def self.merge_boxes stock_entries
     result = []
-    box    = Struct.new :reference_id, :box_id, :units
-    size_details = Struct.new :size, :size_order, :total_units, :boxes
 
-    entries.each do |entry|
+    stock_entries.each do |entry|
       result << stock_entry.new(
         entry.style, entry.code, entry.color, [])
 
-      merged_sizes = {}
+      merged_sizes = merge_sizes(entry)
+
+      result.last.sizes = sort_by_size_order(merged_sizes).values
+    end
+
+    sum_boxes_by_ref_id result
+  end
+
+  def self.merge_sizes entry
+    {}.tap do |merged_sizes|
       entry.sizes.each do |size_entry|
         size = size_entry.size
 
@@ -202,13 +209,18 @@ class Stock
         # chequeo sobre el tipo de transaccion.
         merged_sizes[size].total_units += size_entry.units || 0
       end
-      result.last.sizes = merged_sizes.values
     end
-
-    sum_boxes_by_ref_id result
   end
 
   private
+
+  def self.box
+    @@box ||= Struct.new :reference_id, :box_id, :units
+  end
+
+  def self.size_details
+    @@size_details ||= Struct.new :size, :size_order, :total_units, :boxes
+  end
 
   def self.prepare_compute_transactions_query(brand_id, damaged_only)
     reason_clause =
@@ -253,7 +265,6 @@ class Stock
         size.boxes = size.boxes.group_by &:box_id
       end
 
-      box = Struct.new :reference_id, :box_id, :units
       entry.sizes.each do |size|
         boxes = []
         size.boxes.each do |box_id, grouped_boxes|
