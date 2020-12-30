@@ -11,3 +11,4 @@ public/qr/
 public/uploads_dir/
 .byebug_history
 ~$*
+.env
