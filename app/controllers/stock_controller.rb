@@ -6,12 +6,12 @@ class StockController < ApplicationController
   before_action :authorize,        except: [:index]
   before_action :set_sku,          only:   [:buy, :sale, :adjust, :units]
   before_action :set_move_sku,     only:   [:move]
-  before_action :set_units,        only:   [:buy, :sale, :adjust]
-  before_action :set_user,         only:   [:buy, :sale, :adjust]
+  before_action :set_units,        only:   [:buy, :sale, :adjust, :move]
+  before_action :set_user,         only:   [:buy, :sale, :adjust, :move]
   before_action :set_packing_list, only:   [:delete_packing_list]
   before_action :set_brand,        only:   [
     :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists,
-    :damaged_by_brand
+    :damaged_by_brand, :move
   ]
 
   def undo_transaction
@@ -97,18 +97,19 @@ class StockController < ApplicationController
       render :json => { errors: result.errors }, :status => 500
     end
   end
-  
+
   def move
     result = Stock.move \
-      @brand, 
-      @sku_from, 
-      @sku_to, 
-      @units, 
+      @brand,
+      @sku_from,
+      @sku_to,
+      @units,
       @user,
       params[:comments]
 
-    if result.ok 
-      render :json => units_in_stock, :status => 200
+    # TODO: Ver si esta es la estructura que le sirve a Andrew.
+    if result.ok
+      render :json => Stock.describe_move(@brand, @sku_from, @sku_to), :status => 200
     else
       render :json => { errors: result.errors }, :status => 500
     end
@@ -269,8 +270,8 @@ class StockController < ApplicationController
   end
 
   def set_move_sku
-    @sku_from = Sku.new(**sku_move_params)
-    @sku_to = Sku.new(**sku_move_params)
+    @sku_from = Sku.new(**sku_params_from)
+    @sku_to   = Sku.new(**sku_params_to)
   end
 
   def set_units
@@ -300,16 +301,30 @@ class StockController < ApplicationController
     sku
   end
 
-  def sku_move_params
-    sku = {}
-    sku[:style]         = params[:style]
-    sku[:color]         = params[:color]
-    sku[:size]          = params[:size]
-    sku[:code]          = params[:code]
-    sku[:reference_id]  = params[:reference_id]
-    sku[:box_id]        = params[:box_id]
-    sku
+  def sku_params_from
+    sku_from = params[:sku_from]
+    {}.tap do |sku|
+      sku[:style]         = sku_from[:style]
+      sku[:color]         = sku_from[:color]
+      sku[:size]          = sku_from[:size]
+      sku[:code]          = sku_from[:code]
+      sku[:box_id]        = sku_from[:box_id]
+      sku[:reference_id]  = sku_from[:reference_id]
+    end
   end
+
+  def sku_params_to
+    sku_to = params[:sku_to]
+    {}.tap do |sku|
+      sku[:style]         = sku_to[:style]
+      sku[:color]         = sku_to[:color]
+      sku[:size]          = sku_to[:size]
+      sku[:code]          = sku_to[:code]
+      sku[:box_id]        = sku_to[:box_id]
+      sku[:reference_id]  = sku_to[:reference_id]
+    end
+  end
+
 
   def lbl_params
     lbl = {}

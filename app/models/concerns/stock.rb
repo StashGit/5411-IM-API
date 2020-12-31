@@ -149,7 +149,26 @@ class Stock
     return Result.new(true, StockTransaction.last.id, nil)
 
     rescue ActiveRecord::Rollback => e
-      return Result.new(false, -1, e.message)      
+      return Result.new(false, -1, e.message)
+  end
+
+  # TODO: Better name!!!
+  def self.sku_description
+    @@sku_description ||= Struct.new(:sku, :units)
+  end
+
+  def self.move_description
+    @@move_description ||= Struct.new(:from, :to)
+  end
+
+  def self.describe_move(brand, sku_from, sku_to)
+    units_from = units(brand, sku_from)
+    units_to   = units(brand, sku_to)
+
+    from = sku_description.new(sku_from, units_from)
+    to   = sku_description.new(sku_to, units_to)
+
+    move_description.new(from, to)
   end
 
   # Computa todas las transacciones de stock para el SKU especificado.

@@ -220,7 +220,7 @@ class StockTransactionTest < ActiveSupport::TestCase
     user = users(:joe)
 
     # hacemos una transaccion de compra
-    result_buy = Stock.buy(brand, sku_from, 10, user)
+    Stock.buy(brand, sku_from, 10, user)
 
     # hacemos el movimiento de stock de un lugar a otro
     result = Stock.move(brand, sku_from, sku_to, 3, user)
