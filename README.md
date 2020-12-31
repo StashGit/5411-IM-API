@@ -267,6 +267,35 @@ curl -H "Content-Type: application/json" \
 
 ```
 
+Resultado:
+
+```
+{
+  from: {
+    sku: {
+      style: "SS200105S",
+      color: "MIDNIGHT",
+      size: "AU6 US2",
+      code: "TEST-CODE,
+      reference_id: "REF-1",
+      box_id: "BOX-1"
+    },
+    units:-10
+  },
+  to:  {
+    sku: {
+      style: "SS200105S",
+      color: "MIDNIGHT",
+      size: "AU6 US2",
+      code: "TEST-CODE",
+      reference_id: "REF-2",
+      box_id: "BOX-2"
+    },
+    units:10
+  }
+}
+```
+
 
 ### Cómo consultar el stock de productos dañados
 El método **stock/damaged_by_brand** retorna únicamente los productos que fueron
