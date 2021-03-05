@@ -136,6 +136,33 @@ curl -H "Content-Type: multipart/mixed"   \
 { "message": "OK" }
 ```
 
+
+### Cómo se restauran todas las transacciones de stock generadas por una Packing List
+
+El metodo **stock/restore_packing_list** permite recuperar todas las transacciones
+asociadas a una packing list especificando el **id** de la lista que queremos
+recuperar.
+
+(El id de la lista se puede obtener utilizando el metodo **stock/packing_lists**.)
+
+**Párametros**
+* packing_list_id
+
+```
+curl -H "Content-Type: multipart/mixed"   \
+     -H "Accepts: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -F "packing_list_id=$PLID" \
+     $HOST/stock/restore_packing_list
+```
+
+**Resultado**
+
+```
+{ "message": "OK" }
+```
+
 ### Cómo recuperar todas las packing lists
 El metodo **stock/packing_lists** permite recuperar todas las packing lists
 "activas" que tenemos en el sistema.

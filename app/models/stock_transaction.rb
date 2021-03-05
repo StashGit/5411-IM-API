@@ -29,6 +29,15 @@ class StockTransaction < ApplicationRecord
     [true, ""]
   end
 
+  # Restaura todas las transacciones generadas por una packing list.
+  def self.restore_packing_list packing_list
+    return [false, "packing list is required"] unless packing_list
+
+    packing_list.stock_transactions.update_all status: nil
+    packing_list.update status: PackingList::ACTIVE
+    [true, ""]
+  end
+
   def self.restore(brand_id:, styles:, colors:)
     # Restaura todos los sizes para las combinaciones -> brand + [style/color]
     transactions = StockTransaction.where \

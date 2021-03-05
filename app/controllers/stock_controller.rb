@@ -8,7 +8,10 @@ class StockController < ApplicationController
   before_action :set_move_sku,     only:   [:move]
   before_action :set_units,        only:   [:buy, :sale, :adjust, :move]
   before_action :set_user,         only:   [:buy, :sale, :adjust, :move]
-  before_action :set_packing_list, only:   [:delete_packing_list]
+  before_action :set_packing_list, only:   [
+    :delete_packing_list,
+    :restore_packing_list,
+  ]
   before_action :set_brand,        only:   [
     :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists,
     :damaged_by_brand, :move
@@ -30,6 +33,19 @@ class StockController < ApplicationController
   def delete_packing_list
     if @packing_list
       ok, error = StockTransaction.delete_packing_list(@packing_list)
+      if ok
+        render json: { message: "OK" }, status: :ok
+      else
+        render json: { message: error }, status: :internal_server_error
+      end
+    else
+      render json: { message: "Failed to find the packing list" }, status: :not_found
+    end
+  end
+
+  def restore_packing_list
+    if @packing_list
+      ok, error = StockTransaction.restore_packing_list(@packing_list)
       if ok
         render json: { message: "OK" }, status: :ok
       else
