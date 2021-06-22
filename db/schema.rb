@@ -47,13 +47,6 @@ ActiveRecord::Schema.define(version: 2020_12_30_021145) do
     t.integer "brand_id"
   end
 
-  create_table "print_queues", force: :cascade do |t|
-    t.integer "stock_transaction_id"
-    t.boolean "printed", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "qr_queues", force: :cascade do |t|
     t.integer "qr_id"
     t.boolean "printed", default: false

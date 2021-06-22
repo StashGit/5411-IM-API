@@ -38,7 +38,7 @@ class Stock
     entries.each do |entry|
       next unless entry.units
 
-      res = adjust(entry.brand, entry.sku, entry.units.abs, user,
+      res = adjust(entry.brand, entry.sku, entry.units.to_i, user,
         reason: "Mass Import", size_order: entry.size_order, pl: pl)
 
       if res.ok
@@ -69,7 +69,7 @@ class Stock
       reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_IN,
-      units: units.abs,
+      units: units.to_i,
       reason: Reason::BUY,
       comments: comments)
 
@@ -87,7 +87,7 @@ class Stock
       reference_id: sku.reference_id,
       size_order: size_order_for(sku.size),
       kind: KIND_OUT,
-      units: units.abs,
+      units: units.to_i,
       reason: Reason::SALE,
       comments: comments
     )
@@ -106,7 +106,7 @@ class Stock
       reference_id:    sku.reference_id,
       packing_list_id: pl&.id,
       size_order:      size_order || size_order_for(sku.size),
-      units:           units.abs,
+      units:           units.to_i,
       reason:          reason,
       comments:        comments
 
@@ -125,7 +125,7 @@ class Stock
         box_id:       sku_from.box_id,
         reference_id: sku_from.reference_id,
         size_order:   size_order || size_order_for(sku_from.size),
-        units:        units.abs,
+        units:        units.to_i,
         reason:       Reason::MOVE,
         comments:     comments,
         kind:         KIND_OUT,
@@ -140,7 +140,7 @@ class Stock
         box_id:       sku_to.box_id,
         reference_id: sku_to.reference_id,
         size_order:   size_order || size_order_for(sku_to.size),
-        units:        units.abs,
+        units:        units.to_i,
         reason:       Reason::MOVE,
         comments:     comments,
         kind:         KIND_IN,
