@@ -191,6 +191,7 @@ class Stock
     available_parsers.each do |parser_class|
       return parser_class if parser_class.can_parse?(file_path)
     end
+    raise "Unsupported format - Can't parse #{file_path}"
   end
 
   def self.stock_entry
