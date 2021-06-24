@@ -105,7 +105,7 @@ class PackingListParser
     cols.each do |col|
       cell_value = packing_list.cell(col, headers_row)
       if (cell_value.present?)
-        headers << cell_value
+        headers << cell_value.to_s.strip.upcase!
       else
         return headers
       end
