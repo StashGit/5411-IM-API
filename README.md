@@ -111,6 +111,30 @@ importar.
 { "ok": true, "errors": [], "token": "8a5ca2e830f7b381ede318b871a4253e" }
 ```
 
+### Cómo elimiar todas las transacciones de stock para una marca en particular.
+El método **stock/delete_brand_transactions** permite eliminar todas las transacciones
+de stock activas asociadas a la marca especificada.
+
+**Párametros**
+* brand_id
+
+```
+curl -H "Content-Type: application/json" \
+     -H "Access-Token: $TOKEN" \
+     -X POST \
+     -d "{ \"brand_id\": \"$BRAND_ID\" }" \
+     $HOST/stock/delete_brand_transactions
+```
+
+**Resultado**
+Retorna el ID de todas las transacciones activas que fueron eliminadas.
+```
+{"deleted":[2265,2266,2267]}
+```
+
+_(\*) Este método hace un **soft-delete** de las transacciones, lo que nos
+permite recuperarlas/auditarlas desde la terminal en caso de que sea necesario.
+
 ### Cómo se eliminan todas las transacciones generadas por una Packing List
 Si luego de importar una lista el usuario quiere eliminar todas las transacciones
 que acaba de generar, podemos ofrecerles esa posibilidad utilizando el metodo

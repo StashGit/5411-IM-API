@@ -302,8 +302,11 @@ class Stock
              reason
       FROM stock_transactions
       WHERE brand_id=#{brand_id}
-      /* We only want active transactions*/
-      AND (status IS NULL OR NOT status IN ('hidden', 'deleted'))
+      /* We only want active transactions */
+      AND (status IS NULL OR NOT status IN (
+        '#{StockTransaction::HIDDEN}',
+        '#{StockTransaction::DELETED}'
+      ))
       AND #{reason_clause}
       ORDER BY style, code, color, size, reference_id, box_id
     }

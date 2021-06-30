@@ -14,8 +14,16 @@ class StockController < ApplicationController
   ]
   before_action :set_brand,        only:   [
     :buy, :sale, :adjust, :units, :import, :by_brand, :packing_lists,
-    :damaged_by_brand, :move
+    :damaged_by_brand, :move, :delete_brand_transactions
   ]
+
+  def delete_brand_transactions
+    unless @brand.present?
+      render json: { error: "Brand must exists" }, status: 404
+    else
+      render json: { deleted: @brand.delete_stock_transactions.collect(&:id) }, status: 200
+    end
+  end
 
   def undo_transaction
     transaction = StockTransaction.find_by(id: params[:transaction_id])

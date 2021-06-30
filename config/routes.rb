@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   post 'stock/delete_packing_list'
   post 'stock/restore_packing_list'
   post 'stock/undo_transaction'
+  post 'stock/delete_brand_transactions'
   get  'stock/packing_lists'
   # ===
 
