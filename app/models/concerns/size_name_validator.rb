@@ -7,7 +7,12 @@ module SizeNameValidator
     valid_std_size_name?(str_name) ||
     valid_beaumont_size?(str_name) ||
     valid_shoe_size?(str_name)     ||
-    valid_tu_name?(str_name)
+    valid_tu_name?(str_name)       ||
+    valid_only_size_name?(str_name)
+  end
+
+  def valid_only_size_name?(name)
+    !!(/^OS$/i =~ name)
   end
 
   def valid_shoe_size?(name)

@@ -50,7 +50,7 @@ class PackingListParserTest < ActiveSupport::TestCase
       "au6 us2", "au8 us4", "au10 us6", "au12 us8", "au14 us10",
       "au6", "us4", "au10", "us8", "us10",
       "tu", "TU",
-      "t:u", "T:U",
+      "t:u", "T:U", "OS"
     ]
 
     size_names.each do |size|
